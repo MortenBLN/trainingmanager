@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/createSession.css" />
+    <title>Create Session</title>
+</head>
+<body>
+    <h1>Create a New Training Session</h1>
+
+    <form id="create-session-form">
+        <label>
+            Team Name
+            <input type="text" id="teamname" required />
+        </label>
+
+        <label>
+            Training Start
+            <input type="datetime-local" id="trainingStart" required />
+        </label>
+
+        <label>
+            Training End
+            <input type="datetime-local" id="trainingEnd" required />
+        </label>
+
+        <label>
+            Applications Limit
+            <input type="number" id="applicationsLimit" value="0" min="0" />
+        </label>
+
+        <label>
+            Applications Required
+            <input type="number" id="applicationsRequired" value="0" min="0" />
+        </label>
+
+        <label>
+            How many times should the Session be created, with a week in between each session.
+            <span class="info-icon">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                <span class="tooltip">Will create the same session X given times, with a maximum of 4. For just a single session, leave it at 1.</span>
+            </span>
+            <input type="number" id="weeksInAdvance" value="1" min="1" max="4" />
+        </label>
+
+        <label>
+            Include VIPs
+            <input type="checkbox" id="includeVips" checked />
+        </label>
+
+        <button type="submit">Create Session</button>
+    </form>
+
+    <p id="session-message"></p>
+
+    <div id="redirect-button-container"></div>
+
+    <script src="create-session.js"></script>
+</body>
+</html>

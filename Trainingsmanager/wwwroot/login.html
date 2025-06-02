@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 400px;
+            margin: auto;
+            padding: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-top: 1rem;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.3rem;
+        }
+
+        .message {
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Login</h1>
+
+    <form id="login-form">
+        <label>
+            Email
+            <input type="email" id="email" required />
+        </label>
+
+        <label>
+            Password
+            <input type="password" id="password" required />
+        </label>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p class="message" id="login-message"></p>
+
+    <script src="login.js"></script>
+</body>
+</html>

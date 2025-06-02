@@ -1,0 +1,97 @@
+body {
+    background: #eee;
+}
+
+.icons i {
+    color: #b5b3b3;
+    border: 1px solid #b5b3b3;
+    padding: 6px;
+    margin-left: 4px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.activity-done {
+    font-weight: 600;
+}
+
+.list-group li {
+    margin-bottom: 12px;
+}
+
+.list-group-item {
+}
+
+.list li {
+    list-style: none;
+    padding: 10px;
+    border: 1px solid #e3dada;
+    margin-top: 12px;
+    border-radius: 5px;
+    background: #fff;
+}
+
+.checkicon {
+    color: green;
+    font-size: 19px;
+}
+
+.xicon
+{
+    color: red;
+    font-size: 19px;
+}
+
+.subtypeIcon 
+{
+    font-size: 19px;
+}
+
+.session-separator {
+    font-weight: bold;
+    color: #999;
+    margin: 5px 0;
+    padding-top: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.expired {
+    opacity: 0.6;
+    background-color: #f8f9fa;
+}
+
+.expired:hover {
+    background-color: #e9ecef;
+}
+
+.date-time {
+    font-size: 12px;
+}
+
+.profile-image img {
+    margin-left: 3px;
+}
+
+#session-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* center child <li> */
+    padding: 0;
+    margin: 0 auto;
+}
+
+#session-list li {
+    width: 600px; /* or any preferred width */
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    list-style: none;
+}
+
+@media (max-width: 640px) {
+    #session-list li {
+       width: calc(100vw - 40px); /* Leaves 20px margin on each side */
+    }
+}
