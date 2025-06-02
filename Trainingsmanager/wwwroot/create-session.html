@@ -8,7 +8,7 @@
     <title>Create Session</title>
 </head>
 <body>
-    <h1>Create a New Training Session</h1>
+    <h1>Erstelle eine neue Training Session</h1>
 
     <form id="create-session-form">
         <label>
@@ -22,31 +22,31 @@
         </label>
 
         <label>
-            Training End
+            Training Ende
             <input type="datetime-local" id="trainingEnd" required />
         </label>
 
         <label>
-            Applications Limit
+            Maximalanzahl Teilnehmende
             <input type="number" id="applicationsLimit" value="0" min="0" />
         </label>
 
         <label>
-            Applications Required
+            Mindestanzahl Teilnehmende
             <input type="number" id="applicationsRequired" value="0" min="0" />
         </label>
 
         <label>
-            How many times should the Session be created, with a week in between each session.
+            Wie oft soll die Session erstellt werden (Wochentakt)
             <span class="info-icon">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
-                <span class="tooltip">Will create the same session X given times, with a maximum of 4. For just a single session, leave it at 1.</span>
+                <span class="tooltip">Erstellt die gleiche Session x mal - mit jeweils einer Woche abstand.</span>
             </span>
             <input type="number" id="weeksInAdvance" value="1" min="1" max="4" />
         </label>
 
         <label>
-            Include VIPs
+            Feste Mitglieder hinzufügen
             <input type="checkbox" id="includeVips" checked />
         </label>
 
