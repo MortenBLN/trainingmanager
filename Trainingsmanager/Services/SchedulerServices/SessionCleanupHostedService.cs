@@ -19,7 +19,7 @@
                     await cleanupService.DeleteOldSessionsAsync();
                 }
 
-                await Task.Delay(TimeSpan.FromHours(24), stoppingToken); // Run every 24 hours
+                await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken); // Run every 24 hours
             }
         }
     }
