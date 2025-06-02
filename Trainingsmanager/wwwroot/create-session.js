@@ -14,7 +14,7 @@
             applicationsLimit: parseInt(document.getElementById("applicationsLimit").value),
             applicationsRequired: parseInt(document.getElementById("applicationsRequired").value),
             includeVips: document.getElementById("includeVips").checked,
-            countSessionsToCreate: parseInt(document.getElementById("weeksInAdvance").value)
+            preAddMitglieder: parseInt(document.getElementById("weeksInAdvance").value)
         };
 
         try
