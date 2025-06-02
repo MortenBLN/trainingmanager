@@ -59,6 +59,23 @@ bld.Services.AddScoped<ISessionHelper,  SessonHelper>();
 // Options
 bld.Services.Configure<FixedSubsOptions>(bld.Configuration);
 
+// Application Insights
+
+// Load from appsettings.json or Azure environment variables
+var connectionString = bld.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING");
+
+// Add Application Insights telemetry + logger
+//bld.Services.Insi(options =>
+//{
+//    options.ConnectionString = connectionString;
+//});
+
+bld.Logging.AddApplicationInsights(
+    configureTelemetryConfiguration: config =>
+        config.ConnectionString = connectionString,
+    configureApplicationInsightsLoggerOptions: options => { }
+);
+
 var app = bld.Build();
 
 // For frontend access
