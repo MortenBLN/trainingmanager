@@ -86,7 +86,7 @@ function addSessionToList(session, list, expired)
       </div>
       <div class="d-flex flex-row align-items-center">
         <div class="d-flex flex-column mr-2">
-          <span class="date-time">${freeSpontsCount} spots available</span>
+          <span class="date-time">${freeSpontsCount} spot(s) available</span>
         </div>
         <i class="fa fa-ellipsis-h"></i>
       </div>
