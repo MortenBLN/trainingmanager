@@ -27,10 +27,7 @@ namespace Trainingsmanager.Controllers
             }
             catch(InvalidOperationException ex)
             {
-                if (ex.Message == "The max sub amount is already reached :(")
-                {
-                    ThrowError(ex.Message);
-                }
+                ThrowError(ex.Message);
             }
             await SendNoContentAsync(ct);
         }

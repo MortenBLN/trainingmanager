@@ -36,6 +36,14 @@ namespace Trainingsmanager.Repositories
 
         public async Task SubscribeToSessionAsync(SubscribeUsersToSessionRequest request, CancellationToken ct, SubscriptionType subType = SubscriptionType.Gast)
         {
+            var existing = await _context.Subscriptions
+                .AnyAsync(s => s.UserName == request.Name && s.SessionId == request.SessionId, ct);
+
+            if (existing)
+            {
+                throw new InvalidOperationException("Es existiert bereits ein Teilnehmer mit dem gleichen Namen.");
+            }
+
             // Add each Sub by the given name
             var newSubscription = new Subscription
             {

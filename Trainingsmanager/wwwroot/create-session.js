@@ -31,13 +31,13 @@
                 body: JSON.stringify(data)
                 });
             if (res.status === 401) {
-                messageP.textContent = "You are not authorized to perform this action.";
+                messageP.textContent = "Nur Admins können Sessions erstellen.";
                 messageP.style.color = "red";
 
                 // Optional: Redirect to login page
                 // window.location.href = "/login.html";
 
-                throw new Error("You are not authorized to perform this action."); // Stop further execution
+                throw new Error("Nur Admins können Sessions erstellen."); // Stop further execution
             }
             // TODO: Handle errors
             if (!res.ok)
@@ -59,7 +59,7 @@
 
             // Create redirect button
             const btn = document.createElement("button");
-            btn.textContent = "Go to Session";
+            btn.textContent = "Öffne erstellte Session";
             btn.onclick = () =>
             {
                 window.location.href = `session.html?id=${session.id}`;

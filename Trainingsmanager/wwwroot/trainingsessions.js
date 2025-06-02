@@ -1,9 +1,8 @@
 ﻿// Load sessions and add to the DOM
-fetch("/api/getSessions")
+fetch("/api/getSessions", { cache: "no-store" })
     .then(res => res.json())
     .then(data => {
         const sessions = data.sessions;
-
         const now = new Date();
 
         // Separate upcoming and expired sessions
@@ -16,9 +15,6 @@ fetch("/api/getSessions")
         // Sort expired by most recent past (optional)
         expiredSessions.sort((a, b) => new Date(b.trainingStart) - new Date(a.trainingStart));
 
-        // Combine the sorted arrays
-        const sortedSessions = [...upcomingSessions, ...expiredSessions];
-
         const list = document.getElementById("session-list");
 
         // Iterate through all upcoming sessions
@@ -28,7 +24,6 @@ fetch("/api/getSessions")
         });
 
         // Add seperator
-
         if (expiredSessions.length > 0)
         {
             const separator = document.createElement('li');
@@ -59,8 +54,15 @@ function addSessionToList(session, list, expired)
     const icon = isFull ? "<i class=\"fa fa-times-circle xicon\"></i>" : "<i class=\"fa fa-check-circle checkicon\"></i>"
 
     const start = new Date(session.trainingStart);
-    const formattedStart = start.toString().split(' GMT')[0];
     const end = new Date(session.trainingEnd);
+
+    const formattedStart = start.toString().split(' GMT')[0];
+
+    const day = start.toDateString(); // "Mon Jun 02 2025"
+    const hours = start.getHours().toString().padStart(2, '0');
+    const minutes = start.getMinutes().toString().padStart(2, '0');
+
+    const formattedDate = `${day} ${hours}:${minutes}`;
 
     const durationMs = end - start;
 
@@ -76,19 +78,18 @@ function addSessionToList(session, list, expired)
     li.innerHTML = `
       <div class="d-flex flex-row align-items-center">`
             + icon +
-            `<div class="ml-2">
+        `<div class="ml-2">
           <h6 class="mb-0">${session.teamname}</h6>
           <div class="d-flex flex-row mt-1 text-black-50 date-time">
-            <div><i class="fa fa-calendar-o"></i><span class="ml-2">${formattedStart}</span></div>
+            <div><i class="fa fa-calendar-o"></i><span class="ml-2">${formattedDate}</span></div>
             <div class="ml-3"><i class="fa fa-clock-o"></i><span class="ml-2">${roundedDuration}h</span></div>
           </div>
         </div>
       </div>
       <div class="d-flex flex-row align-items-center">
         <div class="d-flex flex-column mr-2">
-          <span class="date-time">${freeSpontsCount} spot(s) available</span>
+            <div><i class="fa fa-users"></i><span class="ml-2">${freeSpontsCount} free</span></div>
         </div>
-        <i class="fa fa-ellipsis-h"></i>
       </div>
     `;
 

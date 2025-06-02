@@ -17,7 +17,7 @@
 
             if (!res.ok) {
                 const error = await res.json();
-                throw new Error(error.message || "Login failed");
+                throw new Error(error.message || "Login fehlgeschlagen");
             }
             const { jwtToken, email: returnedEmail } = await res.json();
 

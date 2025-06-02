@@ -12,31 +12,35 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
 
     <title>Session Details</title>
-    <!--<link rel="stylesheet" href="styles.css" />-->
 </head>
 <body>
     <div id="session-details" class="container">
+        <div class="my-4">
+            <button class="btn btn-secondary" onclick="history.back()">
+                <i class="fa fa-arrow-left mr-2"></i>Zurück
+            </button>
+        </div>
         <div class="container my-5">
             <div class="card shadow-lg">
                 <div class="card-body">
                     <h1 id="teamname" class="card-title text-center mb-4">Loading...</h1>
                     <ul class="list-group list-group-flush mb-4">
                         <li class="list-group-item"><strong>Start:</strong> <span id="start"></span></li>
-                        <li class="list-group-item"><strong>End:</strong> <span id="end"></span></li>
-                        <li class="list-group-item"><strong>Applications Limit:</strong> <span id="limit"></span></li>
-                        <li class="list-group-item"><strong>Applications Required:</strong> <span id="required"></span></li>
+                        <li class="list-group-item"><strong>Ende:</strong> <span id="end"></span></li>
+                        <li class="list-group-item"><strong>Mindestanzahl:</strong> <span id="required"></span></li>
+                        <li class="list-group-item"><strong>Maximalanzahl:</strong> <span id="limit"></span></li>
                     </ul>
 
-                    <h4 class="mb-3">Add a Subscription</h4>
+                    <h4 class="mb-3">Teilnahme hinzufügen</h4>
                     <form id="add-subscription-form" class="form-inline">
                         <div class="form-group mr-2 mb-2">
-                            <input type="text" class="form-control" id="username-input" placeholder="Enter username" required />
+                            <input type="text" class="form-control form-control-sm" id="username-input" placeholder="Name" required />
                         </div>
-                        <button type="submit" class="btn btn-primary mb-2">Subscribe</button>
+                        <button type="submit" class="btn btn-primary mb-2">Teilnehmen</button>
                     </form>
                     <p id="subscription-message" class="mt-3 text-success"></p>
                     <p id="subscription-message"></p>
-                    <h3>Subscriptions</h3>
+                    <h3>Teilnahmen</h3>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mt-3">
@@ -47,10 +51,7 @@
                     </div>
                 </div>
             </div>
-            
         </div>
-
-       
     </div>
 </body>
 </html>

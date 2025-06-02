@@ -43,7 +43,6 @@
 
             const subscriptionTypeIcon = subType == 1 ? "<i title=\"Mitglied\" class=\"fa fa-user-plus subtypeIcon\"></i>" : "<i class=\"fa fa-user subtypeIcon\"></i>"
 
-
             li.innerHTML = `
               <div class="d-flex flex-row align-items-center">
                 ` + subscriptionTypeIcon + `
@@ -117,13 +116,13 @@
                 throw new Error(msg);
             }
 
-            messageP.textContent = `Subscription added for ${username}.`;
+            messageP.textContent = `${username} nimmt teil.`;
             usernameInput.value = "";
             fetchSession(); // refresh list
         })
         .catch(err =>
         {
-            console.error("Subscription failed:", err);
+            console.error("Teilnahme fehlgeschlagen:", err);
             messageP.textContent = err.message;
         });
     });
