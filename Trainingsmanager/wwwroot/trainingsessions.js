@@ -28,7 +28,7 @@ fetch("/api/getSessions", { cache: "no-store" })
         {
             const separator = document.createElement('li');
             separator.className = 'session-separator text-center';
-            separator.textContent = '— Expired Sessions —';
+            separator.textContent = '— Abgelaufenene Sessions —';
             list.appendChild(separator);
         }
 
@@ -88,7 +88,7 @@ function addSessionToList(session, list, expired)
       </div>
       <div class="d-flex flex-row align-items-center">
         <div class="d-flex flex-column mr-2">
-            <div><i class="fa fa-users"></i><span class="ml-2">${freeSpontsCount} free</span></div>
+            <div><i class="fa fa-users"></i><span class="ml-2">${freeSpontsCount} frei</span></div>
         </div>
       </div>
     `;
