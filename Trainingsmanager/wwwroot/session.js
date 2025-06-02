@@ -33,7 +33,7 @@
             removeBtn.title = `Remove ${sub.userName}`;
             removeBtn.addEventListener("click", () => {
                 if (confirm(`Remove subscription for ${sub.userName}?`)) {
-                    deleteSubscription(sub.id);
+                    deleteSubscription(sub.id, sub.userName);
                 }
             });
 
@@ -115,7 +115,7 @@
                 const msg = errorData.errors?.generalErrors?.[0] || errorData.message || "Unknown error";
                 throw new Error(msg);
             }
-
+            showToast(`${username} nimmt teil.`);
             messageP.textContent = `${username} nimmt teil.`;
             usernameInput.value = "";
             fetchSession(); // refresh list
@@ -127,7 +127,18 @@
         });
     });
 
-    function deleteSubscription(subscriptionId)
+    function showToast(message)
+    {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 2000); // Hide after 2 seconds
+    }
+
+    function deleteSubscription(subscriptionId, username)
     {
         fetch(`/api/deleteSubscription`,
         {
@@ -146,6 +157,7 @@
                         throw new Error(msg);
                     });
                 }
+                showToast(`${username} wurde abgemeldet.`);
 
                 fetchSession(); // Reload the updated list
             })
