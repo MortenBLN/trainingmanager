@@ -44,6 +44,11 @@ namespace Trainingsmanager.Repositories
                 throw new InvalidOperationException("Es existiert bereits ein Teilnehmer mit dem gleichen Namen.");
             }
 
+            if (request.Name == null)
+            {
+                throw new ArgumentException("Der Name darf nicht leer sein.");
+            }
+
             // Add each Sub by the given name
             var newSubscription = new Subscription
             {

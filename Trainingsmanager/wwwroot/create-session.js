@@ -45,15 +45,14 @@
                 const errorData = await res.json();
                 const msg = errorData.errors?.generalErrors?.[0] || errorData.message || "Unknown error";
                 throw new Error(msg);
-            }
-           
+            }       
 
             const response = await res.json();
 
             // Get the value of the "first" Session
             const session = response.sessions?.[0];
 
-            messageP.textContent = `Session(s) created! ID: ${session.id}`;
+            messageP.textContent = `Session(s) erstellt! ID: ${session.id}`;
             messageP.style.color = "green";
             form.reset();
 

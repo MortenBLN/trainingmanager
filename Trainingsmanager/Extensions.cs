@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Trainingsmanager
 {
@@ -7,20 +8,29 @@ namespace Trainingsmanager
     {
         public static TokenUser ToTokenUser(this ClaimsPrincipal user)
         {
-            var userId = Guid.Parse(user.FindFirstValue(JwtRegisteredClaimNames.Sub));
+            if (user == null)
+            {
+                throw new ArgumentException("User cannot be null");
+            }
+
+            if (!Guid.TryParse(user.FindFirstValue(JwtRegisteredClaimNames.Sub), out var userId))
+            {
+                throw new ArgumentException("Invalid or missing sub claim");
+            }
             var name = user.FindFirstValue(JwtRegisteredClaimNames.Name);
 
-            return new TokenUser
-            {
-                Id = userId,
-                Name = name
-            };
+            return name == null ? throw new ArgumentException("User cannot be null")
+                : new TokenUser
+                {
+                    Id = userId,
+                    Name = name
+                };
         }
     }
 
     public class TokenUser
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 }

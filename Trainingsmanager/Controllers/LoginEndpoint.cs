@@ -26,11 +26,20 @@ namespace Trainingsmanager.Controllers.Login
 
         public override async Task<LoginResponse> ExecuteAsync(LoginRequest req, CancellationToken ct)
         {
-            var userFromDb = await context.AppUsers.FirstOrDefaultAsync(x => x.Email.ToUpper() == req.Email.ToUpper()
-                                                                        && x.Password == req.Password);
+            if (req.Email == null)
+            {
+                ThrowError("Email needed", StatusCodes.Status404NotFound);
+            }
+            var userFromDb = await context.AppUsers.FirstOrDefaultAsync(x => (x.Email ?? "").Equals(req.Email, StringComparison.CurrentCultureIgnoreCase)
+                                                                        && x.Password == req.Password, cancellationToken: ct);
             if(userFromDb is null)
             {
-                ThrowError("Login failed", StatusCodes.Status404NotFound);
+                ThrowError("Login failed - User not found", StatusCodes.Status404NotFound);
+            }
+
+            if (userFromDb.Email is null)
+            {
+                ThrowError("Login failed - Mail of user not found", StatusCodes.Status404NotFound);
             }
 
             var roleAsString = Enum.GetName(typeof(RoleEnum), userFromDb.Role ?? RoleEnum.Gast) ?? "Unknown";
@@ -43,7 +52,7 @@ namespace Trainingsmanager.Controllers.Login
 
             var jwt = JwtBearer.CreateToken(options =>
             {
-                options.SigningKey = Config["JwtSecret"];
+                options.SigningKey = jwtSecret;
                 options.User.Claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userFromDb.Id.ToString()));
                 options.User.Claims.Add(new Claim(JwtRegisteredClaimNames.Name, userFromDb.Email.ToString()));
                 options.User.Roles.Add(roleAsString);

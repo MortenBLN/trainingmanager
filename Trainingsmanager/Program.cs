@@ -81,9 +81,16 @@ bld.Logging.AddApplicationInsights(
     configureApplicationInsightsLoggerOptions: options => { }
 );
 
-IServiceProvider serviceProvider = bld.Services.BuildServiceProvider();
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((context, services) =>
+    {
+        // service registrations
+    })
+    .Build();
 
-ILogger<Program> logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+var logger = host.Services.GetRequiredService<ILogger<Program>>();
+
+logger.LogInformation("App starting...");
 
 logger.LogInformation("Logger is working...");
 

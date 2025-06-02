@@ -69,6 +69,11 @@ namespace Trainingsmanager.Services
 
         private async Task<CreateSessionResponse> MapAndCreateSessions(CreateSessionRequest request, CancellationToken ct)
         {
+            if (_userService.User == null)
+            {
+                throw new ArgumentException("Es konnte kein eingeloggter Benutzer ermittelt werden.");
+            }
+
             var sessionToCreate = _mapper.CreateSessionRequestToSession(request, _userService.User, ct);
 
             var createdSession = await _repository.CreateSession(sessionToCreate, ct);

@@ -28,7 +28,7 @@ namespace Trainingsmanager.Controllers
             }
             catch (ArgumentException ex)
             {
-                if (ex.Message.StartsWith("Applications Limit must be"))
+                if (ex.Message.StartsWith("Das Limit muss beim Erstellen mit vorgebuchten Mitgliedern mindestens"))
                 {
                     ThrowError(ex.Message);
                 }
@@ -36,7 +36,7 @@ namespace Trainingsmanager.Controllers
 
             if (response == null)
             {
-                ThrowError("Session could not be created.");
+                ThrowError("Session konnte nicht erstellt werden.");
             }
             return response;
         }

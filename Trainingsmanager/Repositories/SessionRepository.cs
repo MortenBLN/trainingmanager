@@ -35,6 +35,11 @@ namespace Trainingsmanager.Repositories
                 .Include(s => s.Subscriptions)
                 .SingleOrDefaultAsync(s => s.Id == sessionId, cancellationToken: ct);
 
+            if (response == null)
+            {
+                throw new NullReferenceException($"Es konnte keine Session mit der Id {sessionId} gefunden werden.");
+            }
+
             return response;
         }
     }
