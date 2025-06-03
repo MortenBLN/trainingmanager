@@ -6,7 +6,8 @@
     setEndTimeValidator();
     setMitgliederToggle();
 
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener("submit", async (e) =>
+    {
         e.preventDefault();
 
         const data =
@@ -25,15 +26,16 @@
             var token = localStorage.getItem("jwt_token");
             const res = await fetch("/admin/createSession",
                 {
-                method: "POST",
+                    method: "POST",
                     headers:
                     {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
                     },
-                body: JSON.stringify(data)
+                    body: JSON.stringify(data)
                 });
-            if (res.status === 401) {
+            if (res.status === 401)
+            {
                 messageP.textContent = "Nur Admins können Sessions erstellen.";
                 messageP.style.color = "red";
 
@@ -45,8 +47,9 @@
                 loginButton.id = "code-created-button";
                 loginButton.textContent = "Logge dich ein";
                 loginButton.className = "btn btn-success mt-3";
-                loginButton.type = "button"; 
-                loginButton.onclick = () => {
+                loginButton.type = "button";
+                loginButton.onclick = () =>
+                {
                     window.location.href = `login.html`;
                 };
 
@@ -59,7 +62,7 @@
                 const errorData = await res.json();
                 const msg = errorData.errors?.generalErrors?.[0] || errorData.message || "Unknown error";
                 throw new Error(msg);
-            }       
+            }
 
             const response = await res.json();
 
@@ -103,7 +106,8 @@
         const vipsToggle = document.getElementById('includeVips');
         const vipsLabel = document.getElementById('vips-label');
 
-        vipsToggle.addEventListener('change', () => {
+        vipsToggle.addEventListener('change', () =>
+        {
             vipsLabel.textContent = vipsToggle.checked ? 'Ja' : 'Nein';
         });
     }
@@ -115,15 +119,18 @@
         const trainingEnd = document.getElementById("trainingEnd");
         const message = document.getElementById("session-message");
 
-        trainingStart.addEventListener("change", () => {
+        trainingStart.addEventListener("change", () =>
+        {
             trainingEnd.min = trainingStart.value;
         });
 
-        form.addEventListener("submit", (e) => {
+        form.addEventListener("submit", (e) =>
+        {
             const start = new Date(trainingStart.value);
             const end = new Date(trainingEnd.value);
 
-            if (end <= start) {
+            if (end <= start)
+            {
                 e.preventDefault();
                 message.textContent = "⚠️ Das Enddatum muss nach dem Startdatum liegen.";
                 message.style.color = "red";

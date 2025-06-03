@@ -1,4 +1,5 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () =>
+{
     const form = document.getElementById("login-form");
     const messageP = document.getElementById("login-message");
 
@@ -16,11 +17,11 @@
         try
         {
             const res = await fetch("/auth/login",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
-            });
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
             const data = await res.json();
 
             if (!res.ok)
