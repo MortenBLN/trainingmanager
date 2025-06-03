@@ -35,7 +35,7 @@ namespace Trainingsmanager.Services
             var maxSubAmount = session.ApplicationsLimit;
             if (subAmount >= maxSubAmount)
             {
-                throw new InvalidOperationException("The max sub amount is already reached :(");
+                throw new InvalidOperationException($"Die Maximalanzahl an Teilnehmern wurde bereits erreicht.");
             }
 
             await _repository.SubscribeToSessionAsync(request, ct);

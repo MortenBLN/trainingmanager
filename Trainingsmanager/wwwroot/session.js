@@ -132,18 +132,33 @@
         {
             console.error("Teilnahme fehlgeschlagen:", err);
             messageP.textContent = err.message;
+            showToast(err.message, "error");
         });
     });
 
-    function showToast(message)
+    function showToast(message, type = "success")
     {
         const toast = document.getElementById("toast");
         toast.textContent = message;
         toast.classList.add("show");
 
-        setTimeout(() => {
-            toast.classList.remove("show");
-        }, 2000); // Hide after 2 seconds
+        toast.classList.remove("toast-success", "toast-error");
+
+        // Add the appropriate type class
+        if (type === "error")
+        {
+            toast.classList.add("toast-error");
+            setTimeout(() =>
+            {
+                toast.classList.remove("show");
+            }, 3000); // Hide after 3 seconds
+        } else {
+            toast.classList.add("toast-success");
+            setTimeout(() =>
+            {
+                toast.classList.remove("show");
+            }, 2000); // Hide after 2 seconds
+        }
     }
 
     function deleteSubscription(subscriptionId, username)
