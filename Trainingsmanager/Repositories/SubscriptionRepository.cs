@@ -17,7 +17,7 @@ namespace Trainingsmanager.Repositories
 
         public async Task DeleteSubscriptionAsync(DeleteSubscriptionRequest request, CancellationToken ct)
         {
-            var subscriptionToRemove = _context.Subscriptions.Where(s => s.Id == request.SubscriptionId).FirstOrDefault();
+            var subscriptionToRemove = await _context.Subscriptions.Where(s => s.Id == request.SubscriptionId).FirstOrDefaultAsync(ct);
             if (subscriptionToRemove == null)
             {
                 throw new Exception($"No Subscription with the the ID: '{ request.SubscriptionId }' could be found");

@@ -31,7 +31,7 @@ namespace Trainingsmanager.Services
         public async Task<CreateSessionsResponse> CreateSession(CreateSessionRequest request,  CancellationToken ct)
         {
             // ApplicationsRequired must be higher or equal to Fixed Mitglieder
-            if (request.ApplicationsLimit < _fixedPreAddMitglieder.Count)
+            if (request.PreAddMitglieder && request.ApplicationsLimit < _fixedPreAddMitglieder.Count)
             {
                 throw new ArgumentException($"Das Limit muss beim Erstellen mit vorgebuchten Mitgliedern mindestens {_fixedPreAddMitglieder.Count} betragen.");
             }
@@ -52,6 +52,11 @@ namespace Trainingsmanager.Services
             }
 
             return createdSessions;
+        }
+
+        public async Task DeleteSessionAsync(DeleteSessionRequest req, CancellationToken ct)
+        {
+            await _repository.DeleteSessionAsync(req.SessionId, ct);
         }
 
         public async Task<GetAllSessionsResponse> GetAllSessions(CancellationToken ct)

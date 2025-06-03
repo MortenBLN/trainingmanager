@@ -1,0 +1,17 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: auto;
+    margin-top: 5rem;
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#post-login-buttons button {
+    margin-top: 1rem;
+}

@@ -16,13 +16,12 @@ namespace Trainingsmanager.Controllers
         public override void Configure()
         {
             Post("/api/deleteSession");
-            AllowAnonymous();
+            Roles("Admin");
         }
 
         public override async Task HandleAsync(DeleteSessionRequest req, CancellationToken ct)
         {
-            // TODO
-            await SendNoContentAsync(ct);
+            await _service.DeleteSessionAsync(req, ct);
         }
     }
 }

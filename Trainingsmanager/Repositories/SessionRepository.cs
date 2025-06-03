@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure.Core;
+using Microsoft.EntityFrameworkCore;
 using Trainingsmanager.Database;
 using Trainingsmanager.Database.Models;
-using Trainingsmanager.Models.DTOs;
 
 namespace Trainingsmanager.Repositories
 {
@@ -20,6 +20,18 @@ namespace Trainingsmanager.Repositories
             await _context.SaveChangesAsync(ct);
 
             return response.Entity;
+        }
+
+        public async Task DeleteSessionAsync(Guid sessionId, CancellationToken ct)
+        {
+            var sessionToRemove = await _context.Sessions.Where(s => s.Id == sessionId).FirstOrDefaultAsync(ct);
+            if (sessionToRemove == null)
+            {
+                throw new Exception($"No Session with the the ID: '{sessionId}' could be found");
+            }
+
+            _context.Sessions.Remove(sessionToRemove);
+            await _context.SaveChangesAsync(ct);
         }
 
         public async Task<List<Session>> GetAllSessions(CancellationToken ct)

@@ -37,6 +37,14 @@
                 }
             });
 
+            var subscribedAtDate = new Date(sub.subscribedAt);
+
+            const day = subscribedAtDate.toDateString(); // "Mon Jun 02 2025"
+            const hours = subscribedAtDate.getHours().toString().padStart(2, '0');
+            const minutes = subscribedAtDate.getMinutes().toString().padStart(2, '0');
+
+            const formattedDate = `${day} ${hours}:${minutes}`;
+
             const li = document.createElement('li');
             li.className = 'd-flex justify-content-between';
             var subType = sub.subscriptionType; // 1 = Mitglied
@@ -49,7 +57,7 @@
                 <div class="ml-2">
                   <h6 class="mb-0">${sub.userName}</h6>
                   <div class="d-flex flex-row mt-1 text-black-50 date-time">
-                    <div><i class="fa fa-calendar-o"></i><span class="ml-2">Eingeschrieben am ${new Date(sub.subscribedAt)}</span></div>
+                    <div><i class="fa fa-calendar-o"></i><span class="ml-2">Eingeschrieben am ${formattedDate}</span></div>
                   </div>
                 </div>
               </div>

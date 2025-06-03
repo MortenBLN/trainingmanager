@@ -3,60 +3,72 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/createSession.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="create-session.js"></script>
+
     <title>Create Session</title>
 </head>
-<body>
-    <h1>Erstelle eine neue Training Session</h1>
+<body class="bg-light">
 
-    <form id="create-session-form">
-        <label>
-            Team Name
-            <input type="text" id="teamname" required />
-        </label>
+    <div class="container py-4">
+        <h1 class="text-center mb-4">Erstelle eine neue Training Session</h1>
 
-        <label>
-            Training Start
-            <input type="datetime-local" id="trainingStart" required />
-        </label>
+        <form id="create-session-form" class="card p-4 shadow-sm bg-white">
+            <div class="mb-3">
+                <label for="teamname" class="form-label">Team Name</label>
+                <input type="text" class="form-control" id="teamname" required />
+            </div>
 
-        <label>
-            Training Ende
-            <input type="datetime-local" id="trainingEnd" required />
-        </label>
+            <div class="mb-3">
+                <label for="trainingStart" class="form-label">Training Start</label>
+                <input type="datetime-local" class="form-control" id="trainingStart" required />
+            </div>
 
-        <label>
-            Maximalanzahl Teilnehmende
-            <input type="number" id="applicationsLimit" value="0" min="0" />
-        </label>
+            <div class="mb-3">
+                <label for="trainingEnd" class="form-label">Training Ende</label>
+                <input type="datetime-local" class="form-control" id="trainingEnd" required />
+            </div>
 
-        <label>
-            Mindestanzahl Teilnehmende
-            <input type="number" id="applicationsRequired" value="0" min="0" />
-        </label>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="applicationsLimit" class="form-label">Maximale Teilnehmer</label>
+                    <input type="number" class="form-control" id="applicationsLimit" value="0" min="0" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="applicationsRequired" class="form-label">Minimale Teilnehmer</label>
+                    <input type="number" class="form-control" id="applicationsRequired" value="0" min="0" />
+                </div>
+            </div>
 
-        <label>
-            Wie oft soll die Session erstellt werden (Wochentakt)
-            <span class="info-icon">
-                <i class="fa fa-info-circle" aria-hidden="true"></i>
-                <span class="tooltip">Erstellt die gleiche Session x mal - mit jeweils einer Woche abstand.</span>
-            </span>
-            <input type="number" id="weeksInAdvance" value="1" min="1" max="4" />
-        </label>
+            <div class="mb-3">
+                <label for="weeksInAdvance" class="form-label">
+                    Anzahl der gewünschten Sessions im Wochentakt
+                    <i class="fa fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="Erstellt die gleiche Session x mal – mit jeweils einer Woche Abstand."></i>
+                </label>
+                <input type="number" class="form-control" id="weeksInAdvance" value="1" min="1" max="4" />
+            </div>
 
-        <label>
-            Feste Mitglieder hinzufügen
-            <input type="checkbox" id="includeVips" checked />
-        </label>
+            <div class="mb-4 d-flex align-items-center justify-content-between">
+                <label for="includeVips" class="form-label mb-0">Feste Mitglieder hinzufügen</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="includeVips" checked>
+                    <label class="form-check-label" for="includeVips" id="vips-label">Ja</label>
+                </div>
+            </div>
 
-        <button type="submit">Create Session</button>
-    </form>
-
-    <p id="session-message"></p>
-
-    <div id="redirect-button-container"></div>
-
-    <script src="create-session.js"></script>
+            <button type="submit" class="btn btn-primary w-100">Session erstellen</button>
+            <p id="session-message" class="text-center mt-3 fw-bold"></p>
+        </form>
+        <div id="redirect-button-container" class="text-center mt-4"></div>
+    </div>
 </body>
 </html>

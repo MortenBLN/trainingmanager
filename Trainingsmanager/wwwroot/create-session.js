@@ -1,7 +1,10 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () =>
+{
     const form = document.getElementById("create-session-form");
     const messageP = document.getElementById("session-message");
-    const redirectDiv = document.getElementById("redirect-button-container");
+
+    setEndTimeValidator();
+    setMitgliederToggle();
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -26,7 +29,7 @@
                     headers:
                     {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}` // ⬅️ Add this line
+                    "Authorization": `Bearer ${token}`
                     },
                 body: JSON.stringify(data)
                 });
@@ -34,12 +37,23 @@
                 messageP.textContent = "Nur Admins können Sessions erstellen.";
                 messageP.style.color = "red";
 
-                // Optional: Redirect to login page
-                // window.location.href = "/login.html";
+                const existingBtn = document.getElementById("code-created-button");
+                if (existingBtn) existingBtn.remove();
+
+                // Create and insert the new button
+                const loginButton = document.createElement("button");
+                loginButton.id = "code-created-button";
+                loginButton.textContent = "Logge dich ein";
+                loginButton.className = "btn btn-success mt-3";
+                loginButton.type = "button"; 
+                loginButton.onclick = () => {
+                    window.location.href = `login.html`;
+                };
+
+                form.appendChild(loginButton);
 
                 throw new Error("Nur Admins können Sessions erstellen."); // Stop further execution
             }
-            // TODO: Handle errors
             if (!res.ok)
             {
                 const errorData = await res.json();
@@ -56,16 +70,22 @@
             messageP.style.color = "green";
             form.reset();
 
-            // Create redirect button
+            // Clear any previously added button
+            const existingBtn = document.getElementById("code-created-button");
+            if (existingBtn) existingBtn.remove();
+
+            // Create and insert the new button
             const btn = document.createElement("button");
+            btn.id = "code-created-button";
             btn.textContent = "Öffne erstellte Session";
+            btn.className = "btn btn-success mt-3";
+            btn.type = "button"; // important: doesn't submit the form
             btn.onclick = () =>
             {
                 window.location.href = `session.html?id=${session.id}`;
             };
-            btn.style.marginTop = "1em";
-            redirectDiv.innerHTML = ""; // clear previous content
-            redirectDiv.appendChild(btn);
+
+            form.appendChild(btn);
 
         } catch (err)
         {
@@ -74,4 +94,41 @@
             messageP.style.color = "red";
         }
     });
+
+    function setMitgliederToggle()
+    {
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
+
+        // Toggle label update
+        const vipsToggle = document.getElementById('includeVips');
+        const vipsLabel = document.getElementById('vips-label');
+
+        vipsToggle.addEventListener('change', () => {
+            vipsLabel.textContent = vipsToggle.checked ? 'Ja' : 'Nein';
+        });
+    }
+
+    function setEndTimeValidator()
+    {
+        const form = document.getElementById("create-session-form");
+        const trainingStart = document.getElementById("trainingStart");
+        const trainingEnd = document.getElementById("trainingEnd");
+        const message = document.getElementById("session-message");
+
+        trainingStart.addEventListener("change", () => {
+            trainingEnd.min = trainingStart.value;
+        });
+
+        form.addEventListener("submit", (e) => {
+            const start = new Date(trainingStart.value);
+            const end = new Date(trainingEnd.value);
+
+            if (end <= start) {
+                e.preventDefault();
+                message.textContent = "⚠️ Das Enddatum muss nach dem Startdatum liegen.";
+                message.style.color = "red";
+                trainingEnd.focus();
+            }
+        });
+    }
 });

@@ -1,5 +1,4 @@
 ﻿using Trainingsmanager.Database.Models;
-using Trainingsmanager.Models.DTOs;
 
 namespace Trainingsmanager.Repositories
 {
@@ -8,5 +7,6 @@ namespace Trainingsmanager.Repositories
         Task<Session> CreateSession(Session request, CancellationToken ct);
         Task<Session> GetSessionByIdAsync(Guid sessionId, CancellationToken ct);
         Task<List<Session>> GetAllSessions(CancellationToken ct);
+        Task DeleteSessionAsync(Guid sessionId, CancellationToken ct);
     }
 }

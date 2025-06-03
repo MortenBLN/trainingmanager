@@ -2,12 +2,14 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using FastEndpoints;
 using FastEndpoints.Security;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Trainingsmanager.Database;
 using Trainingsmanager.Database.Enums;
+using Trainingsmanager.Database.Models;
 using Trainingsmanager.Models.Login;
 
-namespace Trainingsmanager.Controllers.Login
+namespace Trainingsmanager.Controllers
 {
     public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
     {
@@ -28,26 +30,34 @@ namespace Trainingsmanager.Controllers.Login
         {
             if (req.Email == null)
             {
-                ThrowError("Email needed", StatusCodes.Status404NotFound);
-            }
-            var userFromDb = await context.AppUsers.FirstOrDefaultAsync(x => (x.Email ?? "").Equals(req.Email, StringComparison.CurrentCultureIgnoreCase)
-                                                                        && x.Password == req.Password, cancellationToken: ct);
-            if(userFromDb is null)
-            {
-                ThrowError("Login failed - User not found", StatusCodes.Status404NotFound);
+                ThrowError("E-Mail benötigt", StatusCodes.Status400BadRequest);
             }
 
-            if (userFromDb.Email is null)
+            var emailToFind = req.Email.Trim().ToLower();
+
+            var userFromDb = await context.AppUsers
+                .FirstOrDefaultAsync(a => a.Email.ToLower() == emailToFind, ct);
+
+            if (userFromDb is null)
             {
-                ThrowError("Login failed - Mail of user not found", StatusCodes.Status404NotFound);
+                ThrowError("Login fehlgeschlagen - falsche E-Mail oder Passwort!", StatusCodes.Status404NotFound);
+            }
+
+            var hasher = new PasswordHasher<AppUser>();
+            var result = hasher.VerifyHashedPassword(userFromDb, userFromDb.Password, req.Password);
+
+            if (result == PasswordVerificationResult.Failed)
+            {
+                ThrowError("Login fehlgeschlagen - falsche E-Mail oder Passwort!", StatusCodes.Status404NotFound);
             }
 
             var roleAsString = Enum.GetName(typeof(RoleEnum), userFromDb.Role ?? RoleEnum.Gast) ?? "Unknown";
 
             var jwtSecret = Config["JwtSecret"];
+
             if (jwtSecret == null)
             {
-                ThrowError("Config data not found", StatusCodes.Status404NotFound);
+                ThrowError("Config data not found", StatusCodes.Status500InternalServerError);
             }
 
             var jwt = JwtBearer.CreateToken(options =>
@@ -56,12 +66,11 @@ namespace Trainingsmanager.Controllers.Login
                 options.User.Claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userFromDb.Id.ToString()));
                 options.User.Claims.Add(new Claim(JwtRegisteredClaimNames.Name, userFromDb.Email.ToString()));
                 options.User.Roles.Add(roleAsString);
-
             });
 
             return new LoginResponse
             {
-                JwtToken = jwt  ,
+                JwtToken = jwt,
                 Email = userFromDb.Email,
             };
         }
