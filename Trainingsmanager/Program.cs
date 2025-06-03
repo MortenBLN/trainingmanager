@@ -44,6 +44,7 @@ bld.Services.AddDbContextFactory<Context>(options =>
 bld.Services.AddScoped<IUserService, UserService>();
 bld.Services.AddScoped<ISessionService, SessionService>();
 bld.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+bld.Services.AddScoped<IAuthService, AuthService>();
 
 // Scheduler-Services
 bld.Services.AddScoped<SessionCleanupService>();
@@ -52,15 +53,18 @@ bld.Services.AddHostedService<SessionCleanupHostedService>();
 // Repositories
 bld.Services.AddScoped<ISessionRepository, SessionRepository>();
 bld.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+bld.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 // Mappers
 bld.Services.AddScoped<ISessionMapper, SessionMapper>();
+bld.Services.AddScoped<IAuthMapper, AuthMapper>();
 
 // Helpers
 bld.Services.AddScoped<ISessionHelper,  SessonHelper>();
 
 // Options
 bld.Services.Configure<FixedSubsOptions>(bld.Configuration);
+bld.Services.Configure<JwtTokenOptions>(bld.Configuration);
 
 // Application Insights
 using var channel = new InMemoryChannel();

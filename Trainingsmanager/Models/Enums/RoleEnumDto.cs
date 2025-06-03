@@ -1,6 +1,6 @@
 ﻿namespace Trainingsmanager.Models.Enums
 {
-    public enum RoleEnum
+    public enum RoleEnumDto
     {
         Admin,
         Mitglied,

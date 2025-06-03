@@ -1,17 +1,17 @@
 using FastEndpoints;
-using Microsoft.AspNetCore.Identity;
 using Trainingsmanager.Database;
-using Trainingsmanager.Database.Models;
 using Trainingsmanager.Models.Register;
+using Trainingsmanager.Services;
 
 namespace Trainingsmanager.Controllers
 {
     public class RegisterEndpoint : Endpoint<RegisterRequest, RegisterResponse>
     {
-        private readonly Context context;
-        public RegisterEndpoint(Context context) 
+        private readonly IAuthService _service;
+
+        public RegisterEndpoint(IAuthService authService) 
         { 
-            this.context = context;
+            _service = authService;
         }
 
         public override void Configure()
@@ -22,25 +22,7 @@ namespace Trainingsmanager.Controllers
 
         public override async Task<RegisterResponse> ExecuteAsync(RegisterRequest req, CancellationToken ct)
         {
-            var newUser = new AppUser
-            {
-                Email = req.Email,
-                Password = req.Password,
-                Role = req.Role
-            };
-
-            var hasher = new PasswordHasher<AppUser>();
-            var hashedPassword = hasher.HashPassword(newUser, req.Password);
-
-            newUser.Password = hashedPassword;
-            context.AppUsers.Add(newUser);
-            await context.SaveChangesAsync(ct);
-
-            var res = new RegisterResponse()
-            {
-                Id = newUser.Id,
-                Email = newUser.Email
-            };
+            var res = await _service.RegisterUserAsync(req, ct);
             return res;
         }
     }

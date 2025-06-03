@@ -1,4 +1,4 @@
-using Trainingsmanager.Database.Enums;
+using Trainingsmanager.Models.Enums;
 
 namespace Trainingsmanager.Models.Register
 {
@@ -6,6 +6,6 @@ namespace Trainingsmanager.Models.Register
     {
         public required string Email { get; set; }
         public required string Password { get; set; }
-        public RoleEnum Role { get; set; }
+        public RoleEnumDto Role { get; set; }
     }
 }

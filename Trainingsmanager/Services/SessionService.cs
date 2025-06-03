@@ -81,7 +81,7 @@ namespace Trainingsmanager.Services
 
             var sessionToCreate = _mapper.CreateSessionRequestToSession(request, _userService.User, ct);
 
-            var createdSession = await _repository.CreateSession(sessionToCreate, ct);
+            var createdSession = await _repository.CreateSessionAsync(sessionToCreate, ct);
 
             // Add the Gründungsmitglieder to each Session
             if (request.PreAddMitglieder)

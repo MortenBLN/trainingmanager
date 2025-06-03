@@ -14,7 +14,7 @@ namespace Trainingsmanager.Repositories
             _context = context;
         }
 
-        public async Task<Session> CreateSession(Session request, CancellationToken ct)
+        public async Task<Session> CreateSessionAsync(Session request, CancellationToken ct)
         {
             var response = await _context.Sessions.AddAsync(request, ct);
             await _context.SaveChangesAsync(ct);

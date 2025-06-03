@@ -8,16 +8,17 @@ using Trainingsmanager.Database;
 using Trainingsmanager.Database.Enums;
 using Trainingsmanager.Database.Models;
 using Trainingsmanager.Models.Login;
+using Trainingsmanager.Services;
 
 namespace Trainingsmanager.Controllers
 {
     public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
     {
-        private readonly Context context;
+        private readonly IAuthService _service;
 
-        public LoginEndpoint(Context context) 
+        public LoginEndpoint(IAuthService service) 
         { 
-            this.context = context;
+            _service = service;
         }
 
         public override void Configure()
@@ -28,51 +29,17 @@ namespace Trainingsmanager.Controllers
 
         public override async Task<LoginResponse> ExecuteAsync(LoginRequest req, CancellationToken ct)
         {
-            if (req.Email == null)
+            LoginResponse response = null;
+            try
             {
-                ThrowError("E-Mail benötigt", StatusCodes.Status400BadRequest);
+                response = await _service.LoginUserAsync(req, ct);
+            }
+            catch (Exception ex)
+            {
+                ThrowError(ex.Message);
             }
 
-            var emailToFind = req.Email.Trim().ToLower();
-
-            var userFromDb = await context.AppUsers
-                .FirstOrDefaultAsync(a => a.Email.ToLower() == emailToFind, ct);
-
-            if (userFromDb is null)
-            {
-                ThrowError("Login fehlgeschlagen - falsche E-Mail oder Passwort!", StatusCodes.Status404NotFound);
-            }
-
-            var hasher = new PasswordHasher<AppUser>();
-            var result = hasher.VerifyHashedPassword(userFromDb, userFromDb.Password, req.Password);
-
-            if (result == PasswordVerificationResult.Failed)
-            {
-                ThrowError("Login fehlgeschlagen - falsche E-Mail oder Passwort!", StatusCodes.Status404NotFound);
-            }
-
-            var roleAsString = Enum.GetName(typeof(RoleEnum), userFromDb.Role ?? RoleEnum.Gast) ?? "Unknown";
-
-            var jwtSecret = Config["JwtSecret"];
-
-            if (jwtSecret == null)
-            {
-                ThrowError("Config data not found", StatusCodes.Status500InternalServerError);
-            }
-
-            var jwt = JwtBearer.CreateToken(options =>
-            {
-                options.SigningKey = jwtSecret;
-                options.User.Claims.Add(new Claim(JwtRegisteredClaimNames.Sub, userFromDb.Id.ToString()));
-                options.User.Claims.Add(new Claim(JwtRegisteredClaimNames.Name, userFromDb.Email.ToString()));
-                options.User.Roles.Add(roleAsString);
-            });
-
-            return new LoginResponse
-            {
-                JwtToken = jwt,
-                Email = userFromDb.Email,
-            };
+            return response;
         }
     }
 }
