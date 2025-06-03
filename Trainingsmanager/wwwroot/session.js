@@ -150,11 +150,11 @@
         if (type === "error")
         {
             toast.classList.add("toast-error");
-            setTimeout(() => toast.classList.remove("show"), 3000);
+            setTimeout(() => toast.classList.remove("show"), 3500);
         } else
         {
             toast.classList.add("toast-success");
-            setTimeout(() => toast.classList.remove("show"), 2000);
+            setTimeout(() => toast.classList.remove("show"), 2500);
         }
     }
 
