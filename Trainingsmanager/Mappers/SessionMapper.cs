@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using Microsoft.AspNetCore.SignalR;
 using Trainingsmanager.Database.Enums;
 using Trainingsmanager.Database.Models;
 using Trainingsmanager.Models;
@@ -20,6 +19,7 @@ namespace Trainingsmanager.Mappers
                 Teamname = request.Teamname,
                 TrainingStart = request.TrainingStart,
                 TrainingEnd = request.TrainingEnd,
+                SessionGruppenName = request.SessionGruppenName,
             };
         }
 
@@ -35,7 +35,10 @@ namespace Trainingsmanager.Mappers
                     TrainingStart = session.TrainingStart,
                     TrainingEnd = session.TrainingEnd,
                     ApplicationsLimit = session.ApplicationsLimit,
-                    ApplicationsRequired = session.ApplicationsRequired
+                    ApplicationsRequired = session.ApplicationsRequired,
+                    CreatedById = session.Id,
+                    SessionGroupId = session.SessionGroupId,
+                    SessionGruppenName = session.SessionGruppenName,
                 }).ToList()
             };
 
@@ -76,7 +79,9 @@ namespace Trainingsmanager.Mappers
                     {
                         Id = session.CreatedBy.Id,
                         Email = session.CreatedBy.Email,
-                    }
+                    },
+                    SessionGroupId = session.SessionGroupId,
+                    SessionGruppenName = session.SessionGruppenName,
                 }).ToList()
             };
 
@@ -93,6 +98,9 @@ namespace Trainingsmanager.Mappers
                 Teamname = request.Teamname,
                 TrainingStart = request.TrainingStart,
                 TrainingEnd = request.TrainingEnd,
+                CreatedById = request.CreatedById,
+                SessionGroupId = request.SessionGroupId,
+                SessionGruppenName = request.SessionGruppenName,
             };
         }
 
@@ -121,7 +129,24 @@ namespace Trainingsmanager.Mappers
                 {
                     Id = u.Id,
                     Email = u.Email
-                }).ToList() ?? new List<AppUserDto>()
+                }).ToList() ?? new List<AppUserDto>(),
+                SessionGroupId = request.SessionGroupId,
+                SessionGruppenName = request.SessionGruppenName,
+            };
+        }
+
+        public Session CreateSessionResponseToSession(CreateSessionResponse response, CancellationToken ct)
+        {
+            return new Session
+            {
+                ApplicationsLimit = response.ApplicationsLimit,
+                ApplicationsRequired = response.ApplicationsRequired,
+                CreatedById = response.CreatedById,
+                Teamname = response.Teamname,
+                TrainingStart = response.TrainingStart,
+                TrainingEnd = response.TrainingEnd,
+                Id = response.Id,
+                SessionGruppenName = response.SessionGruppenName,
             };
         }
 

@@ -2,9 +2,14 @@
 {
     const form = document.getElementById("create-session-form");
     const messageP = document.getElementById("session-message");
+    const weeksInput = document.getElementById("weeksInAdvance");
+    const groupnameContainer = document.getElementById("groupname-container");
 
     setEndTimeValidator();
     setMitgliederToggle();
+    createAndToggleGroupNameInput();
+
+    weeksInput.addEventListener("input", createAndToggleGroupNameInput);
 
     form.addEventListener("submit", async (e) =>
     {
@@ -18,7 +23,8 @@
             applicationsLimit: parseInt(document.getElementById("applicationsLimit").value),
             applicationsRequired: parseInt(document.getElementById("applicationsRequired").value),
             preAddMitglieder: document.getElementById("includeVips").checked,
-            countSessionsToCreate: parseInt(document.getElementById("weeksInAdvance").value)
+            countSessionsToCreate: parseInt(document.getElementById("weeksInAdvance").value),
+            sessionGruppenName: document.getElementById("groupname") != null ? document.getElementById("groupname").value.trim() : null,
         };
 
         try
@@ -72,6 +78,7 @@
             messageP.textContent = `Session(s) erstellt! ID: ${session.id}`;
             messageP.style.color = "green";
             form.reset();
+            createAndToggleGroupNameInput();
 
             // Clear any previously added button
             const existingBtn = document.getElementById("code-created-button");
@@ -137,5 +144,40 @@
                 trainingEnd.focus();
             }
         });
+    }
+
+    function createAndToggleGroupNameInput()
+    {
+        const value = parseInt(weeksInput.value, 10);
+
+        // Hide or show the container itself
+        if (value > 1)
+        {
+            groupnameContainer.style.display = "block";
+
+            // Only create input if it doesn't exist
+            if (!document.getElementById("groupDiv"))
+            {
+                const groupDiv = document.createElement("div");
+                groupDiv.id = "groupDiv";
+                groupDiv.className = "mb-3";
+                groupDiv.innerHTML = `
+                <label for="groupname" class="form-label">Gruppenname</label>
+                <input type="text" class="form-control" id="groupname" required />
+            `;
+                groupnameContainer.appendChild(groupDiv);
+            }
+        }
+        else
+        {
+            groupnameContainer.style.display = "none";
+
+            // Remove input if it exists
+            const groupDiv = document.getElementById("groupDiv");
+            if (groupDiv)
+            {
+                groupDiv.remove();
+            }
+        }
     }
 });

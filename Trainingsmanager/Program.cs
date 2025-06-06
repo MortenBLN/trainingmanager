@@ -4,7 +4,6 @@ using FastEndpoints.Swagger;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Trainingsmanager.Database;
 using Trainingsmanager.Helper;
 using Trainingsmanager.Mappers;
@@ -45,6 +44,7 @@ bld.Services.AddScoped<IUserService, UserService>();
 bld.Services.AddScoped<ISessionService, SessionService>();
 bld.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 bld.Services.AddScoped<IAuthService, AuthService>();
+bld.Services.AddScoped<ISessionGroupService, SessionGroupService>();
 
 // Scheduler-Services
 bld.Services.AddScoped<SessionCleanupService>();
@@ -53,6 +53,7 @@ bld.Services.AddHostedService<SessionCleanupHostedService>();
 // Repositories
 bld.Services.AddScoped<ISessionRepository, SessionRepository>();
 bld.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+bld.Services.AddScoped<ISessionGroupRepository, SessionGroupRepository>();
 bld.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 // Mappers

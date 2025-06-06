@@ -9,5 +9,10 @@ namespace Trainingsmanager.Models
         public DateTime TrainingEnd { get; set; }
         public int ApplicationsLimit { get; set; } = 0;
         public int ApplicationsRequired { get; set; } = 0;
+        public Guid CreatedById { get; set; }
+
+        // Possible Group
+        public Guid? SessionGroupId { get; set; }
+        public string? SessionGruppenName { get; set; }
     }
 }

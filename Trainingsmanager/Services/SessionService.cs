@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Trainingsmanager.Database.Models;
 using Trainingsmanager.Helper;
 using Trainingsmanager.Mappers;
 using Trainingsmanager.Models;
@@ -13,17 +14,19 @@ namespace Trainingsmanager.Services
         private readonly ISessionMapper _mapper;
         private readonly IUserService _userService;
         private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly ISessionGroupRepository _sessionGroupRepository;
         private readonly ISessionHelper _helper;
 
         private readonly List<string> _fixedPreAddMitglieder;
 
-        public SessionService (ISessionRepository repository, ISessionMapper mapper, IUserService userService, ISubscriptionRepository subscriptionRepository, IOptions<FixedSubsOptions> options, ISessionHelper helper)
+        public SessionService (ISessionRepository repository, ISessionMapper mapper, IUserService userService, ISubscriptionRepository subscriptionRepository, IOptions<FixedSubsOptions> options, ISessionHelper helper, ISessionGroupRepository sessionGroupRepository)
         {
             _repository = repository;
             _mapper = mapper;
             _userService = userService;
             _subscriptionRepository = subscriptionRepository;
             _helper = helper;
+            _sessionGroupRepository = sessionGroupRepository;
 
             _fixedPreAddMitglieder = options.Value.FixedSubs;
         }
@@ -36,8 +39,10 @@ namespace Trainingsmanager.Services
                 throw new ArgumentException($"Das Limit muss beim Erstellen mit vorgebuchten Mitgliedern mindestens {_fixedPreAddMitglieder.Count} betragen.");
             }
 
-            var createdSessions = new CreateSessionsResponse();
-            var createdSession = new CreateSessionResponse();
+            var createdSessionsResponse = new CreateSessionsResponse();
+            var createdSessionResponse = new CreateSessionResponse();
+
+            var createdSessionsAsSessions = new List<Session>();
 
             // Creates a list of Sessions
             // First session --> i = 0; second session i = 1...
@@ -46,12 +51,22 @@ namespace Trainingsmanager.Services
                 // Adds "i" weeks to the Start and Enddate
                 var sessionWithAddedWeekDays = _helper.AddWeeksToDates(request, i, ct);
 
-                createdSession = await MapAndCreateSessions(sessionWithAddedWeekDays, ct);
+                var createdSession = await MapAndCreateSessions(sessionWithAddedWeekDays, ct);
+                createdSessionsAsSessions.Add(createdSession);
 
-                createdSessions.Sessions.Add(createdSession);
+                createdSessionResponse = _mapper.SessionToCreateSessionResponse(createdSession, ct);
+
+                createdSessionsResponse.Sessions.Add(createdSessionResponse);
             }
 
-            return createdSessions;
+            // 
+            if (createdSessionsResponse.Sessions.Count > 1)
+            {
+                await _sessionGroupRepository.CreateSessionGroupAsync(createdSessionsAsSessions, ct);
+            }
+
+            return createdSessionsResponse;
+
         }
 
         public async Task DeleteSessionAsync(DeleteSessionRequest req, CancellationToken ct)
@@ -72,7 +87,7 @@ namespace Trainingsmanager.Services
             return _mapper.SessionToGetSessionResponse(session, ct);
         }
 
-        private async Task<CreateSessionResponse> MapAndCreateSessions(CreateSessionRequest request, CancellationToken ct)
+        private async Task<Session> MapAndCreateSessions(CreateSessionRequest request, CancellationToken ct)
         {
             if (_userService.User == null)
             {
@@ -99,7 +114,7 @@ namespace Trainingsmanager.Services
                 createdSession = await _repository.GetSessionByIdAsync(createdSession.Id, ct);
             }
 
-            return _mapper.SessionToCreateSessionResponse(createdSession, ct);
+            return createdSession;
         }
     }
 }

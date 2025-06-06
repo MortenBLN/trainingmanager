@@ -15,5 +15,9 @@ namespace Trainingsmanager.Models
         public List<AppUserDto> Users { get; set; } = new();
         public Guid CreatedById { get; set; }
         public AppUserDto? CreatedBy { get; set; }
+
+        // Possible Group
+        public Guid? SessionGroupId { get; set; }
+        public string? SessionGruppenName { get; set; }
     }
 }

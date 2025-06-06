@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Trainingsmanager.Database.Models;
-using Trainingsmanager.Models.DTOs;
 
 namespace Trainingsmanager.Database
 {
@@ -9,6 +8,7 @@ namespace Trainingsmanager.Database
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<SessionGroup> SessionGroups { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {
@@ -43,6 +43,12 @@ namespace Trainingsmanager.Database
                 .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Session>()
+               .HasOne(s => s.SessionGroup)
+               .WithMany(g => g.Sessions)
+               .HasForeignKey(s => s.SessionGroupId)
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

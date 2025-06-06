@@ -11,5 +11,6 @@ namespace Trainingsmanager.Models
 
         // Used to create the same session for x weeks, every week - might set a limit in FE
         public int CountSessionsToCreate { get; set; } = 1;
+        public string? SessionGruppenName { get; set; }
     }
 }
