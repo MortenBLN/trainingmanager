@@ -34,8 +34,13 @@
             </div>
 
             <div class="mb-3">
-                <label for="trainingEnd" class="form-label">Training Ende</label>
-                <input type="datetime-local" class="form-control" id="trainingEnd" required />
+                <div class="d-flex align-items-center">
+                    <label for="trainingEnd" class="form-label me-2 mb-0">Training Ende</label>
+                    <button type="button" class="btn btn-sm btn-outline-secondary me-1 flex-button" onclick="adjustTime('trainingStart', 'trainingEnd', 60)">1h</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary me-1 flex-button" onclick="adjustTime('trainingStart', 'trainingEnd', 90)">1,5h</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary me-1 flex-button" onclick="adjustTime('trainingStart', 'trainingEnd', 120)">2h</button>
+                </div>
+                <input type="datetime-local" class="form-control mt-2" id="trainingEnd" required />
             </div>
 
             <div class="row">

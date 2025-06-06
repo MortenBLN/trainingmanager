@@ -180,4 +180,34 @@
             }
         }
     }
+
+    // Called in create-session.html
+    window.adjustTime = function (dateTimeBaseInput, dateTimeToAddToInput, minutesToAdd)
+    {
+        const baseInput = document.getElementById(dateTimeBaseInput);
+        const receivingInput = document.getElementById(dateTimeToAddToInput);
+
+        if (!baseInput || !baseInput.value) return;
+
+        const baseDate = new Date(baseInput.value);
+        baseDate.setMinutes(baseDate.getMinutes() + minutesToAdd);
+
+        receivingInput.value = formatDateToLocalDatetimeString(baseDate);
+
+
+        //receivingInput.value = formatted;
+    };
+
+    function formatDateToLocalDatetimeString(date)
+    {
+        const pad = (num) => String(num).padStart(2, '0');
+
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1);
+        const day = pad(date.getDate());
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
 });
