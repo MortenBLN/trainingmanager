@@ -273,12 +273,9 @@ function showDeleteChoiceDialog(sessionId, groupName, token)
 
 function handleUnauthorized(res)
 {
-    const messageP = document.getElementById("session-message");
-
     if (res.status === 401)
     {
-        messageP.textContent = "Nur Admins können Sessions löschen.";
-        messageP.style.color = "red";
+        alert("Nur Admins können Sessions löschen.");
 
         const existingBtn = document.getElementById("code-created-button");
         if (existingBtn) existingBtn.remove();
@@ -294,7 +291,6 @@ function handleUnauthorized(res)
         };
 
         form.appendChild(loginButton);
-        throw new Error("Nur Admins können Sessions löschen.");
     }
 }
 
