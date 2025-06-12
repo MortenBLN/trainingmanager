@@ -86,7 +86,9 @@ document.addEventListener("DOMContentLoaded", loadSessions);
 
 function addSessionToList(session, list, expired)
 {
-    const isFull = session.subscriptions.length >= session.applicationsLimit;
+    const subscriptions = Array.isArray(session.subscriptions) ? session.subscriptions : [];
+    const isFull = subscriptions.length >= session.applicationsLimit;
+
     var freeSpontsCount = session.applicationsLimit - session.subscriptions.length;
 
     var groupName = "";
@@ -182,6 +184,9 @@ function addSessionToList(session, list, expired)
         };
 
         rightSide.appendChild(deleteBtn);
+
+        // Display Createsession Button
+        document.getElementById("create-session-button-div").style.display = "block";
     }    
 
     li.innerHTML = leftSide;

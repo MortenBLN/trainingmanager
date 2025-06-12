@@ -193,9 +193,6 @@
         baseDate.setMinutes(baseDate.getMinutes() + minutesToAdd);
 
         receivingInput.value = formatDateToLocalDatetimeString(baseDate);
-
-
-        //receivingInput.value = formatted;
     };
 
     function formatDateToLocalDatetimeString(date)
