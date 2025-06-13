@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Azure.Core;
+using Microsoft.Extensions.Options;
 using Trainingsmanager.Database.Models;
 using Trainingsmanager.Helper;
 using Trainingsmanager.Mappers;
@@ -31,7 +32,7 @@ namespace Trainingsmanager.Services
             _fixedPreAddMitglieder = options.Value.FixedSubs;
         }
 
-        public async Task<CreateSessionsResponse> CreateSession(CreateSessionRequest request,  CancellationToken ct)
+        public async Task<CreateSessionsResponse> CreateSessionAsync(CreateSessionRequest request,  CancellationToken ct)
         {
             // ApplicationsRequired must be higher or equal to Fixed Mitglieder
             if (request.PreAddMitglieder && request.ApplicationsLimit < _fixedPreAddMitglieder.Count)
@@ -74,17 +75,33 @@ namespace Trainingsmanager.Services
             await _repository.DeleteSessionAsync(req.SessionId, ct);
         }
 
-        public async Task<GetAllSessionsResponse> GetAllSessions(CancellationToken ct)
+        public async Task<GetAllSessionsResponse> GetAllSessionsAsync(CancellationToken ct)
         {
             var getAllSessionsRepsonse = await _repository.GetAllSessions(ct);
             return _mapper.ListOfSessionToListOfCreateSessionResponse(getAllSessionsRepsonse, ct);
         }
 
-        public async Task<GetSessionResponse> GetSessionById(Guid sessionId, CancellationToken ct)
+        public async Task<GetSessionResponse> GetSessionByIdAsync(Guid sessionId, CancellationToken ct)
         {
             var session = await _repository.GetSessionByIdAsync(sessionId, ct);
 
             return _mapper.SessionToGetSessionResponse(session, ct);
+        }
+
+        public async Task<GetSessionResponse?> UpdateSessionAsync(UpdateSessionRequest request, CancellationToken ct)
+        {
+            var sessionToUpdate = await _repository.GetSessionByIdAsync(request.Id, ct);
+            var anzahlTeilnahmen = sessionToUpdate.Subscriptions.Count();
+
+            if (request.ApplicationsLimit < anzahlTeilnahmen)
+            {
+                throw new ArgumentException($"Das Limit muss mindestens die Anzahl an vorhandenen Teilnahmen ({anzahlTeilnahmen}) betragen.");
+            }
+
+            var sessionToUpdateWithNewValues = _mapper.UpdateSessionRequestToSession(request, sessionToUpdate, ct);
+            var updatedSession = await _repository.UpdateSessionAsync(sessionToUpdateWithNewValues, ct);
+            
+            return _mapper.SessionToGetSessionResponse(updatedSession, ct);
         }
 
         private async Task<Session> MapAndCreateSessions(CreateSessionRequest request, CancellationToken ct)

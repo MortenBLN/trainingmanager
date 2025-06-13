@@ -109,11 +109,7 @@ function addSessionToList(session, list, expired)
     const start = new Date(session.trainingStart);
     const end = new Date(session.trainingEnd);
 
-    const day = start.toDateString(); // "Mon Jun 02 2025"
-    const hours = start.getHours().toString().padStart(2, '0');
-    const minutes = start.getMinutes().toString().padStart(2, '0');
-
-    const formattedDate = `${day} ${hours}:${minutes}`;
+    const formattedDate = formatDate(start);
 
     const durationMs = end - start;
 
@@ -130,7 +126,9 @@ function addSessionToList(session, list, expired)
         <div class="d-flex flex-row align-items-center">
             ${icon}
             <div class="ml-2">
-                <h6 class="mb-0">${session.teamname + groupName}</h6>
+                <h6 class="mb-0 text-truncate" style="max-width: 180px;" title="${session.teamname + groupName}">
+                  ${(session.teamname + groupName).length > 16 ? (session.teamname + groupName).substring(0, 16) + "…" : (session.teamname + groupName) }
+                </h6>
                 <div class="d-flex flex-row mt-1 text-black-50 date-time">
                     <div><i class="fa fa-calendar-o"></i><span class="ml-2">${formattedDate}</span></div>
                     <div class="ml-3"><i class="fa fa-clock-o"></i><span class="ml-2">${roundedDuration}h</span></div>
@@ -156,7 +154,7 @@ function addSessionToList(session, list, expired)
        isAdmin = getHasAdminRole(token);
     }
 
-    // Add Delete button if user is Admin
+    // Add Delete & edit button if user is Admin
     if (isAdmin)
     {
         const hasGroup = session.sessionGroupId != null && session.sessionGroupId !== "";
@@ -184,6 +182,18 @@ function addSessionToList(session, list, expired)
         };
 
         rightSide.appendChild(deleteBtn);
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn btn-warning btn-sm ml-1';
+        editBtn.innerHTML = '<i class="fa fa-pencil"></i>';
+        editBtn.title = "Session bearbeiten";
+        editBtn.addEventListener('click', (e) =>
+        {
+            e.stopPropagation(); // 🔒 Prevent the parent li click handler
+            window.location.href = `/updatesession.html?id=${session.id}`;
+        });
+
+        rightSide.appendChild(editBtn);
 
         // Display Createsession Button
         document.getElementById("create-session-button-div").style.display = "block";
@@ -334,4 +344,15 @@ function getHasAdminRole(token)
         console.error("Invalid JWT:", e);
         return false;
     }
+}
+
+function formatDate(date)
+{
+    const options = {
+        weekday: 'short',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    };
+    return new Intl.DateTimeFormat('en-GB', options).format(date).replace(',', '');
 }

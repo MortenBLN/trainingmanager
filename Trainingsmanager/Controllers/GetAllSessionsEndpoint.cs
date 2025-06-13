@@ -21,7 +21,7 @@ namespace Trainingsmanager.Controllers
 
         public override async Task<GetAllSessionsResponse> ExecuteAsync(CancellationToken ct)
         {
-            return await _service.GetAllSessions(ct);
+            return await _service.GetAllSessionsAsync(ct);
         }
     }
 }

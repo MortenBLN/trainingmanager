@@ -1,7 +1,7 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Trainingsmanager.Database;
 using Trainingsmanager.Database.Models;
+using Trainingsmanager.Models;
 
 namespace Trainingsmanager.Repositories
 {
@@ -53,6 +53,14 @@ namespace Trainingsmanager.Repositories
             }
 
             return response;
+        }
+
+        public async Task<Session?> UpdateSessionAsync(Session sessionToUpdateWithNewValues, CancellationToken ct)
+        {
+            _context.Sessions.Update(sessionToUpdateWithNewValues);
+            await _context.SaveChangesAsync(ct);
+
+            return sessionToUpdateWithNewValues;
         }
     }
 }

@@ -7,6 +7,7 @@ namespace Trainingsmanager.Mappers
     public interface ISessionMapper
     {
         Session CreateSessionRequestToSession(CreateSessionRequest request, ClaimsPrincipal user, CancellationToken ct);
+        Session UpdateSessionRequestToSession(UpdateSessionRequest request, Session sessionToUpdate, CancellationToken ct);
         CreateSessionResponse SessionToCreateSessionResponse(Session request, CancellationToken ct);
         Session CreateSessionResponseToSession(CreateSessionResponse response, CancellationToken ct);
         GetSessionResponse SessionToGetSessionResponse(Session request, CancellationToken ct);

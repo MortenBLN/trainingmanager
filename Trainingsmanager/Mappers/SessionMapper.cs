@@ -150,6 +150,16 @@ namespace Trainingsmanager.Mappers
             };
         }
 
+        public Session UpdateSessionRequestToSession(UpdateSessionRequest request, Session sessionToUpdate, CancellationToken ct)
+        {
+            sessionToUpdate.ApplicationsRequired = request.ApplicationsRequired;
+            sessionToUpdate.TrainingStart = request.TrainingStart;
+            sessionToUpdate.TrainingEnd = request.TrainingEnd;
+            sessionToUpdate.ApplicationsLimit = request.ApplicationsLimit;
+
+            return sessionToUpdate;
+        }
+
         private static SubscriptionType SubscriptionTypeDtoToSubscriptionType(SubscriptionTypeDto subscriptionTypeDto) => subscriptionTypeDto switch
         {
             SubscriptionTypeDto.Admin => SubscriptionType.Admin,

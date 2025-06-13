@@ -24,7 +24,7 @@ namespace Trainingsmanager.Controllers
             CreateSessionsResponse? response = null;
             try
             {
-                response = await _service.CreateSession(req, ct);
+                response = await _service.CreateSessionAsync(req, ct);
             }
             catch (ArgumentException ex)
             {
