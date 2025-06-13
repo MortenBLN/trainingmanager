@@ -97,6 +97,18 @@
 
             form.appendChild(btn);
 
+            // Create and insert overview button
+            const btnOverview = document.createElement("button");
+            btnOverview.id = "code-created-button";
+            btnOverview.textContent = "Zur Übersicht";
+            btnOverview.className = "btn btn-success mt-3";
+            btnOverview.type = "button"; // important: doesn't submit the form
+            btnOverview.onclick = () =>
+            {
+                window.location.href = `trainingsessions.html`;
+            };
+
+            form.appendChild(btnOverview);
         } catch (err)
         {
             console.error("Create session error:", err);
