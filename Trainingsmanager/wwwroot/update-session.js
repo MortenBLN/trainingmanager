@@ -64,6 +64,8 @@
                 const msg = errorData.errors?.generalErrors?.[0] || errorData.message || "Unknown error";
                 throw new Error(msg);
             }
+            messageP.textContent = "Session erfolgreich aktualisiert!";
+            messageP.style.color = "green";
 
             showToast("Session erfolgreich aktualisiert!")
         } catch (err)

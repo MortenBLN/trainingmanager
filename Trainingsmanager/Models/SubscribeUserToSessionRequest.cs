@@ -1,6 +1,6 @@
 namespace Trainingsmanager.Models
 {
-    public class SubscribeUsersToSessionRequest
+    public class SubscribeUserToSessionRequest
     {
         public Guid SessionId { get; set; }
         public string? Name { get; set; }

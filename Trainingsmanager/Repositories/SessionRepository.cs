@@ -55,6 +55,21 @@ namespace Trainingsmanager.Repositories
             return response;
         }
 
+        public async Task<Session> GetSessionBySubscriptionIdAsync(Guid subscriptionId, CancellationToken ct)
+        {
+            var subscription = await _context.Subscriptions
+                .Include(s => s.Session)
+                    .ThenInclude(session => session.Subscriptions)
+                .FirstOrDefaultAsync(s => s.Id == subscriptionId, ct);
+
+            if (subscription?.Session == null)
+            {
+                throw new NullReferenceException($"Es konnte keine Session mit der SubscriptionId {subscriptionId} gefunden werden.");
+            }
+
+            return subscription.Session;
+        }
+
         public async Task<Session?> UpdateSessionAsync(Session sessionToUpdateWithNewValues, CancellationToken ct)
         {
             _context.Sessions.Update(sessionToUpdateWithNewValues);

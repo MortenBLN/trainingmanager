@@ -1,7 +1,7 @@
 ﻿window.addEventListener("DOMContentLoaded", async () =>
 {
     const detailsDiv = document.getElementById("session-details");
-    const subList = document.getElementById("applicationsList");
+    const subList = document.getElementById("validSubscriptionList");
     const form = document.getElementById("add-subscription-form");
     const usernameInput = document.getElementById("username-input");
     const messageP = document.getElementById("subscription-message");
@@ -17,11 +17,37 @@
 
     function renderSubscriptions(subscriptions)
     {
-        subList.innerHTML = "";
+        const validSubscriptionsList = document.getElementById("validSubscriptionList");
+        const queuedSubscriptionsList = document.getElementById("queuedSubscriptionList");
+        const separator = document.getElementById("subscriptions-separator");
+        const separatorHeader = document.getElementById("subscriptions-separator-header");
+
+        // Clear existing content
+        validSubscriptionsList.innerHTML = "";
+        queuedSubscriptionsList.innerHTML = "";
+        separator.style.display = "none";
+        separatorHeader.style.display = "none";
 
         if (!subscriptions.length) return;
 
-        subscriptions.forEach(sub =>
+        // Split and sort
+        const queuedSubs = subscriptions
+            .filter(sub => sub.subscriptionType === 2)
+            .sort((a, b) => new Date(a.subscribedAt) - new Date(b.subscribedAt));
+
+        const validSubs = subscriptions
+            .filter(sub => sub.subscriptionType !== 2)
+            .sort((a, b) => new Date(a.subscribedAt) - new Date(b.subscribedAt));
+
+        // Show separator only if both lists have items
+        if (queuedSubs.length && validSubs.length)
+        {
+            separator.style.display = "block";
+            separatorHeader.style.display = "block";
+        }
+
+        // render lists
+        function renderToList(list, sub, index = null)
         {
             const removeBtn = document.createElement("button");
             removeBtn.textContent = "❌";
@@ -44,14 +70,17 @@
 
             const li = document.createElement('li');
             li.className = 'd-flex justify-content-between';
-            const subType = sub.subscriptionType;
-            const subscriptionTypeIcon = subType === 1
-                ? `<i title="Mitglied" class="fa fa-user-plus subtypeIcon"></i>`
-                : `<i class="fa fa-user subtypeIcon"></i>`;
+
+            // Display index number if provided, otherwise use icon
+            const leadingContent = index !== null
+                ? `<span class="index-number font-weight-bold mr-2">#${index + 1}</span>`
+                : (sub.subscriptionType === 0
+                    ? `<i title="Mitglied" class="fa fa-user-plus subtypeIcon"></i>`
+                    : `<i class="fa fa-user subtypeIcon"></i>`);
 
             li.innerHTML = `
               <div class="d-flex flex-row align-items-center">
-                ${subscriptionTypeIcon}
+                ${leadingContent}
                 <div class="ml-2">
                   <h6 class="mb-0">${sub.userName}</h6>
                   <div class="d-flex flex-row mt-1 text-black-50 date-time">
@@ -62,9 +91,13 @@
               <div class="d-flex flex-row align-items-center right-content"></div>
             `;
 
-            subList.appendChild(li);
+            list.appendChild(li);
             li.querySelector('.right-content').appendChild(removeBtn);
-        });
+        }
+
+        // Render both lists
+        validSubs.forEach(sub => renderToList(validSubscriptionsList, sub));
+        queuedSubs.forEach((sub, index) => renderToList(queuedSubscriptionsList, sub, index));
     }
 
     async function fetchSession()
@@ -73,16 +106,26 @@
         {
             const res = await fetch(`/api/getSessionById/${sessionId}`);
             const session = await res.json();
+            var subCount = session.subscriptions.length;
+            messageP.textContent = "";
+
+            // Set the displayed subcount to the max of allowed applications 
+            if (subCount > session.applicationsLimit)
+            {
+                subCount = session.applicationsLimit;
+            }
 
             document.getElementById("teamname").textContent = session.teamname || "Unnamed Team";
             document.getElementById("start").textContent = new Date(session.trainingStart).toLocaleString();
             document.getElementById("end").textContent = new Date(session.trainingEnd).toLocaleString();
-            document.getElementById("limit").textContent = session.applicationsLimit + " (" + session.subscriptions.length + " belegt)";
+            document.getElementById("limit").textContent = session.applicationsLimit + " (" + subCount + " belegt)";
             document.getElementById("required").textContent = session.applicationsRequired;
 
             renderSubscriptions(session.subscriptions);
+
             return session;
-        } catch (err)
+        }
+        catch (err)
         {
             console.error(err);
             detailsDiv.textContent = "Failed to load session.";
@@ -98,7 +141,7 @@
 
         try
         {
-            const res = await fetch("/api/addUsersToSession", {
+            const res = await fetch("/api/addSubscription", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ sessionId: sessionId, name: username })
@@ -112,29 +155,37 @@
             }
 
             const session = await fetchSession();
-            const currentCount = document.querySelectorAll("#applicationsList li").length;
-            const remaining = session.applicationsLimit - currentCount;
+            const remaining = session.applicationsLimit - session.subscriptions.length
 
             let freeSpotsString = ``;
 
-            switch (remaining)
+            if (remaining < 0)
             {
-                case 0:
-                    freeSpotsString = `Das war der letzte freie Platz.`;
-                    break;
-                case 1:
-                    freeSpotsString = `Noch 1 freier Platz`;
-                    break;
-                default:
-                    freeSpotsString = `Noch ${remaining} freie Plätze`;
+                freeSpotsString = `${username} wurde der Warteliste hinzugefügt`;
             }
-            showToast(`${username} nimmt teil.\n${freeSpotsString}`);
-            messageP.textContent = `${username} nimmt teil.`;
+            else if (remaining === 0)
+            {
+                freeSpotsString = `${username} nimmt teil.\nDas war der letzte freie Platz.`;
+            }
+            else if (remaining === 1)
+            {
+                freeSpotsString = `${username} nimmt teil.\nNoch 1 freier Platz`;
+            }
+            else
+            {
+                freeSpotsString = `${username} nimmt teil.\nNoch ${remaining} freie Plätze`;
+            }
+
+            showToast(`${freeSpotsString}`);
+            messageP.textContent = `${freeSpotsString}.`;
+            messageP.style.color = "green";
             usernameInput.value = "";
 
-        } catch (err)
+        }
+        catch (err)
         {
             console.error("Teilnahme fehlgeschlagen:", err);
+            messageP.style.color = "red";
             messageP.textContent = err.message;
             showToast(err.message, "error");
         }
@@ -181,6 +232,7 @@
         {
             console.error("Delete failed:", err);
             messageP.textContent = err.message;
+            messageP.style.color = "red";
             showToast(err.message, "error");
         }
     }

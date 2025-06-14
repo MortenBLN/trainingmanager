@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/listStyle.css" />
+    <link rel="stylesheet" href="css/session.css" />
     <link rel="stylesheet" href="css/toast.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
@@ -45,8 +46,10 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mt-3">
-                                <ul class="list list-inline" id="applicationsList">
-                                </ul>
+                                <ul class="list list-inline" id="validSubscriptionList"></ul>
+                                <hr class="my-4" id="subscriptions-separator" style="display: none;" />
+                                <h5 id="subscriptions-separator-header" style="display: none;">Warteliste</h5>
+                                <ul class="list list-inline" id="queuedSubscriptionList"></ul>
                             </div>
                         </div>
                     </div>

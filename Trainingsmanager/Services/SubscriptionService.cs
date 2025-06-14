@@ -1,4 +1,7 @@
-﻿using Trainingsmanager.Models;
+﻿using Trainingsmanager.Database.Enums;
+using Trainingsmanager.Mappers;
+using Trainingsmanager.Models;
+using Trainingsmanager.Models.Enums;
 using Trainingsmanager.Repositories;
 
 namespace Trainingsmanager.Services
@@ -6,19 +9,55 @@ namespace Trainingsmanager.Services
     public class SubscriptionService : ISubscriptionService
     {
         private readonly ISubscriptionRepository _repository;
+        private readonly ISubscriptionMapper _mapper;
         private readonly ISessionRepository _sessionRepository;
-        private readonly IUserService _userService;
 
-        public SubscriptionService(ISubscriptionRepository repository, IUserService userService, ISessionRepository sessionRepository)
+        public SubscriptionService(ISubscriptionRepository repository, ISubscriptionMapper mapper, ISessionRepository sessionRepository)
         {
             _repository = repository;
-            _userService = userService;
+            _mapper = mapper;
             _sessionRepository = sessionRepository;
         }
 
         public async Task DeleteSubscriptionAsync(DeleteSubscriptionRequest request, CancellationToken ct)
         {
-            await _repository.DeleteSubscriptionAsync(request, ct);
+            // Get the session based on the subscriptionId
+            var session = await _sessionRepository.GetSessionBySubscriptionIdAsync(request.SubscriptionId, ct);
+
+            if (session == null)
+            {
+                throw new Exception("The Subscription was not attached to any Session.");
+            }
+
+            var removedSubscriptionSuccessful = await _repository.DeleteSubscriptionAsync(request, ct);
+
+            if (removedSubscriptionSuccessful == null)
+            {
+                throw new Exception("Unexpected error: Subscription deletion failed.");
+            }
+
+            // If the removed subscription had the type 'Warteschlange' --> No further actions
+            if (removedSubscriptionSuccessful.SubscriptionType == SubscriptionType.Warteschlange)
+            {
+                return;
+            }
+
+            // The removed type was NOT 'Warteschlange' 
+            // --> Check if there is a Warteschlange Subscription that needs to be upgraded
+
+            // Check if there is any 'Warteschlange' Subscription and if so, get the oldest
+            var oldestQueuedSubscription = session.Subscriptions
+                .Where(s => s.SubscriptionType == SubscriptionType.Warteschlange)
+                .OrderBy(s => s.SubscribedAt)
+                .FirstOrDefault();
+
+            // There is no 'Warteschlange' Subscription --> Nothing further to do
+            if (oldestQueuedSubscription == null)
+            {
+                return;
+            }
+
+            await _repository.UpgradeSubscriptionTypeAsync(oldestQueuedSubscription, SubscriptionType.Angemeldet, ct);
         }
 
         public Task<GetSessionResponse> GetSubscriptionsOfSessionBySessionIdAsync(Guid sessionId, CancellationToken ct)
@@ -26,19 +65,31 @@ namespace Trainingsmanager.Services
             throw new NotImplementedException();
         }
 
-        public async Task SubscribeToSessionAsync(SubscribeUsersToSessionRequest request, CancellationToken ct)
+        public async Task<SubscribeUserToSessionResponse> SubscribeToSessionAsync(SubscribeUserToSessionRequest request, CancellationToken ct)
         {
+            if (request.Name == null)
+            {
+                throw new ArgumentException("Der Name darf nicht leer sein.");
+            }
+
             // Check if max subscription count is already hit
             var session = await _sessionRepository.GetSessionByIdAsync(request.SessionId, ct);
 
             var subAmount = session.Subscriptions.Count();
             var maxSubAmount = session.ApplicationsLimit;
+
+            SubscriptionTypeDto subType = SubscriptionTypeDto.Angemeldet;
+
             if (subAmount >= maxSubAmount)
             {
-                throw new InvalidOperationException($"Die Maximalanzahl an Teilnehmern wurde bereits erreicht.");
+                subType = SubscriptionTypeDto.Warteschlange;
             }
 
-            await _repository.SubscribeToSessionAsync(request, ct);
+            var subscriptionToAdd = _mapper.SubscribeUserToSessionRequestToSession(request, subType, ct);
+
+            var addedSubscription = await _repository.SubscribeToSessionAsync(subscriptionToAdd, ct);
+
+            return _mapper.SubscriptionToSubscribeUsersToSessionResponse(addedSubscription, ct);
         }
     }
 }

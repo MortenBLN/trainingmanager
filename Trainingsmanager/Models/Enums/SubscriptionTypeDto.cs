@@ -2,9 +2,9 @@
 {
     public enum SubscriptionTypeDto
     {
-        Admin,
-        Mitglied,
-        Probe,
-        Gast
+        Vorangemeldet,
+        Angemeldet,
+        Warteschlange,
+        Ohne
     }
 }

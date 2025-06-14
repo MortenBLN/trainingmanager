@@ -1,5 +1,4 @@
 ﻿using Trainingsmanager.Database.Models;
-using Trainingsmanager.Models;
 
 namespace Trainingsmanager.Repositories
 {
@@ -7,6 +6,7 @@ namespace Trainingsmanager.Repositories
     {
         Task<Session> CreateSessionAsync(Session request, CancellationToken ct);
         Task<Session> GetSessionByIdAsync(Guid sessionId, CancellationToken ct);
+        Task<Session> GetSessionBySubscriptionIdAsync(Guid subscriptionId, CancellationToken ct);
         Task<List<Session>> GetAllSessions(CancellationToken ct);
         Task DeleteSessionAsync(Guid sessionId, CancellationToken ct);
         Task<Session?> UpdateSessionAsync(Session sessionToUpdateWithNewValues, CancellationToken ct);

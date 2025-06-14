@@ -15,7 +15,7 @@ namespace Trainingsmanager.Repositories
             _context = context;
         }
 
-        public async Task DeleteSubscriptionAsync(DeleteSubscriptionRequest request, CancellationToken ct)
+        public async Task<Subscription> DeleteSubscriptionAsync(DeleteSubscriptionRequest request, CancellationToken ct)
         {
             var subscriptionToRemove = await _context.Subscriptions.Where(s => s.Id == request.SubscriptionId).FirstOrDefaultAsync(ct);
             if (subscriptionToRemove == null)
@@ -23,8 +23,11 @@ namespace Trainingsmanager.Repositories
                 throw new Exception($"No Subscription with the the ID: '{ request.SubscriptionId }' could be found");
             }
 
-            _context.Subscriptions.Remove(subscriptionToRemove);
+            var removedSubscription = _context.Subscriptions.Remove(subscriptionToRemove);
             await _context.SaveChangesAsync(ct);
+
+            // Check if the delete request was successful
+            return removedSubscription.Entity;
         }
 
         public async Task<List<Subscription>> GetSubscriptionsOfSessionBySessionIdAsync(Guid sessionId, CancellationToken ct)
@@ -34,30 +37,28 @@ namespace Trainingsmanager.Repositories
                          .ToListAsync(ct);
         }
 
-        public async Task SubscribeToSessionAsync(SubscribeUsersToSessionRequest request, CancellationToken ct, SubscriptionType subType = SubscriptionType.Gast)
+        public async Task<Subscription> SubscribeToSessionAsync(Subscription subscription, CancellationToken ct)
         {
             var existing = await _context.Subscriptions
-                .AnyAsync(s => s.UserName == request.Name && s.SessionId == request.SessionId, ct);
+                .AnyAsync(s => s.UserName == subscription.UserName && s.SessionId == subscription.SessionId, ct);
 
             if (existing)
             {
                 throw new InvalidOperationException("Es existiert bereits ein Teilnehmer mit dem gleichen Namen.");
             }
+  
+            var newSubscription = await _context.Set<Subscription>().AddAsync(subscription, ct);
+            
+            await _context.SaveChangesAsync(ct);
 
-            if (request.Name == null)
-            {
-                throw new ArgumentException("Der Name darf nicht leer sein.");
-            }
+            return newSubscription.Entity;
+        }
 
-            // Add each Sub by the given name
-            var newSubscription = new Subscription
-            {
-                SessionId = request.SessionId,
-                UserName = request.Name,
-                SubscriptionType = subType
-            };
+        public async Task UpgradeSubscriptionTypeAsync(Subscription subscriptionToUpgrade, SubscriptionType newSubscriptionType, CancellationToken ct)
+        {
+            subscriptionToUpgrade.SubscriptionType = newSubscriptionType;
 
-            await _context.Set<Subscription>().AddAsync(newSubscription, ct);
+            _context.Subscriptions.Update(subscriptionToUpgrade);
             await _context.SaveChangesAsync(ct);
         }
     }

@@ -1,5 +1,5 @@
-﻿using Azure.Core;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
+using Trainingsmanager.Database.Enums;
 using Trainingsmanager.Database.Models;
 using Trainingsmanager.Helper;
 using Trainingsmanager.Mappers;
@@ -17,10 +17,11 @@ namespace Trainingsmanager.Services
         private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly ISessionGroupRepository _sessionGroupRepository;
         private readonly ISessionHelper _helper;
+        private readonly ISubscriptionMapper _subscriptionMapper;
 
         private readonly List<string> _fixedPreAddMitglieder;
 
-        public SessionService (ISessionRepository repository, ISessionMapper mapper, IUserService userService, ISubscriptionRepository subscriptionRepository, IOptions<FixedSubsOptions> options, ISessionHelper helper, ISessionGroupRepository sessionGroupRepository)
+        public SessionService (ISessionRepository repository, ISessionMapper mapper, IUserService userService, ISubscriptionRepository subscriptionRepository, IOptions<FixedSubsOptions> options, ISessionHelper helper, ISessionGroupRepository sessionGroupRepository, ISubscriptionMapper subscriptionMapper)
         {
             _repository = repository;
             _mapper = mapper;
@@ -28,6 +29,7 @@ namespace Trainingsmanager.Services
             _subscriptionRepository = subscriptionRepository;
             _helper = helper;
             _sessionGroupRepository = sessionGroupRepository;
+            _subscriptionMapper = subscriptionMapper;
 
             _fixedPreAddMitglieder = options.Value.FixedSubs;
         }
@@ -91,16 +93,46 @@ namespace Trainingsmanager.Services
         public async Task<GetSessionResponse?> UpdateSessionAsync(UpdateSessionRequest request, CancellationToken ct)
         {
             var sessionToUpdate = await _repository.GetSessionByIdAsync(request.Id, ct);
-            var anzahlTeilnahmen = sessionToUpdate.Subscriptions.Count();
+            var oldLimit = sessionToUpdate.ApplicationsLimit;
 
-            if (request.ApplicationsLimit < anzahlTeilnahmen)
+            var nonQueueSubscriptions = sessionToUpdate.Subscriptions
+                                        .Where(s => s.SubscriptionType != SubscriptionType.Warteschlange)
+                                        .Count();
+
+            if (request.ApplicationsLimit < nonQueueSubscriptions)
             {
-                throw new ArgumentException($"Das Limit muss mindestens die Anzahl an vorhandenen Teilnahmen ({anzahlTeilnahmen}) betragen.");
+                throw new ArgumentException($"Das Limit muss mindestens die Anzahl an angemeldeten Teilnahmen ({nonQueueSubscriptions}) betragen.");
             }
 
             var sessionToUpdateWithNewValues = _mapper.UpdateSessionRequestToSession(request, sessionToUpdate, ct);
             var updatedSession = await _repository.UpdateSessionAsync(sessionToUpdateWithNewValues, ct);
-            
+
+            if (updatedSession == null)
+            {
+                throw new Exception("An error occured while trying to update the session.");
+            }
+
+            // If the applicationLimit is increased
+            // --> Check if there are any 'Warteschlangen' Subscriptions, that now need to be updgraded
+            if (request.ApplicationsLimit > oldLimit)
+            {
+                // The amount of 'Warteschlangen' Subscriptions that can be upgraded
+                var newFreeSlots = request.ApplicationsLimit - oldLimit;
+
+                var queuedSubscriptions = updatedSession.Subscriptions
+                    .Where(s => s.SubscriptionType == SubscriptionType.Warteschlange)
+                    .OrderBy(s => s.SubscribedAt)
+                    .Take(newFreeSlots)
+                    .ToList();
+
+                foreach (var subscription in queuedSubscriptions)
+                {
+                    await _subscriptionRepository.UpgradeSubscriptionTypeAsync(subscription, SubscriptionType.Angemeldet, ct);
+                }
+            }
+
+            updatedSession = await _repository.GetSessionByIdAsync(request.Id, ct);
+
             return _mapper.SessionToGetSessionResponse(updatedSession, ct);
         }
 
@@ -120,12 +152,13 @@ namespace Trainingsmanager.Services
             {
                 foreach (var name in _fixedPreAddMitglieder)
                 {
-                    var mitgliederSubRequest = new SubscribeUsersToSessionRequest
+                    var mitgliederSubRequest = new SubscribeUserToSessionRequest
                     {
                         SessionId = createdSession.Id,
                         Name = name,
                     };
-                    await _subscriptionRepository.SubscribeToSessionAsync(mitgliederSubRequest, ct, Database.Enums.SubscriptionType.Mitglied);
+                    var preAppliedSubscription = _subscriptionMapper.SubscribeUserToSessionRequestToSession(mitgliederSubRequest, Models.Enums.SubscriptionTypeDto.Vorangemeldet, ct);
+                    await _subscriptionRepository.SubscribeToSessionAsync(preAppliedSubscription, ct);
                 }
 
                 createdSession = await _repository.GetSessionByIdAsync(createdSession.Id, ct);

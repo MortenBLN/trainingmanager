@@ -162,19 +162,19 @@ namespace Trainingsmanager.Mappers
 
         private static SubscriptionType SubscriptionTypeDtoToSubscriptionType(SubscriptionTypeDto subscriptionTypeDto) => subscriptionTypeDto switch
         {
-            SubscriptionTypeDto.Admin => SubscriptionType.Admin,
-            SubscriptionTypeDto.Mitglied => SubscriptionType.Mitglied,
-            SubscriptionTypeDto.Probe => SubscriptionType.Probe,
-            SubscriptionTypeDto.Gast => SubscriptionType.Gast,
+            SubscriptionTypeDto.Vorangemeldet => SubscriptionType.Vorangemeldet,
+            SubscriptionTypeDto.Angemeldet => SubscriptionType.Angemeldet,
+            SubscriptionTypeDto.Warteschlange => SubscriptionType.Warteschlange,
+            SubscriptionTypeDto.Ohne => SubscriptionType.Ohne,
             _ => throw new NotImplementedException(),
         };
 
         private static SubscriptionTypeDto SubscriptionTypeToSubscriptionTypeDto(SubscriptionType subscriptionType) => subscriptionType switch
         {
-            SubscriptionType.Admin => SubscriptionTypeDto.Admin,
-            SubscriptionType.Mitglied => SubscriptionTypeDto.Mitglied,
-            SubscriptionType.Probe => SubscriptionTypeDto.Probe,
-            SubscriptionType.Gast => SubscriptionTypeDto.Gast,
+            SubscriptionType.Vorangemeldet => SubscriptionTypeDto.Vorangemeldet,
+            SubscriptionType.Angemeldet => SubscriptionTypeDto.Angemeldet,
+            SubscriptionType.Warteschlange => SubscriptionTypeDto.Warteschlange,
+            SubscriptionType.Ohne => SubscriptionTypeDto.Ohne,
             _ => throw new NotImplementedException(),
         };
     }

@@ -59,6 +59,7 @@ bld.Services.AddScoped<IAuthRepository, AuthRepository>();
 // Mappers
 bld.Services.AddScoped<ISessionMapper, SessionMapper>();
 bld.Services.AddScoped<IAuthMapper, AuthMapper>();
+bld.Services.AddScoped<ISubscriptionMapper, SubscriptionMapper>();
 
 // Helpers
 bld.Services.AddScoped<ISessionHelper,  SessonHelper>();
