@@ -106,19 +106,27 @@
         {
             const res = await fetch(`/api/getSessionById/${sessionId}`);
             const session = await res.json();
-            var subCount = session.subscriptions.length;
             messageP.textContent = "";
 
-            // Set the displayed subcount to the max of allowed applications 
-            if (subCount > session.applicationsLimit)
-            {
-                subCount = session.applicationsLimit;
+            const validSubsCount = session.subscriptions
+                .filter(sub => sub.subscriptionType !== 2).length;
+
+            const queuedSubsCount = session.subscriptions
+                .filter(sub => sub.subscriptionType === 2).length;
+
+            var additionalQueuedSubString = "";
+
+            if (queuedSubsCount != null && queuedSubsCount != undefined && queuedSubsCount > 0)
+            {             
+                additionalQueuedSubString = ` & ${queuedSubsCount} warten`
             }
+
+            var validSubCountString = ` (${validSubsCount} belegt ${additionalQueuedSubString})`;
 
             document.getElementById("teamname").textContent = session.teamname || "Unnamed Team";
             document.getElementById("start").textContent = new Date(session.trainingStart).toLocaleString();
             document.getElementById("end").textContent = new Date(session.trainingEnd).toLocaleString();
-            document.getElementById("limit").textContent = session.applicationsLimit + " (" + subCount + " belegt)";
+            document.getElementById("limit").textContent = session.applicationsLimit + validSubCountString;
             document.getElementById("required").textContent = session.applicationsRequired;
 
             renderSubscriptions(session.subscriptions);
