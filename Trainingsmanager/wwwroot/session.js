@@ -15,7 +15,7 @@
         return;
     }
 
-    function renderSubscriptions(subscriptions)
+    async function renderSubscriptions(subscriptions)
     {
         const validSubscriptionsList = document.getElementById("validSubscriptionList");
         const queuedSubscriptionsList = document.getElementById("queuedSubscriptionList");
@@ -47,16 +47,18 @@
         }
 
         // render lists
-        function renderToList(list, sub, index = null)
+        async function renderToList(list, listType, sub, index = null)
         {
             const removeBtn = document.createElement("button");
             removeBtn.textContent = "❌";
             removeBtn.style.marginLeft = "10px";
             removeBtn.style.cursor = "pointer";
             removeBtn.title = `Remove ${sub.userName}`;
-            removeBtn.addEventListener("click", () =>
+            removeBtn.addEventListener("click", async() =>
             {
-                if (confirm(`Remove subscription for ${sub.userName}?`))
+                const confirmed = await showDeleteConfirmationDialog(sub.userName, listType);
+
+                if (confirmed)
                 {
                     deleteSubscription(sub.id, sub.userName);
                 }
@@ -96,8 +98,15 @@
         }
 
         // Render both lists
-        validSubs.forEach(sub => renderToList(validSubscriptionsList, sub));
-        queuedSubs.forEach((sub, index) => renderToList(queuedSubscriptionsList, sub, index));
+        for (const sub of validSubs)
+        {
+            await renderToList(validSubscriptionsList, "Teilnehmerliste", sub);
+        }
+
+        for (const [index, sub] of queuedSubs.entries())
+        {
+            await renderToList(queuedSubscriptionsList, "Warteliste", sub, index);
+        }
     }
 
     async function fetchSession()
@@ -129,7 +138,7 @@
             document.getElementById("limit").textContent = session.applicationsLimit + validSubCountString;
             document.getElementById("required").textContent = session.applicationsRequired;
 
-            renderSubscriptions(session.subscriptions);
+            await renderSubscriptions(session.subscriptions);
 
             return session;
         }
@@ -243,6 +252,39 @@
             messageP.style.color = "red";
             showToast(err.message, "error");
         }
+    }
+
+    function showDeleteConfirmationDialog(userName, listType)
+    {
+        return new Promise((resolve) =>
+        {
+            // Remove any existing dialog
+            const existingDialog = document.querySelector('.custom-dialog');
+            if (existingDialog) existingDialog.remove();
+
+            const modal = document.createElement('div');
+            modal.className = 'custom-dialog';
+            modal.innerHTML = `
+            <div class="custom-dialog-box">
+                <p>Soll ${userName} aus der ${listType} entfernt werden?</p>
+                <button id="confirmDelete" class="btn btn-danger btn-sm mt-2">${userName} entfernen</button>
+                <button id="cancelDelete" class="btn btn-warning btn-sm mt-2 ml-2">Nicht entfernen</button>
+            </div>
+        `;
+            document.body.appendChild(modal);
+
+            document.getElementById('confirmDelete').onclick = () =>
+            {
+                modal.remove();
+                resolve(true);
+            };
+
+            document.getElementById('cancelDelete').onclick = () =>
+            {
+                modal.remove();
+                resolve(false);
+            };
+        });
     }
 
     await fetchSession();
