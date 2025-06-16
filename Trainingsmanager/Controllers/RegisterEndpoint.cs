@@ -1,5 +1,4 @@
 using FastEndpoints;
-using Trainingsmanager.Database;
 using Trainingsmanager.Models.Register;
 using Trainingsmanager.Services;
 
@@ -17,7 +16,7 @@ namespace Trainingsmanager.Controllers
         public override void Configure()
         {
             Post("/auth/register");
-            AllowAnonymous();
+            Roles("Admin");
         }
 
         public override async Task<RegisterResponse> ExecuteAsync(RegisterRequest req, CancellationToken ct)
