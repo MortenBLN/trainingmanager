@@ -1,8 +1,6 @@
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
-using Microsoft.ApplicationInsights.Channel;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.EntityFrameworkCore;
 using Trainingsmanager.Database;
 using Trainingsmanager.Helper;
@@ -67,38 +65,6 @@ bld.Services.AddScoped<ISessionHelper,  SessonHelper>();
 // Options
 bld.Services.Configure<FixedSubsOptions>(bld.Configuration);
 bld.Services.Configure<JwtTokenOptions>(bld.Configuration);
-
-// Application Insights
-using var channel = new InMemoryChannel();
-bld.Services.Configure<TelemetryConfiguration>(config => config.TelemetryChannel = channel);
-
-// Load from appsettings.json or Azure environment variables
-var connectionString = bld.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING");
-
-// Add Application Insights telemetry + logger
-//bld.Services.Insi(options =>
-//{
-//    options.ConnectionString = connectionString;
-//});
-
-bld.Logging.AddApplicationInsights(
-    configureTelemetryConfiguration: config =>
-        config.ConnectionString = connectionString,
-    configureApplicationInsightsLoggerOptions: options => { }
-);
-
-var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices((context, services) =>
-    {
-        // service registrations
-    })
-    .Build();
-
-var logger = host.Services.GetRequiredService<ILogger<Program>>();
-
-logger.LogInformation("App starting...");
-
-logger.LogInformation("Logger is working...");
 
 var app = bld.Build();
 
