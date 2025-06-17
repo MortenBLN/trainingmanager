@@ -130,7 +130,7 @@
                 additionalQueuedSubString = ` & ${queuedSubsCount} warten`
             }
 
-            var validSubCountString = ` (${validSubsCount} belegt ${additionalQueuedSubString})`;
+            var validSubCountString = ` (${validSubsCount} belegt${additionalQueuedSubString})`;
 
             document.getElementById("teamname").textContent = session.teamname || "Unnamed Team";
             document.getElementById("start").textContent = new Date(session.trainingStart).toLocaleString();
