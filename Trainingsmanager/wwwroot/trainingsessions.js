@@ -292,6 +292,7 @@ function handleUnauthorized(res)
     {
         alert("Nur Admins können Sessions löschen.");
 
+        const form = document.getElementById("redirect-button-container");
         const existingBtn = document.getElementById("code-created-button");
         if (existingBtn) existingBtn.remove();
 
