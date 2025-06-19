@@ -18,11 +18,11 @@ namespace Trainingsmanager.Services
         private readonly ISessionGroupRepository _sessionGroupRepository;
         private readonly ISessionHelper _helper;
         private readonly ISubscriptionMapper _subscriptionMapper;
-        private readonly ILogger<SessionService> _logger;
+        private readonly ILogger<ISessionService> _logger;
 
         private readonly List<string> _fixedPreAddMitglieder;
 
-        public SessionService (ISessionRepository repository, ISessionMapper mapper, IUserService userService, ISubscriptionRepository subscriptionRepository, IOptions<FixedSubsOptions> options, ISessionHelper helper, ISessionGroupRepository sessionGroupRepository, ISubscriptionMapper subscriptionMapper, ILogger<SessionService> logger)
+        public SessionService (ISessionRepository repository, ISessionMapper mapper, IUserService userService, ISubscriptionRepository subscriptionRepository, IOptions<FixedSubsOptions> options, ISessionHelper helper, ISessionGroupRepository sessionGroupRepository, ISubscriptionMapper subscriptionMapper, ILogger<ISessionService> logger)
         {
             _repository = repository;
             _mapper = mapper;
@@ -64,7 +64,6 @@ namespace Trainingsmanager.Services
                 createdSessionsResponse.Sessions.Add(createdSessionResponse);
             }
 
-            // 
             if (createdSessionsResponse.Sessions.Count > 1)
             {
                 await _sessionGroupRepository.CreateSessionGroupAsync(createdSessionsAsSessions, ct);
