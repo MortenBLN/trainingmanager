@@ -11,12 +11,14 @@ namespace Trainingsmanager.Services
         private readonly ISubscriptionRepository _repository;
         private readonly ISubscriptionMapper _mapper;
         private readonly ISessionRepository _sessionRepository;
+        private readonly ILogger<ISubscriptionService> _logger;
 
-        public SubscriptionService(ISubscriptionRepository repository, ISubscriptionMapper mapper, ISessionRepository sessionRepository)
+        public SubscriptionService(ISubscriptionRepository repository, ISubscriptionMapper mapper, ISessionRepository sessionRepository, ILogger<ISubscriptionService> logger)
         {
             _repository = repository;
             _mapper = mapper;
             _sessionRepository = sessionRepository;
+            _logger = logger;
         }
 
         public async Task DeleteSubscriptionAsync(DeleteSubscriptionRequest request, CancellationToken ct)
@@ -56,6 +58,7 @@ namespace Trainingsmanager.Services
             {
                 return;
             }
+            _logger.LogInformation($"______ REMOVAL WITH FOLLOWING UPGRADE START ______\nRemoved: {removedSubscriptionSuccessful.UserName}\n Upgraded:{oldestQueuedSubscription.UserName} \n______ REMOVAL WITH FOLLOWING UPGRADE END ______");
 
             await _repository.UpgradeSubscriptionTypeAsync(oldestQueuedSubscription, SubscriptionType.Angemeldet, ct);
         }
