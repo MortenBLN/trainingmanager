@@ -58,7 +58,7 @@ namespace Trainingsmanager.Services
             {
                 return;
             }
-            _logger.LogInformation($"______ REMOVAL WITH FOLLOWING UPGRADE START ______\nRemoved: {removedSubscriptionSuccessful.UserName}\n Upgraded:{oldestQueuedSubscription.UserName} \n______ REMOVAL WITH FOLLOWING UPGRADE END ______");
+            _logger.LogInformation($"\n______ REMOVAL WITH FOLLOWING UPGRADE START ______\nRemoved: {removedSubscriptionSuccessful.UserName}\nUpgraded:{oldestQueuedSubscription.UserName} \n______ REMOVAL WITH FOLLOWING UPGRADE END ______");
 
             await _repository.UpgradeSubscriptionTypeAsync(oldestQueuedSubscription, SubscriptionType.Angemeldet, ct);
         }

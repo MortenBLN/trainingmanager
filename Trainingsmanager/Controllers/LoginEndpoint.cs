@@ -29,7 +29,7 @@ namespace Trainingsmanager.Controllers
 
         public override async Task<LoginResponse> ExecuteAsync(LoginRequest req, CancellationToken ct)
         {
-            LoginResponse response = null;
+            LoginResponse? response = null;
             try
             {
                 response = await _service.LoginUserAsync(req, ct);

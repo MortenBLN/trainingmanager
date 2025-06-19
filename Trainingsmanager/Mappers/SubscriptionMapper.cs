@@ -19,6 +19,11 @@ namespace Trainingsmanager.Mappers
 
         public Subscription SubscribeUserToSessionRequestToSession(SubscribeUserToSessionRequest request, SubscriptionTypeDto subscriptionType, CancellationToken ct)
         {
+            if (request.Name == null)
+            {
+                throw new ArgumentNullException("Name cannot be null");
+            }
+
             return new Subscription
             {
                 SessionId = request.SessionId,

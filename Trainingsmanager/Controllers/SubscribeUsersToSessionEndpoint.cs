@@ -21,7 +21,7 @@ namespace Trainingsmanager.Controllers
 
         public override async Task<SubscribeUserToSessionResponse> HandleAsync(SubscribeUserToSessionRequest req, CancellationToken ct)
         {
-            SubscribeUserToSessionResponse response = null;
+            SubscribeUserToSessionResponse? response = null;
 
             try
             {

@@ -38,6 +38,22 @@ namespace Trainingsmanager.Services
         
             var userFromDb = await _repository.GetAppUserByMailAsync(emailToFind, ct) ?? throw new BadHttpRequestException("Login fehlgeschlagen - falsche E-Mail oder Passwort!", StatusCodes.Status404NotFound);
             var hasher = new PasswordHasher<AppUser>();
+
+            if (userFromDb.Email == null)
+            {
+                throw new Exception("Der Nutzer hat keine E-Mail in der Datenbank hinterlegt.");
+            }
+
+            if (userFromDb.Password == null)
+            {
+                throw new Exception("Der Nutzer hat kein Passwort in der Datenbank hinterlegt.");
+            }
+
+            if (req.Password == null)
+            {
+                throw new ArgumentNullException("Passwort ist ein Pflichtfeld.");
+            }
+
             var result = hasher.VerifyHashedPassword(userFromDb, userFromDb.Password, req.Password);
 
             if (result == PasswordVerificationResult.Failed)
@@ -70,6 +86,11 @@ namespace Trainingsmanager.Services
         public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest req, CancellationToken ct)
         {
             var mappedAppUser = _mapper.RegisterRequestToAppUser(req, ct);
+
+            if (mappedAppUser.Password == null)
+            {
+                throw new ArgumentNullException("Es konnte kein Passwort für den zu erstellenden Nutzer ermittelt werden.");
+            }
 
             var hasher = new PasswordHasher<AppUser>();
             var hashedPassword = hasher.HashPassword(mappedAppUser, mappedAppUser.Password);

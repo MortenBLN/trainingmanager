@@ -38,6 +38,11 @@ namespace Trainingsmanager.Services
 
         public async Task<CreateSessionsResponse> CreateSessionAsync(CreateSessionRequest request,  CancellationToken ct)
         {
+            if (_userService.User == null)
+            {
+                throw new ArgumentNullException("Es konnte kein angemeldeter Nutzer ermittlert werden.");
+            }
+
             // ApplicationsRequired must be higher or equal to Fixed Mitglieder
             if (request.PreAddMitglieder && request.ApplicationsLimit < _fixedPreAddMitglieder.Count)
             {

@@ -59,7 +59,7 @@ namespace Trainingsmanager.Repositories
         {
             var subscription = await _context.Subscriptions
                 .Include(s => s.Session)
-                    .ThenInclude(session => session.Subscriptions)
+                    .ThenInclude(session => session!.Subscriptions)
                 .FirstOrDefaultAsync(s => s.Id == subscriptionId, ct);
 
             if (subscription?.Session == null)

@@ -23,8 +23,15 @@ namespace Trainingsmanager.Repositories
 
         public async Task<AppUser> GetAppUserByMailAsync(string emailToFind, CancellationToken ct)
         {
-            return await _context.AppUsers
-               .FirstOrDefaultAsync(a => a.Email.ToLower() == emailToFind, ct);
+            var appUser = await _context.AppUsers
+               .FirstOrDefaultAsync(a => a.Email != null && a.Email.ToLower() == emailToFind, ct);
+
+            if (appUser == null)
+            {
+                throw new NullReferenceException($"Kein Nutzer mit der E-Mail {emailToFind} gefunden");
+            }
+
+            return appUser;
         }
     }
 }
