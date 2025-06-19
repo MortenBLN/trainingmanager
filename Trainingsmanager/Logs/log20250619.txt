@@ -56,3 +56,6 @@ WHERE s."TrainingStart" < @__cutoffDate_0
 2025-06-19 15:31:46.983 +02:00 [INF] No validators found in the system!
 2025-06-19 15:31:48.710 +02:00 [INF] Serilog: No sessions to delete.
 2025-06-19 15:32:32.308 +02:00 [INF] rehberge@fussi.com created a session
+2025-06-19 15:44:51.880 +02:00 [INF] Registered 11 endpoints in 15.328 milliseconds.
+2025-06-19 15:44:52.399 +02:00 [INF] No validators found in the system!
+2025-06-19 15:44:54.473 +02:00 [INF] Serilog: No sessions to delete.

@@ -68,6 +68,11 @@ bld.Services.AddScoped<ISessionHelper,  SessonHelper>();
 bld.Services.Configure<FixedSubsOptions>(bld.Configuration);
 bld.Services.Configure<JwtTokenOptions>(bld.Configuration);
 
+var logDirectory = Path.Combine(AppContext.BaseDirectory, "Logs");
+
+// Ensure the directory exists
+Directory.CreateDirectory(logDirectory);
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
