@@ -1,7 +1,9 @@
-using FastEndpoints;
+﻿using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
 using Trainingsmanager.Database;
 using Trainingsmanager.Helper;
 using Trainingsmanager.Mappers;
@@ -65,6 +67,16 @@ bld.Services.AddScoped<ISessionHelper,  SessonHelper>();
 // Options
 bld.Services.Configure<FixedSubsOptions>(bld.Configuration);
 bld.Services.Configure<JwtTokenOptions>(bld.Configuration);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+// Replace built-in logging with Serilog
+bld.Host.UseSerilog();
 
 var app = bld.Build();
 

@@ -8,11 +8,13 @@ namespace Trainingsmanager.Services.SchedulerServices
     {
         private readonly Context _context;
         private readonly string _logFilePath;
+        private readonly ILogger<SessionCleanupService> _logger;
 
-        public SessionCleanupService(Context context)
+        public SessionCleanupService(Context context, ILogger<SessionCleanupService> logger)
         {
             _context = context;
             _logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DeletedSessionsLog.txt");
+            _logger = logger;
         }
 
         public async Task DeleteOldSessionsAsync()
@@ -49,6 +51,9 @@ namespace Trainingsmanager.Services.SchedulerServices
 
             // Log to file
             File.AppendAllText(_logFilePath, message + Environment.NewLine);
+
+            // Serilog
+            _logger.LogInformation("Serilog: " + message, DateTime.UtcNow);
         }
     }
 }

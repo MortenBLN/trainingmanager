@@ -18,10 +18,11 @@ namespace Trainingsmanager.Services
         private readonly ISessionGroupRepository _sessionGroupRepository;
         private readonly ISessionHelper _helper;
         private readonly ISubscriptionMapper _subscriptionMapper;
+        private readonly ILogger<SessionService> _logger;
 
         private readonly List<string> _fixedPreAddMitglieder;
 
-        public SessionService (ISessionRepository repository, ISessionMapper mapper, IUserService userService, ISubscriptionRepository subscriptionRepository, IOptions<FixedSubsOptions> options, ISessionHelper helper, ISessionGroupRepository sessionGroupRepository, ISubscriptionMapper subscriptionMapper)
+        public SessionService (ISessionRepository repository, ISessionMapper mapper, IUserService userService, ISubscriptionRepository subscriptionRepository, IOptions<FixedSubsOptions> options, ISessionHelper helper, ISessionGroupRepository sessionGroupRepository, ISubscriptionMapper subscriptionMapper, ILogger<SessionService> logger)
         {
             _repository = repository;
             _mapper = mapper;
@@ -32,6 +33,7 @@ namespace Trainingsmanager.Services
             _subscriptionMapper = subscriptionMapper;
 
             _fixedPreAddMitglieder = options.Value.FixedSubs;
+            _logger = logger;
         }
 
         public async Task<CreateSessionsResponse> CreateSessionAsync(CreateSessionRequest request,  CancellationToken ct)
@@ -68,8 +70,9 @@ namespace Trainingsmanager.Services
                 await _sessionGroupRepository.CreateSessionGroupAsync(createdSessionsAsSessions, ct);
             }
 
-            return createdSessionsResponse;
+           _logger.LogInformation(_userService.User.ToTokenUser().Name + " created a session", DateTime.UtcNow)
 
+            return createdSessionsResponse;
         }
 
         public async Task DeleteSessionAsync(DeleteSessionRequest req, CancellationToken ct)
