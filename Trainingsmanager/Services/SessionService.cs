@@ -70,7 +70,7 @@ namespace Trainingsmanager.Services
                 await _sessionGroupRepository.CreateSessionGroupAsync(createdSessionsAsSessions, ct);
             }
 
-           _logger.LogInformation(_userService.User.ToTokenUser().Name + " created a session", DateTime.UtcNow)
+            _logger.LogInformation(_userService.User.ToTokenUser().Name + " created a session", DateTime.UtcNow);
 
             return createdSessionsResponse;
         }

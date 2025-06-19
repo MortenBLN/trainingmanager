@@ -49,3 +49,6 @@ WHERE s."TrainingStart" < @__cutoffDate_0
 2025-06-19 15:02:55.931 +02:00 [INF] Registered 11 endpoints in 999 milliseconds.
 2025-06-19 15:02:56.104 +02:00 [INF] No validators found in the system!
 2025-06-19 15:02:57.656 +02:00 [INF] Serilog: No sessions to delete.
+2025-06-19 15:17:12.758 +02:00 [INF] Registered 11 endpoints in 1.828 milliseconds.
+2025-06-19 15:17:13.270 +02:00 [INF] No validators found in the system!
+2025-06-19 15:17:15.752 +02:00 [INF] Serilog: No sessions to delete.
