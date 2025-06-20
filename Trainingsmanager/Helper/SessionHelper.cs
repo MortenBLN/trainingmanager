@@ -16,6 +16,7 @@ namespace Trainingsmanager.Helper
                 PreAddMitglieder = request.PreAddMitglieder,
                 CountSessionsToCreate = request.CountSessionsToCreate,
                 SessionGruppenName = request.SessionGruppenName,
+                SessionVenue = request.SessionVenue,
 
                 // Set the new Training start and end to the value of i*7
                 TrainingStart = request.TrainingStart.AddDays(weeksInDays),

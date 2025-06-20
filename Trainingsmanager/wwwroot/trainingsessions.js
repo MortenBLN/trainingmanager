@@ -170,11 +170,9 @@ function addSessionToList(session, list, expired)
             if (!hasGroup)
             {
                 // Normal confirm dialog for sessions without a group
-                if (confirm("Delete this session?"))
-                {
-                    deleteSession(session.id, token);
-                }
-            } else
+                showDeleteSingleSessionChoiceDialog(session.id, token);
+            }
+            else
             {
                 // Custom popup for group/session delete choice
                 showDeleteChoiceDialog(session.id, session.sessionGruppenName, token);
@@ -278,6 +276,31 @@ function showDeleteChoiceDialog(sessionId, groupName, token)
     document.getElementById('delete-group').onclick = () =>
     {
         deleteSessionGroup(sessionId, token);
+        modal.remove();
+    };
+    document.getElementById('cancel').onclick = () =>
+    {
+        modal.remove();
+    };
+}
+
+function showDeleteSingleSessionChoiceDialog(sessionId, token)
+{
+    // Basic custom modal (or improve with Bootstrap modal if available)
+    const modal = document.createElement('div');
+    modal.className = 'custom-dialog';
+    modal.innerHTML = `
+        <div class="custom-dialog-box">
+            <p>Löschen bestätigen</p>
+            <button id="delete-single" class="btn btn-danger btn-sm mt-2">Session löschen</button>
+            <button id="cancel" class="btn btn-secondary btn-sm mt-2 ml-2">Abbrechen</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById('delete-single').onclick = () =>
+    {
+        deleteSession(sessionId, token);
         modal.remove();
     };
     document.getElementById('cancel').onclick = () =>

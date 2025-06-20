@@ -20,6 +20,7 @@ namespace Trainingsmanager.Mappers
                 TrainingStart = request.TrainingStart,
                 TrainingEnd = request.TrainingEnd,
                 SessionGruppenName = request.SessionGruppenName,
+                SessionVenue = request.SessionVenue
             };
         }
 
@@ -39,6 +40,7 @@ namespace Trainingsmanager.Mappers
                     CreatedById = session.Id,
                     SessionGroupId = session.SessionGroupId,
                     SessionGruppenName = session.SessionGruppenName,
+                    SessionVenue = session.SessionVenue
                 }).ToList()
             };
 
@@ -82,6 +84,7 @@ namespace Trainingsmanager.Mappers
                     },
                     SessionGroupId = session.SessionGroupId,
                     SessionGruppenName = session.SessionGruppenName,
+                    SessionVenue = session.SessionVenue
                 }).ToList()
             };
 
@@ -101,6 +104,7 @@ namespace Trainingsmanager.Mappers
                 CreatedById = request.CreatedById,
                 SessionGroupId = request.SessionGroupId,
                 SessionGruppenName = request.SessionGruppenName,
+                SessionVenue = request.SessionVenue
             };
         }
 
@@ -132,6 +136,7 @@ namespace Trainingsmanager.Mappers
                 }).ToList() ?? new List<AppUserDto>(),
                 SessionGroupId = request.SessionGroupId,
                 SessionGruppenName = request.SessionGruppenName,
+                SessionVenue = request.SessionVenue
             };
         }
 
@@ -147,6 +152,7 @@ namespace Trainingsmanager.Mappers
                 TrainingEnd = response.TrainingEnd,
                 Id = response.Id,
                 SessionGruppenName = response.SessionGruppenName,
+                SessionVenue = response.SessionVenue
             };
         }
 
@@ -156,6 +162,7 @@ namespace Trainingsmanager.Mappers
             sessionToUpdate.TrainingStart = request.TrainingStart;
             sessionToUpdate.TrainingEnd = request.TrainingEnd;
             sessionToUpdate.ApplicationsLimit = request.ApplicationsLimit;
+            sessionToUpdate.SessionVenue = request.SessionVenue;
 
             return sessionToUpdate;
         }

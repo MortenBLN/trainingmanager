@@ -19,5 +19,6 @@ namespace Trainingsmanager.Models
         // Possible Group
         public Guid? SessionGroupId { get; set; }
         public string? SessionGruppenName { get; set; }
+        public string? SessionVenue { get; set; }
     }
 }

@@ -25,6 +25,7 @@
             preAddMitglieder: document.getElementById("includeVips").checked,
             countSessionsToCreate: parseInt(document.getElementById("weeksInAdvance").value),
             sessionGruppenName: document.getElementById("groupname") != null ? document.getElementById("groupname").value.trim() : null,
+            sessionVenue: document.getElementById("venue").value.trim()
         };
 
         try

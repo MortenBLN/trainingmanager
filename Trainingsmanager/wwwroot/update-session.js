@@ -20,6 +20,7 @@
             trainingEnd: new Date(document.getElementById("trainingEnd").value).toISOString(),
             applicationsLimit: parseInt(document.getElementById("applicationsLimit").value),
             applicationsRequired: parseInt(document.getElementById("applicationsRequired").value),
+            sessionVenue: document.getElementById("venue").value,
         };
 
         try
@@ -88,6 +89,7 @@
             document.getElementById("trainingEnd").value = formatDateToLocalDatetimeString(new Date(session.trainingEnd));
             document.getElementById("applicationsLimit").value = session.applicationsLimit;
             document.getElementById("applicationsRequired").value = session.applicationsRequired;
+            document.getElementById("venue").value = session.sessionVenue;
             // Groupname is set in own function
 
             return session;

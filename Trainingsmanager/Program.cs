@@ -34,7 +34,6 @@ bld.Services.AddAuthorization();
 // Database
 bld.Services.AddDbContextFactory<Context>(options =>
 {
-    //options.UseNpgsql("Host=ep-black-meadow-a9ynyveo-pooler.gwc.azure.neon.tech;Port=5432;Username=neondb_owner;Password=npg_eSu1Kg2mtoPR;Database=mystampDB;SSL Mode=Require;Trust Server Certificate=true;");
     options.UseNpgsql("Host=ep-black-meadow-a9ynyveo-pooler.gwc.azure.neon.tech;Database=trainigmanager;Username=neondb_owner;Password=npg_eSu1Kg2mtoPR;SSL Mode=Require;Trust Server Certificate=true");
     //options.UseNpgsql("Host=localhost;Port=5432;Database=trainingsessions;Username=postgres;Password=apfelringe4");
 });
@@ -84,6 +83,30 @@ Log.Logger = new LoggerConfiguration()
 bld.Host.UseSerilog();
 
 var app = bld.Build();
+
+// Auto applies DB Updates
+using (var scope = app.Services.CreateScope())
+{
+    var dbFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<Context>>();
+    var db = await dbFactory.CreateDbContextAsync();
+
+    var pendingMigrations = await db.Database.GetPendingMigrationsAsync();
+    if (pendingMigrations.Any())
+    {
+        Log.Information("Applying {Count} pending EF Core migrations...", pendingMigrations.Count());
+        foreach (var migration in pendingMigrations)
+        {
+            Log.Information(" - {Migration}", migration);
+        }
+
+        await db.Database.MigrateAsync();
+        Log.Information("Migrations applied successfully.");
+    }
+    else
+    {
+        Log.Information("No pending EF Core migrations. Database is up to date.");
+    }
+}
 
 // For frontend access
 app.UseCors(x => x.AllowAnyOrigin());

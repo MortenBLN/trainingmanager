@@ -20,7 +20,7 @@
 </head>
 <body class="bg-light">
     <div class="container py-4">
-        <h1 class="text-center mb-4">Aktualisiere deine Training Session</h1>
+        <h1 class="text-center mb-4">Aktualisiere deine Session</h1>
         <div class="my-4">
             <button class="btn btn-secondary" onclick="window.location.href = `trainingsessions.html`;">
                 <i class="fa fa-arrow-left mr-2"></i> Zurück
@@ -57,6 +57,12 @@
                     <input type="number" class="form-control" id="applicationsRequired" value="0" min="0" />
                 </div>
             </div>
+
+            <div class="mb-3">
+                <label for="venue" class="form-label">Austragungsort</label>
+                <input type="text" class="form-control" id="venue" required />
+            </div>
+
             <div id="toast" class="toast-message"></div>
 
             <div id="groupname-container" style="display: none;"></div>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Trainingsmanager.Database;
@@ -11,9 +12,11 @@ using Trainingsmanager.Database;
 namespace Trainingsmanager.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20250620095819_updateLocalDb")]
+    partial class updateLocalDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,9 +82,6 @@ namespace Trainingsmanager.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("SessionGruppenName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SessionVenue")
                         .HasColumnType("text");
 
                     b.Property<string>("Teamname")

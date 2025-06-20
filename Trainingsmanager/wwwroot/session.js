@@ -138,6 +138,12 @@
             document.getElementById("limit").textContent = session.applicationsLimit + validSubCountString;
             document.getElementById("required").textContent = session.applicationsRequired;
 
+            // Display the venue, make Hyperlink clickable
+            if (session.sessionVenue != null && session.sessionVenue != undefined && session.sessionVenue != "")
+            {
+                renderVenue(session.sessionVenue);
+            }
+
             await renderSubscriptions(session.subscriptions);
 
             return session;
@@ -207,6 +213,15 @@
             showToast(err.message, "error");
         }
     });
+
+    function renderVenue(text)
+    {
+        const urlRegex = /(https?:\/\/[^\s]+)/gi;
+        const html = text.replace(urlRegex, url =>
+            `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+        );
+        document.getElementById("venue").innerHTML = html;
+    }
 
     function showToast(message, type = "success")
     {

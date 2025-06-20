@@ -7,5 +7,6 @@ namespace Trainingsmanager.Models
         public DateTime TrainingEnd { get; set; }
         public int ApplicationsLimit { get; set; } = 0;
         public int ApplicationsRequired { get; set; } = 0;
+        public string? SessionVenue { get; set; }
     }
 }
