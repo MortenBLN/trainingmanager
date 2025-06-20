@@ -621,3 +621,7 @@ ORDER BY "MigrationId";
 2025-06-20 15:57:00.506 +02:00 [INF] Registered 11 endpoints in 58.117 milliseconds.
 2025-06-20 15:57:00.927 +02:00 [INF] No validators found in the system!
 2025-06-20 15:57:01.601 +02:00 [INF] Serilog: No sessions to delete.
+2025-06-20 16:31:46.197 +02:00 [INF] No pending EF Core migrations. Database is up to date.
+2025-06-20 16:31:46.429 +02:00 [INF] Registered 11 endpoints in 77.620 milliseconds.
+2025-06-20 16:31:46.714 +02:00 [INF] No validators found in the system!
+2025-06-20 16:31:47.358 +02:00 [INF] Serilog: No sessions to delete.

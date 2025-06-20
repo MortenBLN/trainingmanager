@@ -33,10 +33,9 @@ bld.Services.AddAuthorization();
 
 var connectionString = bld.Configuration.GetConnectionString("DefaultConnection");
 
-// Database
+// Databasestring is overriden in azure
 bld.Services.AddDbContextFactory<Context>(options =>
 {
-    //options.UseNpgsql("Host=ep-black-meadow-a9ynyveo-pooler.gwc.azure.neon.tech;Database=trainigmanager;Username=neondb_owner;Password=npg_eSu1Kg2mtoPR;SSL Mode=Require;Trust Server Certificate=true");
     options.UseNpgsql(connectionString);
 });
 
