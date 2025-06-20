@@ -31,11 +31,13 @@ bld.Services.AddCors();
 bld.Services.AddAuthenticationJwtBearer(key => key.SigningKey = bld.Configuration["JwtSecret"]);
 bld.Services.AddAuthorization();
 
+var connectionString = bld.Configuration.GetConnectionString("DefaultConnection");
+
 // Database
 bld.Services.AddDbContextFactory<Context>(options =>
 {
-    options.UseNpgsql("Host=ep-black-meadow-a9ynyveo-pooler.gwc.azure.neon.tech;Database=trainigmanager;Username=neondb_owner;Password=npg_eSu1Kg2mtoPR;SSL Mode=Require;Trust Server Certificate=true");
-    //options.UseNpgsql("Host=localhost;Port=5432;Database=trainingsessions;Username=postgres;Password=apfelringe4");
+    //options.UseNpgsql("Host=ep-black-meadow-a9ynyveo-pooler.gwc.azure.neon.tech;Database=trainigmanager;Username=neondb_owner;Password=npg_eSu1Kg2mtoPR;SSL Mode=Require;Trust Server Certificate=true");
+    options.UseNpgsql(connectionString);
 });
 
 // Services
