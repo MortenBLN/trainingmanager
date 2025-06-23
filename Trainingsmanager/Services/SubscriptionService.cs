@@ -41,7 +41,7 @@ namespace Trainingsmanager.Services
             // If the removed subscription had the type 'Warteschlange' --> No further actions
             if (removedSubscriptionSuccessful.SubscriptionType == SubscriptionType.Warteschlange)
             {
-                _logger.LogInformation($"\nRemoved: {removedSubscriptionSuccessful.UserName} from Waitinglist");
+                _logger.LogInformation($"\nRemoved: {removedSubscriptionSuccessful.UserName} from Waitinglist", DateTime.UtcNow);
                 return;
             }
 
@@ -57,10 +57,10 @@ namespace Trainingsmanager.Services
             // There is no 'Warteschlange' Subscription --> Nothing further to do
             if (oldestQueuedSubscription == null)
             {
-                _logger.LogInformation($"\nRemoved: {removedSubscriptionSuccessful.UserName} from Subscriptionlist");
+                _logger.LogInformation($"\nRemoved: {removedSubscriptionSuccessful.UserName} from Subscriptionlist", DateTime.UtcNow);
                 return;
             }
-            _logger.LogInformation($"\n______ REMOVAL WITH FOLLOWING UPGRADE START ______\nRemoved: {removedSubscriptionSuccessful.UserName}\nUpgraded:{oldestQueuedSubscription.UserName} \n______ REMOVAL WITH FOLLOWING UPGRADE END ______");
+            _logger.LogInformation($"\n______ REMOVAL WITH FOLLOWING UPGRADE START ______\nRemoved: {removedSubscriptionSuccessful.UserName}\nUpgraded:{oldestQueuedSubscription.UserName} \n______ REMOVAL WITH FOLLOWING UPGRADE END ______", DateTime.UtcNow);
 
             await _repository.UpgradeSubscriptionTypeAsync(oldestQueuedSubscription, SubscriptionType.Angemeldet, ct);
         }
