@@ -134,9 +134,29 @@
 
             var validSubCountString = ` (${validSubsCount} belegt${additionalQueuedSubString})`;
 
+            const dateStart = new Date(session.trainingStart);
+            const formattedStart = dateStart.toLocaleString("de-DE", {
+                day: "numeric",
+                month: "numeric",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: undefined // omit seconds
+            });
+
+            const dateEnd = new Date(session.trainingEnd);
+            const formattedEnd = dateEnd.toLocaleString("de-DE", {
+                day: "numeric",
+                month: "numeric",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: undefined // omit seconds
+            });
+
             document.getElementById("teamname").textContent = session.teamname || "Unnamed Team";
-            document.getElementById("start").textContent = new Date(session.trainingStart).toLocaleString();
-            document.getElementById("end").textContent = new Date(session.trainingEnd).toLocaleString();
+            document.getElementById("start").textContent = `${formattedStart} Uhr`;
+            document.getElementById("end").textContent = `${formattedEnd} Uhr`;
             document.getElementById("limit").textContent = session.applicationsLimit + validSubCountString;
             document.getElementById("required").textContent = session.applicationsRequired;
 
