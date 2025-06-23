@@ -7,5 +7,6 @@ namespace Trainingsmanager.Models
         public Guid SessionId { get; set; }
         public string? Name { get; set; }
         public SubscriptionTypeDto SubscriptionType { get; set; }
+        public string? UpdateMail { get; set; }
     }
 }

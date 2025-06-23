@@ -1,8 +1,11 @@
-﻿using Trainingsmanager.Database.Enums;
+﻿using Microsoft.Extensions.Options;
+using Trainingsmanager.Database.Enums;
 using Trainingsmanager.Mappers;
 using Trainingsmanager.Models;
 using Trainingsmanager.Models.Enums;
+using Trainingsmanager.Options;
 using Trainingsmanager.Repositories;
+using Trainingsmanager.Services.EmailServices;
 
 namespace Trainingsmanager.Services
 {
@@ -12,13 +15,18 @@ namespace Trainingsmanager.Services
         private readonly ISubscriptionMapper _mapper;
         private readonly ISessionRepository _sessionRepository;
         private readonly ILogger<ISubscriptionService> _logger;
+        private readonly IEmailService _emailService;
+        private readonly EMailOptions _emailOptions;
 
-        public SubscriptionService(ISubscriptionRepository repository, ISubscriptionMapper mapper, ISessionRepository sessionRepository, ILogger<ISubscriptionService> logger)
+
+        public SubscriptionService(ISubscriptionRepository repository, ISubscriptionMapper mapper, ISessionRepository sessionRepository, ILogger<ISubscriptionService> logger, IEmailService emailService, IOptions<EMailOptions> emailOptions)
         {
             _repository = repository;
             _mapper = mapper;
             _sessionRepository = sessionRepository;
             _logger = logger;
+            _emailService = emailService;
+            _emailOptions = emailOptions.Value;
         }
 
         public async Task DeleteSubscriptionAsync(DeleteSubscriptionRequest request, CancellationToken ct)
@@ -61,6 +69,31 @@ namespace Trainingsmanager.Services
                 return;
             }
             _logger.LogInformation($"\n______ REMOVAL WITH FOLLOWING UPGRADE START ______\nRemoved: {removedSubscriptionSuccessful.UserName}\nUpgraded:{oldestQueuedSubscription.UserName} in {session.Teamname} with trainingstart at {session.TrainingStart} \n______ REMOVAL WITH FOLLOWING UPGRADE END ______", DateTime.UtcNow);
+
+            // Check if the user added a mail when adding the name to the waitlist --> if so, send mail that the subscription was upgraded
+            if (oldestQueuedSubscription.UpdateMail != null && oldestQueuedSubscription.UpdateMail != "")
+            {
+                try
+                {
+                    string trainingName = session.Teamname;
+
+                    // Add Id to the url
+                    string link = string.Format(_emailOptions.PathToservice, session.Id.ToString());
+
+                    // Format the message using string.Format
+                    string formattedBody = string.Format(
+                        _emailOptions.SubscriptionUpgrageMail,
+                        oldestQueuedSubscription.UserName,
+                        trainingName,
+                        link
+                    );
+                    _emailService.SendEmailAsync(oldestQueuedSubscription.UpdateMail, $"Teilnahme '{trainingName}'", formattedBody);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("Exception when trying to send mail: " + ex.Message, DateTime.UtcNow);
+                }
+            }
 
             await _repository.UpgradeSubscriptionTypeAsync(oldestQueuedSubscription, SubscriptionType.Angemeldet, ct);
         }

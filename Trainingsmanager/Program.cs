@@ -10,6 +10,7 @@ using Trainingsmanager.Mappers;
 using Trainingsmanager.Options;
 using Trainingsmanager.Repositories;
 using Trainingsmanager.Services;
+using Trainingsmanager.Services.EmailServices;
 using Trainingsmanager.Services.SchedulerServices;
 
 var bld = WebApplication.CreateBuilder();
@@ -45,6 +46,7 @@ bld.Services.AddScoped<ISessionService, SessionService>();
 bld.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 bld.Services.AddScoped<IAuthService, AuthService>();
 bld.Services.AddScoped<ISessionGroupService, SessionGroupService>();
+bld.Services.AddScoped<IEmailService, EmailService>();
 
 // Scheduler-Services
 bld.Services.AddScoped<SessionCleanupService>();
@@ -67,6 +69,8 @@ bld.Services.AddScoped<ISessionHelper,  SessonHelper>();
 // Options
 bld.Services.Configure<FixedSubsOptions>(bld.Configuration);
 bld.Services.Configure<JwtTokenOptions>(bld.Configuration);
+bld.Services.Configure<EMailOptions>(bld.Configuration.GetSection("EmailSettings"));
+
 
 var logDirectory = Path.Combine(AppContext.BaseDirectory, "Logs");
 

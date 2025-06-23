@@ -14,6 +14,7 @@ namespace Trainingsmanager.Mappers
                 SessionId = subscription.SessionId,
                 Name = subscription.UserName,
                 SubscriptionType = SubscriptionTypeToSubscriptionTypeDto(subscription.SubscriptionType),
+                UpdateMail = subscription.UpdateMail
             };
         }
 
@@ -29,6 +30,7 @@ namespace Trainingsmanager.Mappers
                 SessionId = request.SessionId,
                 UserName = request.Name,
                 SubscriptionType = SubscriptionTypeDtoToSubscriptionType(subscriptionType),
+                UpdateMail = request.UpdateMail,
             };
         }
 

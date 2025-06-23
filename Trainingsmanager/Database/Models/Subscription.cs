@@ -10,5 +10,6 @@ namespace Trainingsmanager.Database.Models
         public Guid SessionId { get; set; }
         public Session? Session { get; set; }
         public DateTime SubscribedAt { get; set; } = DateTime.UtcNow;
+        public string? UpdateMail { get; set; }
     }
 }

@@ -186,10 +186,24 @@
 
         try
         {
+            // Check if there is a free spot
+            var session = await fetchSession();
+            var remaining = session.applicationsLimit - session.subscriptions.length
+            var mail = null;
+
+            if (remaining <= 0)
+            {
+                const result = await showEmailPromptDialog(username);
+                if (result.continue)
+                {
+                    mail = result.email;
+                }
+            }
+
             const res = await fetch("/api/addSubscription", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ sessionId: sessionId, name: username })
+                body: JSON.stringify({ sessionId: sessionId, name: username, updateMail: mail })
             });
 
             if (!res.ok)
@@ -199,8 +213,8 @@
                 throw new Error(msg);
             }
 
-            const session = await fetchSession();
-            const remaining = session.applicationsLimit - session.subscriptions.length
+            session = await fetchSession();
+            remaining = session.applicationsLimit - session.subscriptions.length
 
             let freeSpotsString = ``;
 
@@ -320,6 +334,49 @@
             {
                 modal.remove();
                 resolve(false);
+            };
+        });
+    }
+
+    function showEmailPromptDialog(userName)
+    {
+        return new Promise((resolve) =>
+        {
+            // Remove existing dialog if present
+            const existingDialog = document.querySelector('.custom-dialog');
+            if (existingDialog) existingDialog.remove();
+
+            const modal = document.createElement('div');
+            modal.className = 'custom-dialog';
+            modal.innerHTML = `
+            <div class="custom-dialog-box">
+                <p>Hallo ${userName}, die Gruppe ist bereits voll.</p>
+                <p>Möchtest du eine E-Mail-Adresse eingeben, um benachrichtigt zu werden, wenn ein Platz frei wird?</p>
+                <input type="email" id="emailPromptInput" class="form-control form-control-sm mb-2" placeholder="email@example.com" />
+                <button id="emailConfirm" class="btn btn-success btn-sm">Ja, mit E-Mail fortfahren</button>
+                <button id="emailSkip" class="btn btn-secondary btn-sm ml-2">Nein, ohne E-Mail</button>
+            </div>
+        `;
+            document.body.appendChild(modal);
+
+            const emailInput = document.getElementById("emailPromptInput");
+
+            document.getElementById('emailConfirm').onclick = () =>
+            {
+                const email = emailInput.value.trim();
+                if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                {
+                    alert("Bitte gib eine gültige E-Mail-Adresse ein.");
+                    return;
+                }
+                modal.remove();
+                resolve({ continue: true, email: email || null });
+            };
+
+            document.getElementById('emailSkip').onclick = () =>
+            {
+                modal.remove();
+                resolve({ continue: true, email: null });
             };
         });
     }

@@ -57,6 +57,7 @@ namespace Trainingsmanager.Repositories
         public async Task UpgradeSubscriptionTypeAsync(Subscription subscriptionToUpgrade, SubscriptionType newSubscriptionType, CancellationToken ct)
         {
             subscriptionToUpgrade.SubscriptionType = newSubscriptionType;
+            subscriptionToUpgrade.UpdateMail = null;
 
             _context.Subscriptions.Update(subscriptionToUpgrade);
             await _context.SaveChangesAsync(ct);
