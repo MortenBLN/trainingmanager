@@ -53,6 +53,8 @@
             removeBtn.textContent = "❌";
             removeBtn.style.marginLeft = "10px";
             removeBtn.style.cursor = "pointer";
+            removeBtn.style.border = "none";
+            removeBtn.style.backgroundColor = "white";
             removeBtn.title = `Remove ${sub.userName}`;
             removeBtn.addEventListener("click", async() =>
             {
