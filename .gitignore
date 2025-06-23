@@ -6,3 +6,4 @@ obj/
 *.sqlite
 .vscode/
 appsettings.*.json
+**/logs/
