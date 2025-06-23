@@ -75,6 +75,21 @@ namespace Trainingsmanager.Services
             {
                 try
                 {
+                    if (session.Teamname == null)
+                    {
+                        throw new Exception("Der Teamname darf zum Senden der Mail nicht null sein.");
+                    }
+
+                    if (_emailOptions.SubscriptionUpgrageMail == null)
+                    {
+                        throw new Exception("Die SubscriptionUpgrageMail Vorlage darf zum Senden der Mail nicht null sein.");
+                    }
+
+                    if (_emailOptions.PathToservice == null)
+                    {
+                        throw new Exception("Der Pfad zum Service darf zum Senden der Mail nicht null sein.");
+                    }
+
                     string trainingName = session.Teamname;
 
                     // Add Id to the url
@@ -87,7 +102,7 @@ namespace Trainingsmanager.Services
                         trainingName,
                         link
                     );
-                    _emailService.SendEmailAsync(oldestQueuedSubscription.UpdateMail, $"Teilnahme '{trainingName}'", formattedBody);
+                    await _emailService.SendEmailAsync(oldestQueuedSubscription.UpdateMail, $"Teilnahme '{trainingName}'", formattedBody);
                 }
                 catch (Exception ex)
                 {
