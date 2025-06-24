@@ -43,6 +43,12 @@
     z-index: 1000;
 }
 
+.subtypeIcon {
+    width: 24px; /* Fixed width to reserve space */
+    text-align: center; /* Center icon inside reserved space */
+    display: inline-block; /* Make sure width applies */
+}
+
 .custom-dialog-box {
     background-color: #fff;
     padding: 20px;
