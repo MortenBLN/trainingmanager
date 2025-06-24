@@ -350,11 +350,13 @@
             modal.className = 'custom-dialog';
             modal.innerHTML = `
             <div class="custom-dialog-box">
-                <p>Hallo ${userName}, die Gruppe ist bereits voll.</p>
-                <p>Möchtest du eine E-Mail-Adresse eingeben, um benachrichtigt zu werden, wenn ein Platz frei wird?</p>
+                <p>Hallo ${userName}, du stehst auf der Warteliste.</p>
+                <p>Möchtest du benachrichtigt werden, sobald ein Platz für dich frei wird?</p>
                 <input type="email" id="emailPromptInput" class="form-control form-control-sm mb-2" placeholder="email@example.com" />
-                <button id="emailConfirm" class="btn btn-success btn-sm">Ja, mit E-Mail fortfahren</button>
-                <button id="emailSkip" class="btn btn-secondary btn-sm ml-2">Nein, ohne E-Mail</button>
+                <div class="d-flex justify-content-center mt-3" style="gap: 10px;">
+                    <button id="emailConfirm" class="btn btn-success btn-sm" style="width: 140px;">Benachrichtige mich!</button>
+                    <button id="emailSkip" class="btn btn-secondary btn-sm" style="width: 140px;">Ohne E-Mail fortfahren</button>
+                </div>
             </div>
         `;
             document.body.appendChild(modal);
