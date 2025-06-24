@@ -11,29 +11,37 @@
 
     <title>Login</title>
 </head>
-<body>
-    <div class="container login-container">
-        <h2 class="text-center mb-4">Login</h2>
+<body class="bg-light">
+    <div class="container px-4 pt-4">
+        <!-- Zurück button -->
+        <button class="btn btn-secondary mb-4" onclick="window.history.back();">
+            <i class="fa fa-arrow-left me-2"></i> Zurück
+        </button>
 
-        <form id="login-form">
-            <div class="mb-3">
-                <label for="email" class="form-label">Email-Adresse</label>
-                <input type="email" class="form-control" id="email" required />
+        <!-- Login Card -->
+        <div class="login-container bg-white shadow-sm p-4 rounded">
+            <h2 class="text-center mb-4">Login</h2>
+
+            <form id="login-form">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email-Adresse</label>
+                    <input type="email" class="form-control" id="email" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Passwort</label>
+                    <input type="password" class="form-control" id="password" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Einloggen</button>
+            </form>
+
+            <p class="text-center mt-3 fw-bold" id="login-message"></p>
+
+            <div id="post-login-buttons" style="display: none;">
+                <button id="go-create" class="btn btn-success w-100">➕ Session erstellen</button>
+                <button id="go-list" class="btn btn-outline-secondary w-100 mt-2">📋 Sessions Übersicht</button>
             </div>
-
-            <div class="mb-3">
-                <label for="password" class="form-label">Passwort</label>
-                <input type="password" class="form-control" id="password" required />
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Einloggen</button>
-        </form>
-
-        <p class="text-center mt-3 fw-bold" id="login-message"></p>
-
-        <div id="post-login-buttons" style="display: none;">
-            <button id="go-create" class="btn btn-success w-100">➕ Session erstellen</button>
-            <button id="go-list" class="btn btn-outline-secondary w-100 mt-2">📋 Sessions Übersicht</button>
         </div>
     </div>
 </body>
