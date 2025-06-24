@@ -1,4 +1,5 @@
-﻿using Trainingsmanager.Database.Models;
+﻿using Trainingsmanager.Database.Enums;
+using Trainingsmanager.Database.Models;
 using Trainingsmanager.Models;
 using Trainingsmanager.Models.Enums;
 
@@ -8,5 +9,6 @@ namespace Trainingsmanager.Mappers
     {
         SubscribeUserToSessionResponse SubscriptionToSubscribeUsersToSessionResponse(Subscription subscription, CancellationToken ct);
         Subscription SubscribeUserToSessionRequestToSession(SubscribeUserToSessionRequest request, SubscriptionTypeDto subscriptionType, CancellationToken ct);
+        Subscription SubscriptionToUpgradedSubscription(Subscription oldestQueuedSubscription, SubscriptionType newSubscriptionType);
     }
 }

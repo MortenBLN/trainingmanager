@@ -34,6 +34,15 @@ namespace Trainingsmanager.Mappers
             };
         }
 
+        // Upgrade a session --> delete mail that was used to inform user about upgrade
+        public Subscription SubscriptionToUpgradedSubscription(Subscription oldestQueuedSubscription, SubscriptionType newSubscriptionType)
+        {
+            oldestQueuedSubscription.SubscriptionType = newSubscriptionType;
+            oldestQueuedSubscription.UpdateMail = null;
+
+            return oldestQueuedSubscription;
+        }
+
         private static SubscriptionTypeDto SubscriptionTypeToSubscriptionTypeDto(SubscriptionType subscriptionType) => subscriptionType switch
         {
             SubscriptionType.Vorangemeldet => SubscriptionTypeDto.Vorangemeldet,

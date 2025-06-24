@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Trainingsmanager.Database.Enums;
+using Trainingsmanager.Database.Models;
 using Trainingsmanager.Mappers;
 using Trainingsmanager.Models;
 using Trainingsmanager.Models.Enums;
@@ -70,47 +71,7 @@ namespace Trainingsmanager.Services
             }
             _logger.LogInformation($"\n______ REMOVAL WITH FOLLOWING UPGRADE START ______\nRemoved: {removedSubscriptionSuccessful.UserName}\nUpgraded:{oldestQueuedSubscription.UserName} in {session.Teamname} with trainingstart at {session.TrainingStart} \n______ REMOVAL WITH FOLLOWING UPGRADE END ______", DateTime.UtcNow);
 
-            // Check if the user added a mail when adding the name to the waitlist --> if so, send mail that the subscription was upgraded
-            if (oldestQueuedSubscription.UpdateMail != null && oldestQueuedSubscription.UpdateMail != "")
-            {
-                try
-                {
-                    if (session.Teamname == null)
-                    {
-                        throw new Exception("Der Teamname darf zum Senden der Mail nicht null sein.");
-                    }
-
-                    if (_emailOptions.SubscriptionUpgrageMail == null)
-                    {
-                        throw new Exception("Die SubscriptionUpgrageMail Vorlage darf zum Senden der Mail nicht null sein.");
-                    }
-
-                    if (_emailOptions.PathToservice == null)
-                    {
-                        throw new Exception("Der Pfad zum Service darf zum Senden der Mail nicht null sein.");
-                    }
-
-                    string trainingName = session.Teamname;
-
-                    // Add Id to the url
-                    string link = string.Format(_emailOptions.PathToservice, session.Id.ToString());
-
-                    // Format the message using string.Format
-                    string formattedBody = string.Format(
-                        _emailOptions.SubscriptionUpgrageMail,
-                        oldestQueuedSubscription.UserName,
-                        trainingName,
-                        link
-                    );
-                    await _emailService.SendEmailAsync(oldestQueuedSubscription.UpdateMail, $"Teilnahme '{trainingName}'", formattedBody);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("Exception when trying to send mail: " + ex.Message, DateTime.UtcNow);
-                }
-            }
-
-            await _repository.UpgradeSubscriptionTypeAsync(oldestQueuedSubscription, SubscriptionType.Angemeldet, ct);
+            await UpgradeSubscription(oldestQueuedSubscription, session, ct);
         }
 
         public Task<GetSessionResponse> GetSubscriptionsOfSessionBySessionIdAsync(Guid sessionId, CancellationToken ct)
@@ -143,6 +104,60 @@ namespace Trainingsmanager.Services
             var addedSubscription = await _repository.SubscribeToSessionAsync(subscriptionToAdd, ct);
 
             return _mapper.SubscriptionToSubscribeUsersToSessionResponse(addedSubscription, ct);
+        }
+
+        public async Task UpgradeSubscription(Subscription oldestQueuedSubscription, Session session, CancellationToken ct)
+        {
+            await SendMail(oldestQueuedSubscription, session);
+
+            var subscriptionToUpgrade = _mapper.SubscriptionToUpgradedSubscription(oldestQueuedSubscription, SubscriptionType.Angemeldet);
+            await _repository.UpgradeSubscriptionTypeAsync(subscriptionToUpgrade, ct);
+        }
+
+        private async Task SendMail(Subscription oldestQueuedSubscription, Session session)
+        {
+            // Check if the user added a mail when adding the name to the waitlist --> if so, send mail that the subscription was upgraded
+            if (oldestQueuedSubscription.UpdateMail == null && oldestQueuedSubscription.UpdateMail == "")
+            {
+                return;
+            }
+
+            try
+            {
+                if (session.Teamname == null)
+                {
+                    throw new Exception("Der Teamname darf zum Senden der Mail nicht null sein.");
+                }
+
+                if (_emailOptions.SubscriptionUpgrageMail == null)
+                {
+                    throw new Exception("Die SubscriptionUpgrageMail Vorlage darf zum Senden der Mail nicht null sein.");
+                }
+
+                if (_emailOptions.PathToservice == null)
+                {
+                    throw new Exception("Der Pfad zum Service darf zum Senden der Mail nicht null sein.");
+                }
+
+                string trainingName = session.Teamname;
+
+                // Add Id to the url
+                string link = string.Format(_emailOptions.PathToservice, session.Id.ToString());
+
+                // Format the message using string.Format
+                string formattedBody = string.Format(
+                    _emailOptions.SubscriptionUpgrageMail,
+                    oldestQueuedSubscription.UserName,
+                    trainingName,
+                    link
+                );
+
+                await _emailService.SendEmailAsync(oldestQueuedSubscription.UpdateMail!, $"Teilnahme '{trainingName}'", formattedBody);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Exception when trying to send mail: " + ex.Message, DateTime.UtcNow);
+            }
         }
     }
 }

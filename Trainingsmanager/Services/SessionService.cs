@@ -18,11 +18,12 @@ namespace Trainingsmanager.Services
         private readonly ISessionGroupRepository _sessionGroupRepository;
         private readonly ISessionHelper _helper;
         private readonly ISubscriptionMapper _subscriptionMapper;
+        private readonly ISubscriptionService _subscriptionService;
         private readonly ILogger<ISessionService> _logger;
 
         private readonly List<string> _fixedPreAddMitglieder;
 
-        public SessionService (ISessionRepository repository, ISessionMapper mapper, IUserService userService, ISubscriptionRepository subscriptionRepository, IOptions<FixedSubsOptions> options, ISessionHelper helper, ISessionGroupRepository sessionGroupRepository, ISubscriptionMapper subscriptionMapper, ILogger<ISessionService> logger)
+        public SessionService (ISessionRepository repository, ISessionMapper mapper, IUserService userService, ISubscriptionRepository subscriptionRepository, IOptions<FixedSubsOptions> options, ISessionHelper helper, ISessionGroupRepository sessionGroupRepository, ISubscriptionMapper subscriptionMapper, ISubscriptionService subscriptionService, ILogger<ISessionService> logger)
         {
             _repository = repository;
             _mapper = mapper;
@@ -31,6 +32,7 @@ namespace Trainingsmanager.Services
             _helper = helper;
             _sessionGroupRepository = sessionGroupRepository;
             _subscriptionMapper = subscriptionMapper;
+            _subscriptionService = subscriptionService;
 
             _fixedPreAddMitglieder = options.Value.FixedSubs;
             _logger = logger;
@@ -134,7 +136,8 @@ namespace Trainingsmanager.Services
 
                 foreach (var subscription in queuedSubscriptions)
                 {
-                    await _subscriptionRepository.UpgradeSubscriptionTypeAsync(subscription, SubscriptionType.Angemeldet, ct);
+                    // Send mail to each user that subscribed to mail and is in Queue
+                    await _subscriptionService.UpgradeSubscription(subscription, updatedSession, ct);
                 }
             }
 

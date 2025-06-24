@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Trainingsmanager.Database;
-using Trainingsmanager.Database.Enums;
 using Trainingsmanager.Database.Models;
 using Trainingsmanager.Models;
 
@@ -54,11 +53,8 @@ namespace Trainingsmanager.Repositories
             return newSubscription.Entity;
         }
 
-        public async Task UpgradeSubscriptionTypeAsync(Subscription subscriptionToUpgrade, SubscriptionType newSubscriptionType, CancellationToken ct)
+        public async Task UpgradeSubscriptionTypeAsync(Subscription subscriptionToUpgrade, CancellationToken ct)
         {
-            subscriptionToUpgrade.SubscriptionType = newSubscriptionType;
-            subscriptionToUpgrade.UpdateMail = null;
-
             _context.Subscriptions.Update(subscriptionToUpgrade);
             await _context.SaveChangesAsync(ct);
         }
