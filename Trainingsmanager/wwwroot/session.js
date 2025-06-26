@@ -407,7 +407,7 @@
             document.getElementById('abort').onclick = () =>
             {
                 modal.remove();
-                resolve({ continue: true, email: null });
+                resolve({ continue: false, email: null });
             };
         });
     }
