@@ -6,7 +6,7 @@ namespace Trainingsmanager.Services.EmailServices
     public class EmailService : IEmailService
     {
         private readonly string _from = "trainings.manager.info@gmail.com";
-        private readonly string _appPassword = "zxulufswsadkhfoo";
+        private readonly string _appPassword = "pgcqglubkelxnlnh";
         private readonly string _smtpServer = "smtp.gmail.com";
         private readonly int _smtpPort = 587;
 
