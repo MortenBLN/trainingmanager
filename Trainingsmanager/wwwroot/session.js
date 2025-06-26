@@ -15,7 +15,7 @@
         return;
     }
 
-    async function renderSubscriptions(subscriptions)
+    async function renderSubscriptions(subscriptions, sessionIsExpired)
     {
         const validSubscriptionsList = document.getElementById("validSubscriptionList");
         const queuedSubscriptionsList = document.getElementById("queuedSubscriptionList");
@@ -47,25 +47,8 @@
         }
 
         // render lists
-        async function renderToList(list, listType, sub, index = null)
+        async function renderToList(list, listType, sub, sessionIsExpired, index = null)
         {
-            const removeBtn = document.createElement("button");
-            removeBtn.textContent = "❌";
-            removeBtn.style.marginLeft = "10px";
-            removeBtn.style.cursor = "pointer";
-            removeBtn.style.border = "none";
-            removeBtn.style.backgroundColor = "white";
-            removeBtn.title = `Remove ${sub.userName}`;
-            removeBtn.addEventListener("click", async() =>
-            {
-                const confirmed = await showDeleteConfirmationDialog(sub.userName, listType);
-
-                if (confirmed)
-                {
-                    deleteSubscription(sub.id, sub.userName);
-                }
-            });
-
             const subscribedAtDate = new Date(sub.subscribedAt);
             const subscribedAtDateFormated = subscribedAtDate.toLocaleString("de-DE", {
                 day: "numeric",
@@ -100,18 +83,40 @@
             `;
 
             list.appendChild(li);
-            li.querySelector('.right-content').appendChild(removeBtn);
+
+            // Allow delete only when session is not expired yet
+            if (!sessionIsExpired)
+            {
+                const removeBtn = document.createElement("button");
+                removeBtn.textContent = "❌";
+                removeBtn.style.marginLeft = "10px";
+                removeBtn.style.cursor = "pointer";
+                removeBtn.style.border = "none";
+                removeBtn.style.backgroundColor = "white";
+                removeBtn.title = `Remove ${sub.userName}`;
+                removeBtn.addEventListener("click", async () =>
+                {
+                    const confirmed = await showDeleteConfirmationDialog(sub.userName, listType);
+
+                    if (confirmed)
+                    {
+                        deleteSubscription(sub.id, sub.userName);
+                    }
+                });
+
+                li.querySelector('.right-content').appendChild(removeBtn);
+            }
         }
 
         // Render both lists
         for (const sub of validSubs)
         {
-            await renderToList(validSubscriptionsList, "Teilnehmerliste", sub);
+            await renderToList(validSubscriptionsList, "Teilnehmerliste", sub, sessionIsExpired);
         }
 
         for (const [index, sub] of queuedSubs.entries())
         {
-            await renderToList(queuedSubscriptionsList, "Warteliste", sub, index);
+            await renderToList(queuedSubscriptionsList, "Warteliste", sub, sessionIsExpired, index);
         }
     }
 
@@ -158,6 +163,9 @@
                 second: undefined // omit seconds
             });
 
+            const now = new Date();
+            const sessionIsExpired = dateStart < now;
+
             document.getElementById("teamname").textContent = session.teamname || "Unnamed Team";
             document.getElementById("start").textContent = `${formattedStart} Uhr`;
             document.getElementById("end").textContent = `${formattedEnd} Uhr`;
@@ -170,7 +178,7 @@
                 renderVenue(session.sessionVenue);
             }
 
-            await renderSubscriptions(session.subscriptions);
+            await renderSubscriptions(session.subscriptions, sessionIsExpired);
 
             return session;
         }
