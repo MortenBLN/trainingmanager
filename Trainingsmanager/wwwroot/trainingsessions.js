@@ -89,7 +89,7 @@ function addSessionToList(session, list, expired)
     const subscriptions = Array.isArray(session.subscriptions) ? session.subscriptions : [];
     const isFull = subscriptions.length >= session.applicationsLimit;
 
-    var freeSpontsCount = session.applicationsLimit - session.subscriptions.length;
+    var freeSpotsCount = session.applicationsLimit - session.subscriptions.length;
 
     var groupName = "";
 
@@ -99,9 +99,9 @@ function addSessionToList(session, list, expired)
     }
 
     // Do not show negative spot count
-    if (freeSpontsCount < 0)
+    if (freeSpotsCount < 0)
     {
-        freeSpontsCount = 0;
+        freeSpotsCount = 0;
     }
 
     const icon = isFull ? "<i class=\"fa fa-times-circle xicon\"></i>" : "<i class=\"fa fa-check-circle checkicon\"></i>"
@@ -141,7 +141,22 @@ function addSessionToList(session, list, expired)
 
     const info = document.createElement('div');
     info.className = 'd-flex flex-column mr-2';
-    info.innerHTML = `<div><i class="fa fa-users"></i><span class="ml-2">${freeSpontsCount} frei</span></div>`;
+    info.innerHTML = `<div><i class="fa fa-users"></i><span class="ml-2">${freeSpotsCount} frei</span></div>`;
+
+    if (freeSpotsCount === 0)
+    {
+        const bottomRightLabel = document.createElement('small');
+        bottomRightLabel.textContent = "Warteliste offen";
+        bottomRightLabel.className = "position-absolute text-muted text-nowrap"; // <-- prevent wrapping
+        bottomRightLabel.style.bottom = "-18px";
+        bottomRightLabel.style.right = "-5px";
+        bottomRightLabel.style.fontSize = "0.67rem"; // manual size
+
+        // Ensure parent is position: relative
+        rightSide.classList.add("position-relative");
+
+        rightSide.appendChild(bottomRightLabel);
+    }
 
     rightSide.appendChild(info);
 

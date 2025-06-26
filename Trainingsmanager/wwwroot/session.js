@@ -137,8 +137,13 @@
             var additionalQueuedSubString = "";
 
             if (queuedSubsCount != null && queuedSubsCount != undefined && queuedSubsCount > 0)
-            {             
+            {
                 additionalQueuedSubString = ` & ${queuedSubsCount} warten`
+            }
+            // If the group is full and there is NO ONE waiting yet
+            else if (session.applicationsLimit == validSubsCount && (queuedSubsCount != null || queuedSubsCount != undefined || queuedSubsCount == 0))
+            {
+                additionalQueuedSubString = " - Warteliste offen"
             }
 
             var validSubCountString = ` (${validSubsCount} belegt${additionalQueuedSubString})`;
