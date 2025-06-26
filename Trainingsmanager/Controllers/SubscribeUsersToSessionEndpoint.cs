@@ -27,7 +27,7 @@ namespace Trainingsmanager.Controllers
             {
                 response = await _service.SubscribeToSessionAsync(req, ct);
             }
-            catch(InvalidOperationException ex)
+            catch(Exception ex)
             {
                 ThrowError(ex.Message);
             }

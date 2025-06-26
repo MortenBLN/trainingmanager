@@ -198,10 +198,13 @@
             if (remaining <= 0)
             {
                 const result = await showEmailPromptDialog(username);
-                if (result.continue)
+
+                if (result.continue == false)
                 {
-                    mail = result.email;
+                    return;
                 }
+
+                mail = result.email;
             }
 
             const res = await fetch("/api/addSubscription", {
@@ -353,16 +356,24 @@
             const modal = document.createElement('div');
             modal.className = 'custom-dialog';
             modal.innerHTML = `
-            <div class="custom-dialog-box">
-                <p>Hallo ${userName}, du stehst auf der Warteliste.</p>
-                <p>Möchtest du benachrichtigt werden, sobald ein Platz für dich frei wird?</p>
-                <input type="email" id="emailPromptInput" class="form-control form-control-sm mb-2" placeholder="email@example.com" />
-                <div class="d-flex justify-content-center mt-3" style="gap: 10px;">
-                    <button id="emailConfirm" class="btn btn-success btn-sm" style="width: 140px;">Benachrichtige mich!</button>
-                    <button id="emailSkip" class="btn btn-secondary btn-sm" style="width: 140px;">Ohne E-Mail fortfahren</button>
-                </div>
-            </div>
-        `;
+                <div class="custom-dialog-box text-center">
+                    <p>Hallo ${userName}, du stehst auf der Warteliste.</p>
+                    <p>Möchtest du benachrichtigt werden, sobald ein Platz für dich frei wird?</p>
+
+                    <div class="d-flex flex-column align-items-center mt-2" style="gap: 20px;">
+                        <input type="email" id="emailPromptInput" class="form-control form-control-sm" 
+                               placeholder="email@example.com"                
+                               style="width: 290px; background-color: #f9f9f9; border: 3px solid #ccc; box-shadow: 0 0 4px rgba(0,0,0,0.1); border-radius: 4px;" />
+                        <div class="d-flex" style="gap: 10px;">
+                            <button id="emailConfirm" class="btn btn-success btn-sm" style="width: 140px; height:50px;">Benachrichtige mich!</button>
+                            <button id="emailSkip" class="btn btn-secondary btn-sm" style="width: 140px; height:50px;">Ohne E-Mail fortfahren</button>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-3">
+                        <button id="abort" class="btn btn-danger btn-sm" style="width: 140px; height:50px;">Abbrechen</button>
+                    </div>
+                </div>`;
             document.body.appendChild(modal);
 
             const emailInput = document.getElementById("emailPromptInput");
@@ -380,6 +391,12 @@
             };
 
             document.getElementById('emailSkip').onclick = () =>
+            {
+                modal.remove();
+                resolve({ continue: true, email: null });
+            };
+
+            document.getElementById('abort').onclick = () =>
             {
                 modal.remove();
                 resolve({ continue: true, email: null });

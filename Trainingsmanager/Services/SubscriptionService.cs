@@ -89,6 +89,11 @@ namespace Trainingsmanager.Services
             // Check if max subscription count is already hit
             var session = await _sessionRepository.GetSessionByIdAsync(request.SessionId, ct);
 
+            if (session.TrainingStart < DateTime.UtcNow)
+            {
+                throw new Exception("Die Session ist bereits abgelaufen, keine Anmeldung möglich.");
+            }
+
             var subAmount = session.Subscriptions.Count();
             var maxSubAmount = session.ApplicationsLimit;
 

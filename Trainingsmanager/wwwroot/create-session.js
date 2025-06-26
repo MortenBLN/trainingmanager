@@ -139,24 +139,43 @@
         const trainingEnd = document.getElementById("trainingEnd");
         const message = document.getElementById("session-message");
 
+        // Set minimum end time on start time change
         trainingStart.addEventListener("change", () =>
         {
             trainingEnd.min = trainingStart.value;
+            validateEndTime(); // validate immediately when start changes
         });
 
+        // Validate live when end time changes
+        trainingEnd.addEventListener("change", validateEndTime);
+
+        // Also run check during form submission
         form.addEventListener("submit", (e) =>
+        {
+            if (!validateEndTime())
+            {
+                e.preventDefault(); // prevent submit if validation fails
+            }
+        });
+
+        function validateEndTime()
         {
             const start = new Date(trainingStart.value);
             const end = new Date(trainingEnd.value);
 
-            if (end <= start)
+            if (trainingStart.value && trainingEnd.value && end <= start)
             {
-                e.preventDefault();
                 message.textContent = "⚠️ Das Enddatum muss nach dem Startdatum liegen.";
                 message.style.color = "red";
                 trainingEnd.focus();
+                return false;
             }
-        });
+            else
+            {
+                message.textContent = "";
+                return true;
+            }
+        }
     }
 
     function createAndToggleGroupNameInput()
