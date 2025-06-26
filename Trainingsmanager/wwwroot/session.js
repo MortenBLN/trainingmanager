@@ -138,7 +138,7 @@
 
             if (queuedSubsCount != null && queuedSubsCount != undefined && queuedSubsCount > 0)
             {
-                additionalQueuedSubString = ` & ${queuedSubsCount} warten`
+                additionalQueuedSubString = ` - ${queuedSubsCount} auf Warteliste`
             }
             // If the group is full and there is NO ONE waiting yet
             else if (session.applicationsLimit == validSubsCount && (queuedSubsCount != null || queuedSubsCount != undefined || queuedSubsCount == 0))
@@ -146,7 +146,7 @@
                 additionalQueuedSubString = " - Warteliste offen"
             }
 
-            var validSubCountString = ` (${validSubsCount} belegt${additionalQueuedSubString})`;
+            var validSubCountString = `${validSubsCount} von ${session.applicationsLimit} ${additionalQueuedSubString}`;
 
             const dateStart = new Date(session.trainingStart);
             const formattedStart = dateStart.toLocaleString("de-DE", {
@@ -174,7 +174,7 @@
             document.getElementById("teamname").textContent = session.teamname || "Unnamed Team";
             document.getElementById("start").textContent = `${formattedStart} Uhr`;
             document.getElementById("end").textContent = `${formattedEnd} Uhr`;
-            document.getElementById("limit").textContent = session.applicationsLimit + validSubCountString;
+            document.getElementById("limit").textContent = validSubCountString;
             document.getElementById("required").textContent = session.applicationsRequired;
 
             // Display the venue, make Hyperlink clickable
