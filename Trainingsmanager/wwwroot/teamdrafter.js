@@ -149,7 +149,7 @@
 
     document.getElementById("apiDropdown").addEventListener("change", async (event) =>
     {
-        const sessionId = event.target.value; // Now contains sessionId
+        const sessionId = event.target.value;
         var usernamesList = document.getElementById("usernames");
 
         const res = await fetch(`/api/getSessionById/${sessionId}`);
@@ -162,9 +162,7 @@
             .map(sub => sub.userName)
             .join(", ");
 
-        usernamesList.value = usernamesString;
-
-       
+        usernamesList.value = usernamesString;       
     });
 
     loadDropdownOptions();
