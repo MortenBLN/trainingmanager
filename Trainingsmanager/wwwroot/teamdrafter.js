@@ -110,8 +110,21 @@
             cardBody.className = "card-body";
 
             const title = document.createElement("h5");
-            title.className = "card-title";
-            title.textContent = `Team ${idx + 1}`;
+            title.className = "card-title d-flex align-items-center"; // Use flex to align vertically
+
+            // Create main title span
+            const mainTitle = document.createElement("span");
+            mainTitle.textContent = `Team ${idx + 1}`;
+
+            // Create smaller font span
+            const subtitle = document.createElement("small");
+            subtitle.className = "text-muted ml-2 small"; // Small text with left margin
+
+            subtitle.textContent = `- ${group.length}er Team  -`;
+
+            // Append both to the title
+            title.appendChild(mainTitle);
+            title.appendChild(subtitle);
 
             const ul = document.createElement("ul");
             ul.className = "list-group list-group-flush";
@@ -131,7 +144,7 @@
             listsContainer.appendChild(col);
         });
 
-        feedback.textContent = "Lists generated!";
+        feedback.textContent = `${groups.length} Teams mit ${totalUsers} Namen erstellt`;
     });
 
     document.getElementById("apiDropdown").addEventListener("change", async (event) =>
