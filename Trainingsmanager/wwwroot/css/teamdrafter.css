@@ -22,6 +22,14 @@ h1 {
     padding: 0.25rem 0;
 }
 
+.transition {
+    transition: transform 0.3s ease;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
 #apiDropdown,
 #apiDropdown option {
     color: black !important;

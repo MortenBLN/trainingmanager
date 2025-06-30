@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Team Drafter</title>
 
     <!-- Styles and Bootstrap -->
     <link rel="stylesheet" href="css/listStyle.css" />
     <link rel="stylesheet" href="css/teamdrafter.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
     <!-- Scripts -->
-    <script src="teamdrafter.js" defer></script>
+    <script src="teamdrafter.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
 </head>
-
 <body>
     <div id="team-drafter" class="container px-4 pt-4">
         <!-- Top Navigation Buttons -->
@@ -50,6 +48,18 @@
                 <div class="mb-4">
                     <label for="numberInput" class="form-label"><strong>Anzahl der Teams (2–6)</strong></label>
                     <input type="number" class="form-control" id="numberInput" min="2" max="6" value="2" required />
+                </div>
+
+                <!-- Collapsible checkbox section -->
+                <div class="mb-4">
+                    <button class="btn btn-outline-primary mb-2 d-flex align-items-center" type="button" data-toggle="collapse" data-target="#checkboxCollapse" aria-expanded="false" aria-controls="checkboxCollapse">
+                        Spielende trennen
+                        <i class="fa fa-chevron-down ml-2 transition" id="collapseArrow"></i>
+                    </button>
+                    <div class="collapse" id="checkboxCollapse">
+                        <small class="text-muted d-block mb-2">Maximum entspricht der Gruppenanzahl</small>
+                        <div id="checkboxContainer" class="border p-3 rounded"></div>
+                    </div>
                 </div>
 
                 <!-- Submit button -->
