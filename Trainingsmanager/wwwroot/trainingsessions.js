@@ -185,7 +185,7 @@ function addSessionToList(session, list, expired)
             if (!hasGroup)
             {
                 // Normal confirm dialog for sessions without a group
-                showDeleteSingleSessionChoiceDialog(session.id, token);
+                showDeleteSingleSessionChoiceDialog(session.id, token, session.teamname);
             }
             else
             {
@@ -299,14 +299,14 @@ function showDeleteChoiceDialog(sessionId, groupName, token)
     };
 }
 
-function showDeleteSingleSessionChoiceDialog(sessionId, token)
+function showDeleteSingleSessionChoiceDialog(sessionId, token, teamname)
 {
     // Basic custom modal (or improve with Bootstrap modal if available)
     const modal = document.createElement('div');
     modal.className = 'custom-dialog';
     modal.innerHTML = `
         <div class="custom-dialog-box">
-            <p>Löschen bestätigen</p>
+            <p>Löschen von '${teamname}' bestätigen</p>
             <button id="delete-single" class="btn btn-danger btn-sm mt-2">Session löschen</button>
             <button id="cancel" class="btn btn-secondary btn-sm mt-2 ml-2">Abbrechen</button>
         </div>
