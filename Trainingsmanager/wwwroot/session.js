@@ -5,6 +5,7 @@
     const form = document.getElementById("add-subscription-form");
     const usernameInput = document.getElementById("username-input");
     const messageP = document.getElementById("subscription-message");
+    const draftTeamsBtn = document.getElementById("shuffleBtn");
 
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("id");
@@ -268,6 +269,10 @@
             messageP.textContent = err.message;
             showToast(err.message, "error");
         }
+    });
+
+    draftTeamsBtn.addEventListener("click", () => {
+        window.location.href = `teamdrafter.html?sessionId=${encodeURIComponent(sessionId)}`;
     });
 
     function renderVenue(text)

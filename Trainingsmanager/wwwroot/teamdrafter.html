@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Team Drafter</title>
+
+    <!-- Styles and Bootstrap -->
+    <link rel="stylesheet" href="css/listStyle.css" />
+    <link rel="stylesheet" href="css/teamdrafter.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+
+    <!-- Scripts -->
+    <script src="teamdrafter.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <div id="team-drafter" class="container px-4 pt-4">
+        <!-- Top Navigation Buttons -->
+        <div class="d-flex justify-content-between mb-4">
+            <button class="btn btn-secondary" onclick="window.history.back();">
+                <i class="fa fa-arrow-left mr-2"></i>Zurück
+            </button>
+        </div>
+
+        <!-- Main Card -->
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-4">Team Shuffle</h1>
+
+                <!-- Dropdown -->
+                <div class="mb-3">
+                    <label for="apiDropdown" class="form-label"><strong>Session wählen</strong></label>
+                    <select class="form-control" id="apiDropdown">
+                        <option value="" disabled selected>Wird geladen...</option>
+                    </select>
+                </div>
+
+                <!-- Textarea -->
+                <div class="mb-3">
+                    <label for="usernames" class="form-label"><strong>Spielende (kommagetrennt)</strong></label>
+                    <textarea class="form-control" id="usernames" rows="5" placeholder="z.B. Gannu, Notab, Name" required></textarea>
+                </div>
+
+                <!-- Number input -->
+                <div class="mb-4">
+                    <label for="numberInput" class="form-label"><strong>Anzahl der Teams (2–6)</strong></label>
+                    <input type="number" class="form-control" id="numberInput" min="2" max="6" value="2" required />
+                </div>
+
+                <!-- Submit button -->
+                <button class="btn btn-success btn-block w-100" id="submitButton">
+                    Teams erstellen
+                    <i class="fa fa-random ml-2"></i>
+                </button>
+
+                <!-- Feedback and Output -->
+                <p id="feedback" class="text-center mt-3 text-success font-weight-bold"></p>
+                <div id="listsContainer" class="row mt-4"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+﻿body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f8f9fa;
+}
+
+h1 {
+    font-size: 1.8rem;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.form-check-label {
+    min-width: 40px;
+    text-align: right;
+}
+
+.flex-button {
+    width: 40px; /* or whatever width fits your layout */
+    text-align: center;
+    padding: 0.25rem 0;
+}
+
+#apiDropdown,
+#apiDropdown option {
+    color: black !important;
+}
+
+
