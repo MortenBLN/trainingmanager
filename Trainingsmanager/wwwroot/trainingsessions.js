@@ -37,7 +37,7 @@ async function loadSessions()
             }
         }
 
-        updateLoginUI(); // Call on load or re-call
+        updateLoginUI();
 
         const sessions = data.sessions;
         const now = new Date();
@@ -81,11 +81,18 @@ async function loadSessions()
     }
 }
 
-// 🔁 Call on initial load
 document.addEventListener("DOMContentLoaded", loadSessions);
 
 function addSessionToList(session, list, expired)
 {
+    var token = localStorage.getItem("jwt_token");
+    var isAdmin = false;
+
+    if (token != null)
+    {
+        isAdmin = getHasAdminRole(token);
+    }
+
     const subscriptions = Array.isArray(session.subscriptions) ? session.subscriptions : [];
     const isFull = subscriptions.length >= session.applicationsLimit;
 
@@ -108,33 +115,57 @@ function addSessionToList(session, list, expired)
 
     const start = new Date(session.trainingStart);
     const end = new Date(session.trainingEnd);
-
     const formattedDate = formatDate(start);
 
-    const durationMs = end - start;
+    // if admin, show hours, if not show start-endtime
+    var timeStringToShow;
 
-    // Convert to hours
-    const durationHours = durationMs / (1000 * 60 * 60);
+    if (isAdmin)
+    {
+        const durationMs = end - start;
 
-    // Optionally, round to 1 decimal place
-    const roundedDuration = Math.round(durationHours * 10) / 10;
+        // Convert to hours
+        const durationHours = durationMs / (1000 * 60 * 60);
 
+        // round to 1 decimal place
+        timeStringToShow = Math.round(durationHours * 10) / 10 + "h";
+    }
+    else
+    {
+        const formattedStart = start.toLocaleString("de-DE", {
+            hour: "numeric", minute: "numeric"
+        });
+
+        const formattedEnd = end.toLocaleString("de-DE", {
+            hour: "numeric", minute: "numeric"
+        });
+
+        timeStringToShow = `${formattedStart}-${formattedEnd}`;
+    }
+
+  
     const li = document.createElement('li');
     li.className = 'd-flex justify-content-between align-items-center';
 
     const leftSide = `
-        <div class="d-flex flex-row align-items-center">
-            ${icon}
-            <div class="ml-2">
-                <h6 class="mb-0 text-truncate" style="max-width: 180px;" title="${session.teamname + groupName}">
-                  ${(session.teamname + groupName).length > 16 ? (session.teamname + groupName).substring(0, 16) + "…" : (session.teamname + groupName) }
-                </h6>
-                <div class="d-flex flex-row mt-1 text-black-50 date-time">
-                    <div><i class="fa fa-calendar-o"></i><span class="ml-2">${formattedDate}</span></div>
-                    <div class="ml-3"><i class="fa fa-clock-o"></i><span class="ml-2">${roundedDuration}h</span></div>
+    <div class="d-flex flex-row align-items-center">
+        ${icon}
+        <div class="ml-2">
+            <h6 class="mb-0 text-truncate" style="max-width: 180px;" title="${session.teamname + groupName}">
+              ${(session.teamname + groupName).length > 16 ? (session.teamname + groupName).substring(0, 16) + "…" : (session.teamname + groupName)}
+            </h6>
+            <div class="d-flex flex-row mt-1 text-black-50 date-time" style="font-size: 0.75rem;">
+                <div>
+                    <i class="fa fa-calendar-o" style="font-size: 0.75rem;"></i>
+                    <span style="margin-left: 2px;">${formattedDate}</span>
+                </div>
+                <div style="margin-left: 10px;">
+                    <i class="fa fa-clock-o" style="font-size: 0.75rem;"></i>
+                    <span>${timeStringToShow}</span>
                 </div>
             </div>
-        </div>`;
+        </div>
+    </div>`;
 
     const rightSide = document.createElement('div');
     rightSide.className = 'd-flex flex-row align-items-center';
@@ -159,15 +190,6 @@ function addSessionToList(session, list, expired)
     }
 
     rightSide.appendChild(info);
-
-    var token = localStorage.getItem("jwt_token");
-
-    var isAdmin = false;
-
-    if (token != null)
-    {
-       isAdmin = getHasAdminRole(token);
-    }
 
     // Add Delete & edit button if user is Admin
     if (isAdmin)
@@ -393,5 +415,5 @@ function formatDate(date)
         month: '2-digit',
         year: 'numeric'
     };
-    return new Intl.DateTimeFormat('en-GB', options).format(date).replace(',', '');
+    return new Intl.DateTimeFormat('de-DE', options).format(date).replace(',', '');
 }
