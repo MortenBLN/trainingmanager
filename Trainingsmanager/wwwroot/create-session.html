@@ -30,9 +30,14 @@
             <!-- Dropdown -->
             <div class="mb-3">
                 <label for="templateDropdown" class="form-label"><strong>Template wählen (optional)</strong></label>
-                <select class="form-control" id="templateDropdown">
-                    <option value="" disabled selected>Wird geladen...</option>
-                </select>
+                <div class="d-flex gap-2">
+                    <select class="form-control" id="templateDropdown" style="flex: 1; height: 38px;">
+                        <option value="" disabled selected>Wird geladen...</option>
+                    </select>
+                    <button id="go-create-template" class="btn btn-info btn-sm align-self-start" style="height: 38px;">
+                        ➕ Template erstellen
+                    </button>
+                </div>
             </div>
 
             <div class="mb-3">

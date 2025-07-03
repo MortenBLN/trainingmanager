@@ -10,6 +10,11 @@
     createAndToggleGroupNameInput();
 
     weeksInput.addEventListener("input", createAndToggleGroupNameInput);
+    const btnCreateTemplate = document.getElementById("go-create-template");
+    btnCreateTemplate.addEventListener("click", () =>
+    {
+        window.location.href = "create-session-template.html";
+    });
 
     form.addEventListener("submit", async (e) =>
     {
