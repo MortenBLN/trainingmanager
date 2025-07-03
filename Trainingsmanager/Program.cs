@@ -47,6 +47,7 @@ bld.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 bld.Services.AddScoped<IAuthService, AuthService>();
 bld.Services.AddScoped<ISessionGroupService, SessionGroupService>();
 bld.Services.AddScoped<IEmailService, EmailService>();
+bld.Services.AddScoped<ISessionTemplateService, SessionTemplateService>();
 
 // Scheduler-Services
 bld.Services.AddScoped<SessionCleanupService>();
@@ -57,11 +58,13 @@ bld.Services.AddScoped<ISessionRepository, SessionRepository>();
 bld.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 bld.Services.AddScoped<ISessionGroupRepository, SessionGroupRepository>();
 bld.Services.AddScoped<IAuthRepository, AuthRepository>();
+bld.Services.AddScoped<ISessionTemplateRepository, SessionTemplateRepository>();
 
 // Mappers
 bld.Services.AddScoped<ISessionMapper, SessionMapper>();
 bld.Services.AddScoped<IAuthMapper, AuthMapper>();
 bld.Services.AddScoped<ISubscriptionMapper, SubscriptionMapper>();
+bld.Services.AddScoped<ISessionTemplateMapper, SessionTemplateMapper>();
 
 // Helpers
 bld.Services.AddScoped<ISessionHelper,  SessonHelper>();
@@ -70,7 +73,6 @@ bld.Services.AddScoped<ISessionHelper,  SessonHelper>();
 bld.Services.Configure<FixedSubsOptions>(bld.Configuration);
 bld.Services.Configure<JwtTokenOptions>(bld.Configuration);
 bld.Services.Configure<EMailOptions>(bld.Configuration.GetSection("EmailSettings"));
-
 
 var logDirectory = Path.Combine(AppContext.BaseDirectory, "Logs");
 

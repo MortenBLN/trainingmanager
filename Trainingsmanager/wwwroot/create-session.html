@@ -26,6 +26,15 @@
         <h1 class="text-center mb-4">Neue Session(s)</h1>
 
         <form id="create-session-form" class="card p-4 shadow-sm bg-white">
+
+            <!-- Dropdown -->
+            <div class="mb-3">
+                <label for="templateDropdown" class="form-label"><strong>Template wählen (optional)</strong></label>
+                <select class="form-control" id="templateDropdown">
+                    <option value="" disabled selected>Wird geladen...</option>
+                </select>
+            </div>
+
             <div class="mb-3">
                 <label for="teamname" class="form-label">Team Name</label>
                 <input type="text" class="form-control" id="teamname" required />
@@ -77,6 +86,26 @@
                 <div class="form-check form-switch">
                     <input class="form-check-input bigger-switch" type="checkbox" id="includeVips" checked>
                     <label class="form-check-label" for="includeVips" id="vips-label">Ja</label>
+                </div>
+            </div>
+
+            <!-- Modal for template date -->
+            <div class="modal fade" id="datePickerModal" tabindex="-1" aria-labelledby="datePickerModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="datePickerModalLabel">Datum für Vorlage wählen</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="templateDateInput" class="form-label">Wähle ein Datum:</label>
+                            <input type="date" class="form-control" id="templateDateInput" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                            <button type="button" class="btn btn-primary" id="confirmDateBtn">Übernehmen</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

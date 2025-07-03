@@ -1,15 +1,9 @@
 ﻿document.addEventListener("DOMContentLoaded", async() =>
 {
-    const form = document.getElementById("create-session-form");
+    const form = document.getElementById("create-session-template-form");
     const messageP = document.getElementById("session-message");
-    const weeksInput = document.getElementById("weeksInAdvance");
-    const groupnameContainer = document.getElementById("groupname-container");
 
     setEndTimeValidator();
-    setMitgliederToggle();
-    createAndToggleGroupNameInput();
-
-    weeksInput.addEventListener("input", createAndToggleGroupNameInput);
 
     form.addEventListener("submit", async (e) =>
     {
@@ -17,21 +11,19 @@
 
         const data =
         {
+            templateName: document.getElementById("templatename").value.trim(),
             teamname: document.getElementById("teamname").value.trim(),
             trainingStart: new Date(document.getElementById("trainingStart").value).toISOString(),
             trainingEnd: new Date(document.getElementById("trainingEnd").value).toISOString(),
             applicationsLimit: parseInt(document.getElementById("applicationsLimit").value),
             applicationsRequired: parseInt(document.getElementById("applicationsRequired").value),
-            preAddMitglieder: document.getElementById("includeVips").checked,
-            countSessionsToCreate: parseInt(document.getElementById("weeksInAdvance").value),
-            sessionGruppenName: document.getElementById("groupname") != null ? document.getElementById("groupname").value.trim() : null,
             sessionVenue: document.getElementById("venue").value.trim()
         };
 
         try
         {
             var token = localStorage.getItem("jwt_token");
-            const res = await fetch("/admin/createSession",
+            const res = await fetch("/admin/createSessionTemplate",
                 {
                     method: "POST",
                     headers:
@@ -43,7 +35,7 @@
                 });
             if (res.status === 401)
             {
-                messageP.textContent = "Nur Admins können Sessions erstellen.";
+                messageP.textContent = "Nur Admins können Session-Templates erstellen.";
                 messageP.style.color = "red";
 
                 const existingBtn = document.getElementById("code-created-button");
@@ -71,15 +63,11 @@
                 throw new Error(msg);
             }
 
-            const response = await res.json();
+            const sessionTemplate = await res.json();
 
-            // Get the value of the "first" Session
-            const session = response.sessions?.[0];
-
-            messageP.textContent = `Session(s) erstellt! ID: ${session.id}`;
+            messageP.textContent = `Template erstellt! Name: ${sessionTemplate.templateName}`;
             messageP.style.color = "green";
             form.reset();
-            createAndToggleGroupNameInput();
 
             // Clear any previously added button
             const existingBtn = document.getElementById("code-created-button");
@@ -88,12 +76,12 @@
             // Create and insert the new button
             const btn = document.createElement("button");
             btn.id = "code-created-button";
-            btn.textContent = "Öffne erstellte Session";
+            btn.textContent = "Jetzt Session erstellen";
             btn.className = "btn btn-success mt-3";
             btn.type = "button"; // important: doesn't submit the form
             btn.onclick = () =>
             {
-                window.location.href = `session.html?id=${session.id}`;
+                window.location.href = `create-session.html`;
             };
 
             form.appendChild(btn);
@@ -118,23 +106,9 @@
         }
     });
 
-    function setMitgliederToggle()
-    {
-        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
-
-        // Toggle label update
-        const vipsToggle = document.getElementById('includeVips');
-        const vipsLabel = document.getElementById('vips-label');
-
-        vipsToggle.addEventListener('change', () =>
-        {
-            vipsLabel.textContent = vipsToggle.checked ? 'Ja' : 'Nein';
-        });
-    }
-
     function setEndTimeValidator()
     {
-        const form = document.getElementById("create-session-form");
+        const form = document.getElementById("create-session-template-form");
         const trainingStart = document.getElementById("trainingStart");
         const trainingEnd = document.getElementById("trainingEnd");
         const message = document.getElementById("session-message");
@@ -178,41 +152,6 @@
         }
     }
 
-    function createAndToggleGroupNameInput()
-    {
-        const value = parseInt(weeksInput.value, 10);
-
-        // Hide or show the container itself
-        if (value > 1)
-        {
-            groupnameContainer.style.display = "block";
-
-            // Only create input if it doesn't exist
-            if (!document.getElementById("groupDiv"))
-            {
-                const groupDiv = document.createElement("div");
-                groupDiv.id = "groupDiv";
-                groupDiv.className = "mb-3";
-                groupDiv.innerHTML = `
-                <label for="groupname" class="form-label">Gruppenname</label>
-                <input type="text" class="form-control" id="groupname" required />
-            `;
-                groupnameContainer.appendChild(groupDiv);
-            }
-        }
-        else
-        {
-            groupnameContainer.style.display = "none";
-
-            // Remove input if it exists
-            const groupDiv = document.getElementById("groupDiv");
-            if (groupDiv)
-            {
-                groupDiv.remove();
-            }
-        }
-    }
-
     // Called in create-session.html
     window.adjustTime = function (dateTimeBaseInput, dateTimeToAddToInput, minutesToAdd)
     {
@@ -239,79 +178,4 @@
 
         return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
-
-    async function loadDropdownOptions()
-    {
-        const dropdown = document.getElementById("templateDropdown");
-        try
-        {
-            const response = await fetch("/api/getSessionTemplates");
-            const data = await response.json();
-
-            dropdown.innerHTML = '<option disabled selected>Template Auswahl</option>';
-            data.sessionTemplates.forEach(option =>
-            {
-                const opt = document.createElement("option");
-
-                opt.textContent = option.templateName;
-                opt.value = option.templateName;
-                dropdown.appendChild(opt);
-            });
-        } catch (error)
-        {
-            dropdown.innerHTML = '<option disabled selected>Error loading options</option>';
-            console.error("Error fetching dropdown options:", error);
-        }
-    }
-
-    document.getElementById("templateDropdown").addEventListener("change", async (event) =>
-    {
-        const sessionTemplateName = event.target.value;
-        const res = await fetch(`/api/getSessionTemplateByName/${sessionTemplateName}`);
-        const sessionTemplate = await res.json();
-
-        document.getElementById("teamname").value = sessionTemplate.teamname || "Unnamed Team";
-        document.getElementById("applicationsLimit").value = sessionTemplate.applicationsLimit
-        document.getElementById("applicationsRequired").value = sessionTemplate.applicationsRequired;
-        document.getElementById("venue").value = sessionTemplate.sessionVenue;
-
-        // Handle the date and time
-
-        const start = new Date(sessionTemplateName.trainingStart);
-        const end = new Date(sessionTemplateName.trainingEnd);
-
-        const formattedStart = start.toLocaleString("de-DE", {
-            hour: "numeric", minute: "numeric"
-        });
-        const formattedEnd = end.toLocaleString("de-DE", {
-            hour: "numeric", minute: "numeric"
-        });
-
-        // Create hidden <input type="date"> and trigger it
-        window.selectedTemplateTimes = {
-            start: new Date(sessionTemplate.trainingStart).toTimeString().slice(0, 5),
-            end: new Date(sessionTemplate.trainingEnd).toTimeString().slice(0, 5),
-        };
-
-        // Show the modal
-        const dateModal = new bootstrap.Modal(document.getElementById("datePickerModal"));
-        dateModal.show();
-    });
-
-    document.getElementById("confirmDateBtn").addEventListener("click", () =>
-    {
-        const selectedDate = document.getElementById("templateDateInput").value;
-        if (!selectedDate || !window.selectedTemplateTimes) return;
-
-        const trainingStart = `${selectedDate}T${window.selectedTemplateTimes.start}`;
-        const trainingEnd = `${selectedDate}T${window.selectedTemplateTimes.end}`;
-
-        document.getElementById("trainingStart").value = trainingStart;
-        document.getElementById("trainingEnd").value = trainingEnd;
-
-        // Close modal
-        bootstrap.Modal.getInstance(document.getElementById("datePickerModal")).hide();
-    });
-
-    await loadDropdownOptions();
 });

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Trainingsmanager.Database.Models;
+using Trainingsmanager.Models;
 
 namespace Trainingsmanager.Database
 {
@@ -9,6 +10,7 @@ namespace Trainingsmanager.Database
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<SessionGroup> SessionGroups { get; set; }
+        public DbSet<SessionTemplate> SessionTemplates { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {
