@@ -38,18 +38,18 @@
             </div>
 
             <div class="mb-3">
-                <label for="trainingStart" class="form-label">Trainingsstart (nur die Zeit wird übernommen)</label>
-                <input type="datetime-local" class="form-control" id="trainingStart" required />
+                <label for="trainingStart" class="form-label">Trainingsstart</label>
+                <input type="time" class="form-control" id="trainingStart" required />
             </div>
 
             <div class="mb-3">
                 <div class="d-flex align-items-center">
-                    <label for="trainingEnd" class="form-label me-2 mb-0">Trainingsende (nur die Zeit wird übernommen)</label>
+                    <label for="trainingEnd" class="form-label me-2 mb-0">Trainingsende</label>
                     <button type="button" class="btn btn-sm btn-outline-secondary me-1 flex-button" onclick="adjustTime('trainingStart', 'trainingEnd', 60)">1h</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary me-1 flex-button" onclick="adjustTime('trainingStart', 'trainingEnd', 90)">1,5h</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary me-1 flex-button" onclick="adjustTime('trainingStart', 'trainingEnd', 120)">2h</button>
                 </div>
-                <input type="datetime-local" class="form-control mt-2" id="trainingEnd" required />
+                <input type="time" class="form-control mt-2" id="trainingEnd" required />
             </div>
 
             <div class="row">

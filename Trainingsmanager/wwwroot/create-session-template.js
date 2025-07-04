@@ -9,12 +9,19 @@
     {
         e.preventDefault();
 
+        const startTime = document.getElementById('trainingStart').value; // "HH:MM"
+        const endTime = document.getElementById('trainingEnd').value;    
+
+        const fixedDate = getTodayDateString();
+        const startDateTime = getUTCDateTimeString(fixedDate, startTime);
+        const endDateTime = getUTCDateTimeString(fixedDate, endTime);
+
         const data =
         {
             templateName: document.getElementById("templatename").value.trim(),
             teamname: document.getElementById("teamname").value.trim(),
-            trainingStart: new Date(document.getElementById("trainingStart").value).toISOString(),
-            trainingEnd: new Date(document.getElementById("trainingEnd").value).toISOString(),
+            trainingStart: startDateTime,
+            trainingEnd: endDateTime,
             applicationsLimit: parseInt(document.getElementById("applicationsLimit").value),
             applicationsRequired: parseInt(document.getElementById("applicationsRequired").value),
             sessionVenue: document.getElementById("venue").value.trim()
@@ -152,7 +159,17 @@
         }
     }
 
-    // Called in create-session.html
+    document.getElementById('trainingStart').addEventListener('focus', function ()
+    {
+        this.showPicker && this.showPicker(); // For browsers supporting showPicker()
+    });
+
+    document.getElementById('trainingEnd').addEventListener('focus', function ()
+    {
+        this.showPicker && this.showPicker(); // For browsers supporting showPicker()
+    });
+
+    // Called in create-session-template.html
     window.adjustTime = function (dateTimeBaseInput, dateTimeToAddToInput, minutesToAdd)
     {
         const baseInput = document.getElementById(dateTimeBaseInput);
@@ -160,22 +177,55 @@
 
         if (!baseInput || !baseInput.value) return;
 
-        const baseDate = new Date(baseInput.value);
+        // Parse "HH:MM" from the base input (time only)
+        const [startHour, startMinute] = baseInput.value.split(':').map(Number);
+
+        // Create a Date object for today at base time
+        const baseDate = new Date();
+        baseDate.setHours(startHour, startMinute, 0, 0);
+
+        // Add the minutes
         baseDate.setMinutes(baseDate.getMinutes() + minutesToAdd);
 
-        receivingInput.value = formatDateToLocalDatetimeString(baseDate);
+        // Format back to "HH:MM" string
+        const endTime = baseDate.toTimeString().slice(0, 5);
+
+        // Check that endTime is after startTime (considering wrap-around)
+        // Convert times to minutes from midnight for comparison
+        const startTotalMinutes = startHour * 60 + startMinute;
+        const endTotalMinutes = (baseDate.getHours() * 60) + baseDate.getMinutes();
+
+        if (endTotalMinutes <= startTotalMinutes)
+        {
+            // Option 1: alert user
+            alert("Endzeit muss nach der Startzeit liegen.");
+        }
+
+        receivingInput.value = endTime;
     };
 
-    function formatDateToLocalDatetimeString(date)
+    function getTodayDateString()
     {
-        const pad = (num) => String(num).padStart(2, '0');
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const dd = String(today.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
 
-        const year = date.getFullYear();
-        const month = pad(date.getMonth() + 1);
-        const day = pad(date.getDate());
-        const hours = pad(date.getHours());
-        const minutes = pad(date.getMinutes());
+    function getUTCDateTimeString(dateString, timeString)
+    {
+        // dateString: 'YYYY-MM-DD'
+        // timeString: 'HH:MM'
 
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
+        // Create a Date object in local time
+        const [year, month, day] = dateString.split('-').map(Number);
+        const [hours, minutes] = timeString.split(':').map(Number);
+
+        // Note: month is zero-based in JS Date
+        const localDate = new Date(year, month - 1, day, hours, minutes, 0);
+
+        // Convert to ISO string in UTC (e.g. '2025-07-04T12:30:00.000Z')
+        return localDate.toISOString();
     }
 });
