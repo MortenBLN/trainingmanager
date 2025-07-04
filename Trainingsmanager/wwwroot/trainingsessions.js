@@ -74,13 +74,6 @@ async function loadSessions()
         {
             window.location.href = "create-session.html";
         });
-
-        const btnCreateTemplate = document.getElementById("go-create-template");
-        btnCreateTemplate.addEventListener("click", () =>
-        {
-            window.location.href = "create-session-template.html";
-        });
-
     } catch (err)
     {
         console.error("Failed to load sessions", err);

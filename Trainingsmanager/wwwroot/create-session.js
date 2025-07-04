@@ -253,7 +253,14 @@
             const response = await fetch("/api/getSessionTemplates");
             const data = await response.json();
 
-            dropdown.innerHTML = '<option disabled selected>Template Auswahl</option>';
+            dropdown.innerHTML = '<option selected>Kein Template benutzen</option>';
+
+            //const noTemplateOpt = document.createElement("option");
+
+            //noTemplateOpt.textContent = "Kein Template benutzen";
+            //noTemplateOpt.value = "Kein Template benutzen";
+            //dropdown.appendChild(noTemplateOpt);
+
             data.sessionTemplates.forEach(option =>
             {
                 const opt = document.createElement("option");
@@ -272,6 +279,13 @@
     document.getElementById("templateDropdown").addEventListener("change", async (event) =>
     {
         const sessionTemplateName = event.target.value;
+
+        if (sessionTemplateName == "Kein Template benutzen")
+        {
+            form.reset();
+            return;
+        }
+
         const res = await fetch(`/api/getSessionTemplateByName/${sessionTemplateName}`);
         const sessionTemplate = await res.json();
 
@@ -279,18 +293,6 @@
         document.getElementById("applicationsLimit").value = sessionTemplate.applicationsLimit
         document.getElementById("applicationsRequired").value = sessionTemplate.applicationsRequired;
         document.getElementById("venue").value = sessionTemplate.sessionVenue;
-
-        // Handle the date and time
-
-        const start = new Date(sessionTemplateName.trainingStart);
-        const end = new Date(sessionTemplateName.trainingEnd);
-
-        const formattedStart = start.toLocaleString("de-DE", {
-            hour: "numeric", minute: "numeric"
-        });
-        const formattedEnd = end.toLocaleString("de-DE", {
-            hour: "numeric", minute: "numeric"
-        });
 
         // Create hidden <input type="date"> and trigger it
         window.selectedTemplateTimes = {
