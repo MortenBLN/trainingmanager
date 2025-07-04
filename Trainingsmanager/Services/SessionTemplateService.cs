@@ -26,6 +26,18 @@ namespace Trainingsmanager.Services
                 throw new ArgumentNullException("No user found");
             }
 
+            if (request.TemplateName == null)
+            {
+                throw new ArgumentNullException("Templatename must not be null");
+            }
+
+            var templateWithSameName = await _repository.GetSessionTemplateByNameAsync(request.TemplateName, ct);
+
+            if (templateWithSameName != null)
+            {
+                throw new ArgumentException("Es existiert bereits ein Template mit dem gleichen Namen!");
+            }
+
             var templateRequest = _mapper.CreateSessionTemplateRequestToSessionTemplate(request, _userService.User, ct);
             var response = await _repository.CreateSessionTemplateAsync(templateRequest, ct);
 
