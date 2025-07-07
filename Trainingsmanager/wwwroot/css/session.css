@@ -59,6 +59,8 @@
 }
 
 .card .list-group-item {
-    padding-top: 0.4rem;
+    padding-top: 0.2rem;
     padding-bottom: 0.4rem;
+   /* horizontal */
+    
 }
