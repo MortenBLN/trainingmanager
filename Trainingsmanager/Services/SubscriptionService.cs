@@ -122,7 +122,7 @@ namespace Trainingsmanager.Services
         private async Task SendMail(Subscription oldestQueuedSubscription, Session session)
         {
             // Check if the user added a mail when adding the name to the waitlist --> if so, send mail that the subscription was upgraded
-            if (oldestQueuedSubscription.UpdateMail == null && oldestQueuedSubscription.UpdateMail == "")
+            if (oldestQueuedSubscription.UpdateMail == null || oldestQueuedSubscription.UpdateMail == "")
             {
                 return;
             }
