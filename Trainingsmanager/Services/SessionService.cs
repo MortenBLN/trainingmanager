@@ -48,7 +48,7 @@ namespace Trainingsmanager.Services
             // ApplicationsRequired must be higher or equal to Fixed Mitglieder
             if (request.PreAddMitglieder && request.ApplicationsLimit < _fixedPreAddMitglieder.Count)
             {
-                throw new ArgumentException($"Das Limit muss beim Erstellen mit vorgebuchten Mitgliedern mindestens {_fixedPreAddMitglieder.Count} betragen.");
+                throw new ArgumentException($"'Maximale Teilnehmer' muss mit der aktivierten Einstellung 'Mitglieder voranmelden' mindestens {_fixedPreAddMitglieder.Count} betragen.");
             }
 
             var createdSessionsResponse = new CreateSessionsResponse();
