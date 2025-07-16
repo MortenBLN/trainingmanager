@@ -173,7 +173,7 @@ public class SessionServiceTests
 
         // Act & Assert
         var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.CreateSessionAsync(request, CancellationToken.None));
-        Assert.Contains($"Das Limit muss beim Erstellen mit vorgebuchten Mitgliedern mindestens {fixedSubsOption.FixedSubs.Count} betragen.", ex.Message);
+        Assert.Contains($"'Maximale Teilnehmer' muss mit der aktivierten Einstellung 'Mitglieder voranmelden' mindestens {fixedSubsOption.FixedSubs.Count} betragen.", ex.Message);
     }
 
     [Fact]
