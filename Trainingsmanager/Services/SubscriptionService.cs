@@ -102,7 +102,7 @@ namespace Trainingsmanager.Services
 
                 if (!hasAdminRole)
                 {
-                    throw new Exception("Nur Admins können Mitglieder bei einer 'Nur für Mitglieder' hinzufügen");
+                    throw new Exception("Nur Admins können Mitglieder bei einer 'Nur für Mitglieder' Session hinzufügen");
                 }
             }
 
