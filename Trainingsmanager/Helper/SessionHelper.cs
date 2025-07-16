@@ -17,6 +17,7 @@ namespace Trainingsmanager.Helper
                 CountSessionsToCreate = request.CountSessionsToCreate,
                 SessionGruppenName = request.SessionGruppenName,
                 SessionVenue = request.SessionVenue,
+                MitgliederOnlySession = request.MitgliederOnlySession,
 
                 // Set the new Training start and end to the value of i*7
                 TrainingStart = request.TrainingStart.AddDays(weeksInDays),

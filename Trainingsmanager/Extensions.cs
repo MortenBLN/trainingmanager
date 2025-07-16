@@ -1,6 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.AspNetCore.SignalR;
 
 namespace Trainingsmanager
 {
@@ -25,6 +24,23 @@ namespace Trainingsmanager
                     Id = userId,
                     Name = name
                 };
+        }
+
+        public static bool CheckIfUserNotNullAndHasRole(this ClaimsPrincipal user, string roleToCheck)
+        {
+            if (user == null)
+            {
+                return false;
+            }
+
+            var role = user.FindFirstValue(ClaimTypes.Role) ?? user.FindFirstValue("role");
+
+            if (role == null)
+            {
+                return false;
+            }
+
+            return role == roleToCheck;
         }
     }
 

@@ -177,6 +177,7 @@
             document.getElementById("end").textContent = `${formattedEnd} Uhr`;
             document.getElementById("limit").textContent = validSubCountString;
             document.getElementById("required").textContent = session.applicationsRequired;
+            document.getElementById("openfor").textContent = session.mitgliederOnlySession == true ? "Nur für Mitglieder" : "Alle";        
 
             // Display the venue, make Hyperlink clickable
             if (session.sessionVenue != null && session.sessionVenue != undefined && session.sessionVenue != "")
@@ -221,9 +222,15 @@
                 mail = result.email;
             }
 
+            var token = localStorage.getItem("jwt_token");
+          
             const res = await fetch("/api/addSubscription", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({ sessionId: sessionId, name: username, updateMail: mail })
             });
 

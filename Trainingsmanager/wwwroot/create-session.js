@@ -30,7 +30,8 @@
             preAddMitglieder: document.getElementById("includeVips").checked,
             countSessionsToCreate: parseInt(document.getElementById("weeksInAdvance").value),
             sessionGruppenName: document.getElementById("groupname") != null ? document.getElementById("groupname").value.trim() : null,
-            sessionVenue: document.getElementById("venue").value.trim()
+            sessionVenue: document.getElementById("venue").value.trim(),
+            mitgliederOnlySession: document.getElementById('vipsOnly').checked
         };
 
         try
@@ -130,10 +131,29 @@
         // Toggle label update
         const vipsToggle = document.getElementById('includeVips');
         const vipsLabel = document.getElementById('vips-label');
+        const vipsOnlyCheckbox = document.getElementById('vipsOnly');
+        const vipsOnlyLabel = document.getElementById('vipsOnly-label');
 
         vipsToggle.addEventListener('change', () =>
         {
-            vipsLabel.textContent = vipsToggle.checked ? 'Ja' : 'Nein';
+            if (vipsToggle.checked)
+            {
+                vipsOnlyCheckbox.disabled = false;
+                vipsOnlyLabel.childNodes[0].nodeValue = vipsOnlyCheckbox.checked ? 'Ja' : 'Nein';
+                vipsLabel.textContent = 'Ja';
+            }
+            else
+            {
+                vipsOnlyCheckbox.disabled = true;
+                vipsOnlyCheckbox.checked = false;
+                vipsLabel.textContent = 'Nein';
+                vipsOnlyLabel.textContent = 'Nein';
+            }
+        });
+
+        vipsOnlyCheckbox.addEventListener('change', () =>
+        {
+            vipsOnlyLabel.childNodes[0].nodeValue = vipsOnlyCheckbox.checked ? 'Ja' : 'Nein';
         });
     }
 

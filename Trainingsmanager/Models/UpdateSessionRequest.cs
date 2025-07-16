@@ -9,5 +9,6 @@ namespace Trainingsmanager.Models
         public int ApplicationsLimit { get; set; } = 0;
         public int ApplicationsRequired { get; set; } = 0;
         public string? SessionVenue { get; set; }
+        public bool MitgliederOnlySession { get; set; } = false;
     }
 }

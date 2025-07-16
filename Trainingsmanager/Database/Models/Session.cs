@@ -20,5 +20,6 @@ namespace Trainingsmanager.Database.Models
         public SessionGroup? SessionGroup { get; set; }
         public string? SessionGruppenName { get; set; }
         public string? SessionVenue { get; set; }
+        public bool MitgliederOnlySession { get; set; } = false;
     }
 }

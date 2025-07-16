@@ -21,7 +21,8 @@
             applicationsLimit: parseInt(document.getElementById("applicationsLimit").value),
             applicationsRequired: parseInt(document.getElementById("applicationsRequired").value),
             sessionVenue: document.getElementById("venue").value,
-            teamName: document.getElementById("teamname").value
+            teamName: document.getElementById("teamname").value,
+            mitgliederOnlySession: document.getElementById('vipsOnly').checked
         };
 
         try
@@ -85,12 +86,23 @@
             const res = await fetch(`/api/getSessionById/${sessionId}`);
             const session = await res.json();
 
+            const vipsOnlyLabel = document.getElementById('vipsOnly-label');
+            const vipsOnlyCheckbox = document.getElementById('vipsOnly');
+
+            vipsOnlyCheckbox.addEventListener('change', () =>
+            {
+                vipsOnlyLabel.childNodes[0].nodeValue = vipsOnlyCheckbox.checked ? 'Ja' : 'Nein';
+            });
+
             document.getElementById("teamname").value = session.teamname || "Unnamed Team";
             document.getElementById("trainingStart").value = formatDateToLocalDatetimeString(new Date(session.trainingStart));
             document.getElementById("trainingEnd").value = formatDateToLocalDatetimeString(new Date(session.trainingEnd));
             document.getElementById("applicationsLimit").value = session.applicationsLimit;
             document.getElementById("applicationsRequired").value = session.applicationsRequired;
             document.getElementById("venue").value = session.sessionVenue;
+            vipsOnlyCheckbox.checked = session.mitgliederOnlySession;
+
+            vipsOnlyLabel.childNodes[0].nodeValue = vipsOnlyCheckbox.checked ? 'Ja' : 'Nein';
             // Groupname is set in own function
 
             return session;

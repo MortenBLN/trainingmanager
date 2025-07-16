@@ -18,9 +18,9 @@ namespace Trainingsmanager.Services
         private readonly ILogger<ISubscriptionService> _logger;
         private readonly IEmailService _emailService;
         private readonly EMailOptions _emailOptions;
+        private readonly IUserService _userService;
 
-
-        public SubscriptionService(ISubscriptionRepository repository, ISubscriptionMapper mapper, ISessionRepository sessionRepository, ILogger<ISubscriptionService> logger, IEmailService emailService, IOptions<EMailOptions> emailOptions)
+        public SubscriptionService(ISubscriptionRepository repository, ISubscriptionMapper mapper, ISessionRepository sessionRepository, ILogger<ISubscriptionService> logger, IEmailService emailService, IOptions<EMailOptions> emailOptions, IUserService userService)
         {
             _repository = repository;
             _mapper = mapper;
@@ -28,6 +28,7 @@ namespace Trainingsmanager.Services
             _logger = logger;
             _emailService = emailService;
             _emailOptions = emailOptions.Value;
+            _userService = userService;
         }
 
         public async Task DeleteSubscriptionAsync(DeleteSubscriptionRequest request, CancellationToken ct)
@@ -88,6 +89,22 @@ namespace Trainingsmanager.Services
 
             // Check if max subscription count is already hit
             var session = await _sessionRepository.GetSessionByIdAsync(request.SessionId, ct);
+
+            // Check if the user is allowed to subscribe
+            if (session.MitgliederOnlySession)
+            {
+                if (_userService.User == null)
+                {
+                    throw new Exception("Nur Admins können Mitglieder bei einer 'Mitglieder Session' hinzufügen");
+                }
+
+                var hasAdminRole = _userService.User.CheckIfUserNotNullAndHasRole("Admin");
+
+                if (!hasAdminRole)
+                {
+                    throw new Exception("Nur Admins können Mitglieder bei einer 'Nur für Mitglieder' hinzufügen");
+                }
+            }
 
             if (session.TrainingStart < DateTime.UtcNow)
             {

@@ -15,5 +15,6 @@ namespace Trainingsmanager.Models
         public Guid? SessionGroupId { get; set; }
         public string? SessionGruppenName { get; set; }
         public string? SessionVenue { get; set; }
+        public bool MitgliederOnlySession { get; set; } = false;
     }
 }

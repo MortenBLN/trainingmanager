@@ -20,7 +20,8 @@ namespace Trainingsmanager.Mappers
                 TrainingStart = request.TrainingStart,
                 TrainingEnd = request.TrainingEnd,
                 SessionGruppenName = request.SessionGruppenName,
-                SessionVenue = request.SessionVenue
+                SessionVenue = request.SessionVenue,
+                MitgliederOnlySession = request.MitgliederOnlySession,
             };
         }
 
@@ -40,7 +41,8 @@ namespace Trainingsmanager.Mappers
                     CreatedById = session.Id,
                     SessionGroupId = session.SessionGroupId,
                     SessionGruppenName = session.SessionGruppenName,
-                    SessionVenue = session.SessionVenue
+                    SessionVenue = session.SessionVenue,
+                    MitgliederOnlySession = session.MitgliederOnlySession,
                 }).ToList()
             };
 
@@ -84,7 +86,8 @@ namespace Trainingsmanager.Mappers
                     },
                     SessionGroupId = session.SessionGroupId,
                     SessionGruppenName = session.SessionGruppenName,
-                    SessionVenue = session.SessionVenue
+                    SessionVenue = session.SessionVenue,
+                    MitgliederOnlySession = session.MitgliederOnlySession,
                 }).ToList()
             };
 
@@ -104,7 +107,8 @@ namespace Trainingsmanager.Mappers
                 CreatedById = request.CreatedById,
                 SessionGroupId = request.SessionGroupId,
                 SessionGruppenName = request.SessionGruppenName,
-                SessionVenue = request.SessionVenue
+                SessionVenue = request.SessionVenue,
+                MitgliederOnlySession = request.MitgliederOnlySession,
             };
         }
 
@@ -136,7 +140,8 @@ namespace Trainingsmanager.Mappers
                 }).ToList() ?? new List<AppUserDto>(),
                 SessionGroupId = request.SessionGroupId,
                 SessionGruppenName = request.SessionGruppenName,
-                SessionVenue = request.SessionVenue
+                SessionVenue = request.SessionVenue,
+                MitgliederOnlySession = request.MitgliederOnlySession,
             };
         }
 
@@ -152,7 +157,8 @@ namespace Trainingsmanager.Mappers
                 TrainingEnd = response.TrainingEnd,
                 Id = response.Id,
                 SessionGruppenName = response.SessionGruppenName,
-                SessionVenue = response.SessionVenue
+                SessionVenue = response.SessionVenue,
+                MitgliederOnlySession = response.MitgliederOnlySession,
             };
         }
 
@@ -164,6 +170,7 @@ namespace Trainingsmanager.Mappers
             sessionToUpdate.ApplicationsLimit = request.ApplicationsLimit;
             sessionToUpdate.SessionVenue = request.SessionVenue;
             sessionToUpdate.Teamname = request.TeamName;
+            sessionToUpdate.MitgliederOnlySession = request.MitgliederOnlySession;
 
             return sessionToUpdate;
         }

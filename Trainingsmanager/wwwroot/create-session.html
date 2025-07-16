@@ -87,10 +87,26 @@
             <div id="groupname-container" style="display: none;"></div>
 
             <div class="mb-4 d-flex align-items-center justify-content-between">
-                <label for="includeVips" class="form-label mb-0">Mitglieder voranmelden</label>
+                <label for="includeVips" class="form-label mb-0">
+                    Mitglieder voranmelden
+                    <i class="fa fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="Alle Mitglieder werden automatisch angemeldet"></i>
+                </label>
                 <div class="form-check form-switch">
                     <input class="form-check-input bigger-switch" type="checkbox" id="includeVips" checked>
                     <label class="form-check-label" for="includeVips" id="vips-label">Ja</label>
+                </div>
+            </div>
+
+            <div class="mb-4 d-flex align-items-center justify-content-between">
+                <label for="vipsOnly" class="form-label mb-0">
+                    Nur für Mitglieder
+                    <i class="fa fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="Nur Admins können Mitglieder hinzufügen"></i>
+                </label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input bigger-switch" type="checkbox" id="vipsOnly" checked>
+                    <label class="form-check-label" for="vipsOnly" id="vipsOnly-label">
+                        Ja
+                    </label>
                 </div>
             </div>
 

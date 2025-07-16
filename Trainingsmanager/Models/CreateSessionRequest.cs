@@ -13,5 +13,6 @@ namespace Trainingsmanager.Models
         public int CountSessionsToCreate { get; set; } = 1;
         public string? SessionGruppenName { get; set; }
         public string? SessionVenue { get; set; }
+        public bool MitgliederOnlySession { get; set; } = false;
     }
 }
