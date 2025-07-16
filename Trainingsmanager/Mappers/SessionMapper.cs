@@ -163,6 +163,7 @@ namespace Trainingsmanager.Mappers
             sessionToUpdate.TrainingEnd = request.TrainingEnd;
             sessionToUpdate.ApplicationsLimit = request.ApplicationsLimit;
             sessionToUpdate.SessionVenue = request.SessionVenue;
+            sessionToUpdate.Teamname = request.TeamName;
 
             return sessionToUpdate;
         }

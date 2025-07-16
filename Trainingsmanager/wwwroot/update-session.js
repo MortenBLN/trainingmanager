@@ -21,6 +21,7 @@
             applicationsLimit: parseInt(document.getElementById("applicationsLimit").value),
             applicationsRequired: parseInt(document.getElementById("applicationsRequired").value),
             sessionVenue: document.getElementById("venue").value,
+            teamName: document.getElementById("teamname").value
         };
 
         try
