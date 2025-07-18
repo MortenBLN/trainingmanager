@@ -161,8 +161,19 @@ function renderPlayerAttendanceChart(monthSpan)
     avgDisplay.textContent = `Durchschnitt: ${average} Teilnahmen pro Spieler*in`;
 
     // Draw chart
-    const ctx = getChartCanvas();
+    const canvas = getChartCanvas();
 
+    // 🧠 Only adjust height on mobile screens (<=768px)
+    if (window.innerWidth <= 768)
+    {
+        const heightPerLabel = 40; // Adjust if needed
+        canvas.height = labels.length * heightPerLabel;
+    } else
+    {
+        canvas.height = null; // Reset on larger screens
+    }
+
+    const ctx = canvas.getContext('2d');
     if (chart)
     {
         chart.destroy();
