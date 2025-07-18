@@ -19,7 +19,7 @@ namespace Trainingsmanager.Services.SchedulerServices
 
         public async Task DeleteOldSessionsAsync()
         {
-            var cutoffDate = DateTime.UtcNow.AddDays(-7);
+            var cutoffDate = DateTime.UtcNow.AddMonths(-6);
             var oldSessions = await _context.Sessions
                 .Where(s => s.TrainingStart < cutoffDate)
                 .ToListAsync();

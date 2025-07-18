@@ -43,7 +43,17 @@ async function loadSessions()
         const now = new Date();
 
         const upcomingSessions = sessions.filter(s => new Date(s.trainingStart) >= now);
-        const expiredSessions = sessions.filter(s => new Date(s.trainingStart) < now);
+
+        // Only show expired sessions that are max one week expired
+        // Sessions older than 6 months are deleted
+        const oneWeekAgo = new Date(now);
+        oneWeekAgo.setDate(now.getDate() - 7);
+
+        const expiredSessions = sessions.filter(s =>
+        {
+            const sessionDate = new Date(s.trainingStart);
+            return sessionDate < now && sessionDate >= oneWeekAgo;
+        });
 
         upcomingSessions.sort((a, b) => new Date(a.trainingStart) - new Date(b.trainingStart));
         expiredSessions.sort((a, b) => new Date(b.trainingStart) - new Date(a.trainingStart));

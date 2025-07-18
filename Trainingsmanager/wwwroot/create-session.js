@@ -275,12 +275,6 @@
 
             dropdown.innerHTML = '<option selected>Kein Template benutzen</option>';
 
-            //const noTemplateOpt = document.createElement("option");
-
-            //noTemplateOpt.textContent = "Kein Template benutzen";
-            //noTemplateOpt.value = "Kein Template benutzen";
-            //dropdown.appendChild(noTemplateOpt);
-
             data.sessionTemplates.forEach(option =>
             {
                 const opt = document.createElement("option");

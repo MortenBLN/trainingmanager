@@ -90,25 +90,30 @@ namespace Trainingsmanager.Services
             // Check if max subscription count is already hit
             var session = await _sessionRepository.GetSessionByIdAsync(request.SessionId, ct);
 
-            // Check if the user is allowed to subscribe
+            // Check if user is Admin (used for some checks)
+            bool hasAdminRole = false;
+
+            if  (_userService.User != null)
+            {
+                hasAdminRole = _userService.User.CheckIfUserNotNullAndHasRole("Admin");
+            }
+     
+            // Only Admins are allowed to add Subscriptions for expired sessions
+            if (session.TrainingStart < DateTime.UtcNow)
+            {
+                if (!hasAdminRole)
+                {
+                    throw new Exception("Die Session ist bereits abgelaufen, keine Anmeldung möglich.");
+                }
+            }
+
+            // Only Admins are allowed add Subscriptions for MitgliederOnlySession
             if (session.MitgliederOnlySession)
             {
-                if (_userService.User == null)
-                {
-                    throw new Exception("Nur Admins können Mitglieder bei einer 'Mitglieder Session' hinzufügen");
-                }
-
-                var hasAdminRole = _userService.User.CheckIfUserNotNullAndHasRole("Admin");
-
                 if (!hasAdminRole)
                 {
                     throw new Exception("Nur Admins können Mitglieder bei einer 'Nur für Mitglieder' Session hinzufügen");
                 }
-            }
-
-            if (session.TrainingStart < DateTime.UtcNow)
-            {
-                throw new Exception("Die Session ist bereits abgelaufen, keine Anmeldung möglich.");
             }
 
             var subAmount = session.Subscriptions.Count();

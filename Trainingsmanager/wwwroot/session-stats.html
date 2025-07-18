@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/sessionStats.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="session-stats.js"></script>
+
+    <title>Session stats</title>
+</head>
+<body class="bg-light">
+
+    <div class="container px-4 pt-4">
+        <button class="btn btn-secondary mb-4" onclick="window.history.back();">
+            <i class="fa fa-arrow-left mr-2"></i> Zurück
+        </button>
+        <h1 class="text-center mb-4">Statistiken</h1>
+
+        <form id="create-session-form" class="card p-4 shadow-sm bg-white">
+
+            <!-- Dropdown -->
+            <div class="mb-3">
+                <label for="statsDropdown" class="form-label"><strong>Auswählen</strong></label>
+                <div class="d-flex gap-2">
+                    <select clear-button="true" class="form-select" id="statsDropdown" style="flex: 1; height: 38px;">
+                        <option value="" disabled selected>Auswählen</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="timeSpanDropdown" class="form-label"><strong>Zeitraum</strong></label>
+                <select class="form-select" id="timeSpanDropdown">
+                    <option value="1">1 Monat</option>
+                    <option value="2">2 Monate</option>
+                    <option value="3" selected>3 Monate</option>
+                    <option value="6">6 Monate</option>
+                </select>
+            </div>
+            <div id="average-display" class="text-center fw-bold mb-3" style="font-size: 1.2rem;"></div>
+
+            <div id="redirect-button-container" class="text-center mt-4"></div>
+
+        </form>
+    </div>
+</body>
+</html>

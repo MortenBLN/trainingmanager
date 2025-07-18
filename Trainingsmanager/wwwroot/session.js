@@ -48,7 +48,7 @@
         }
 
         // render lists
-        async function renderToList(list, listType, sub, sessionIsExpired, index = null)
+        async function renderToList(list, listType, sub, sessionIsExpired, isAdmin = false, index = null)
         {
             const subscribedAtDate = new Date(sub.subscribedAt);
             const subscribedAtDateFormated = subscribedAtDate.toLocaleString("de-DE", {
@@ -85,8 +85,8 @@
 
             list.appendChild(li);
 
-            // Allow delete only when session is not expired yet
-            if (!sessionIsExpired)
+            // Do not allow delete when session is expired AND user is NOT an Admin
+            if (!sessionIsExpired || isAdmin == true)
             {
                 const removeBtn = document.createElement("button");
                 removeBtn.textContent = "❌";
@@ -109,15 +109,24 @@
             }
         }
 
+        // used to decide if "Remove subscription button" should be displayed
+        var token = localStorage.getItem("jwt_token");
+        var isAdmin = false;
+
+        if (token != null)
+        {
+            isAdmin = getHasAdminRole(token);
+        }
+
         // Render both lists
         for (const sub of validSubs)
         {
-            await renderToList(validSubscriptionsList, "Teilnehmerliste", sub, sessionIsExpired);
+            await renderToList(validSubscriptionsList, "Teilnehmerliste", sub, sessionIsExpired, isAdmin);
         }
 
         for (const [index, sub] of queuedSubs.entries())
         {
-            await renderToList(queuedSubscriptionsList, "Warteliste", sub, sessionIsExpired, index);
+            await renderToList(queuedSubscriptionsList, "Warteliste", sub, sessionIsExpired, isAdmin, index);
         }
     }
 
@@ -428,6 +437,43 @@
                 resolve({ continue: false, email: null });
             };
         });
+    }
+
+    function getHasAdminRole(token)
+    {
+        try
+        {
+            const base64Url = token.split('.')[1]; // Get payload
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(
+                atob(base64)
+                    .split('')
+                    .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                    .join('')
+            );
+
+            var parsedToken = JSON.parse(jsonPayload);
+            let isAdmin = false;
+
+            if (parsedToken && parsedToken.role)
+            {
+                // Some identity providers return a string or array for roles
+                if (Array.isArray(parsedToken.role))
+                {
+                    isAdmin = parsedToken.role.includes("Admin");
+                }
+                else
+                {
+                    isAdmin = parsedToken.role === "Admin";
+                }
+
+                return isAdmin;
+            }
+        } catch (e)
+        {
+            console.error("Invalid JWT:", e);
+            return false;
+        }
     }
 
     await fetchSession();
