@@ -26,15 +26,10 @@ namespace Trainingsmanager.Repositories
             return await _context.SessionTemplates.ToListAsync(ct);
         }
 
-        public async Task<SessionTemplate> GetSessionTemplateByNameAsync(string sessionTemplateName, CancellationToken ct)
+        public async Task<SessionTemplate?> GetSessionTemplateByNameAsync(string sessionTemplateName, CancellationToken ct)
         {
             var response = await _context.SessionTemplates
                 .SingleOrDefaultAsync(s => s.TemplateName == sessionTemplateName, cancellationToken: ct);
-
-            if (response == null)
-            {
-                throw new NullReferenceException($"Es konnte kein Sessiontemplate mit dem Namen '{sessionTemplateName}' gefunden werden.");
-            }
 
             return response;
         }

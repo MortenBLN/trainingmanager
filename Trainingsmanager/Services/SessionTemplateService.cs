@@ -55,6 +55,11 @@ namespace Trainingsmanager.Services
         {
             var response = await _repository.GetSessionTemplateByNameAsync(sessionTemplateName, ct);
 
+            if (response == null)
+            {
+                throw new NullReferenceException($"Es konnte kein Sessiontemplate mit dem Namen '{sessionTemplateName}' gefunden werden.");
+            }
+
             return _mapper.SessionTemplateToGetSessionTemplateResponse(response, ct);
         }
     }
