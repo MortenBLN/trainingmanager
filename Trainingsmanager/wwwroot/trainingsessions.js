@@ -7,6 +7,7 @@ async function loadSessions()
         const data = await res.json();
 
         const loginButton = document.getElementById("login-button");
+        const weekdayNames = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
 
         function updateLoginUI()
         {
@@ -45,7 +46,6 @@ async function loadSessions()
         const upcomingSessions = sessions.filter(s => new Date(s.trainingStart) >= now);
 
         // Only show expired sessions that are max one week expired
-        // Sessions older than 6 months are deleted
         const oneWeekAgo = new Date(now);
         oneWeekAgo.setDate(now.getDate() - 7);
 
@@ -58,26 +58,22 @@ async function loadSessions()
         upcomingSessions.sort((a, b) => new Date(a.trainingStart) - new Date(b.trainingStart));
         expiredSessions.sort((a, b) => new Date(b.trainingStart) - new Date(a.trainingStart));
 
-        const list = document.getElementById("session-list");
-        list.innerHTML = ""; // Clear list before adding new items
-
-        upcomingSessions.forEach(session =>
-        {
-            addSessionToList(session, list, false);
-        });
+        generateWeekdayFilterButtons(upcomingSessions);
+        renderSessionsFilteredByWeekday(upcomingSessions, null); // show all by default
 
         if (expiredSessions.length > 0)
         {
+            const list = document.getElementById("session-list");
             const separator = document.createElement('li');
-            separator.className = 'session-separator text-center';
-            separator.textContent = '— Abgelaufene Sessions —';
+            separator.className = 'session-separator text-center text-muted font-italic my-2';
+            separator.textContent = '— Vergangene Sessions —';
             list.appendChild(separator);
-        }
 
-        expiredSessions.forEach(session =>
-        {
-            addSessionToList(session, list, true);
-        });
+            expiredSessions.forEach(session =>
+            {
+                addSessionToList(session, list, true);
+            });
+        }
 
         const btnCreate = document.getElementById("go-create");
         btnCreate.addEventListener("click", () =>
@@ -89,6 +85,104 @@ async function loadSessions()
         console.error("Failed to load sessions", err);
     }
 }
+
+document.addEventListener("DOMContentLoaded", loadSessions);
+
+function generateWeekdayFilterButtons(sessions)
+{
+    const filterDiv = document.getElementById("weekday-filter");
+    if (!filterDiv) return;
+    filterDiv.innerHTML = "";
+
+    // Apply center and spacing style
+    filterDiv.classList.add("d-flex", "justify-content-center", "flex-wrap", "gap-2", "mb-3");
+
+    const weekdayNames = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+    const weekdaySet = new Set();
+    sessions.forEach(session =>
+    {
+        const day = new Date(session.trainingStart).getDay();
+        weekdaySet.add(day);
+    });
+
+    const sortedDays = [...weekdaySet].sort((a, b) => a - b);
+
+    sortedDays.forEach(day =>
+    {
+        const btn = document.createElement("button");
+        btn.className = "btn btn-outline-primary btn-sm text-center";
+        btn.style.width = "80px";  // fixed width for all buttons
+        btn.style.height = "36px"; // fixed height to keep consistent size
+        btn.style.borderRadius = "0"; 
+        btn.style.margin = "0 6px 6px 0"// fixed height to keep consistent size
+        btn.textContent = weekdayNames[day];
+        btn.dataset.day = day;
+
+        btn.addEventListener("click", () =>
+        {
+            document.querySelectorAll("#weekday-filter button").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            const list = document.getElementById("session-list");
+            list.innerHTML = "";
+            renderSessionsFilteredByWeekday(sessions, parseInt(day));
+        });
+
+        filterDiv.appendChild(btn);
+    });
+
+    // 'Alle' button
+    const allBtn = document.createElement("button");
+    allBtn.className = "btn btn-outline-secondary btn-sm text-center px-3";
+    allBtn.textContent = "Alle";
+    allBtn.style.width = "80px";  // fixed width for all buttons
+    allBtn.style.height = "36px";
+    allBtn.style.margin = "0 6px 6px 0"// fixed height to keep consistent size
+    allBtn.style.borderRadius = "0"; 
+    allBtn.addEventListener("click", () =>
+    {
+        document.querySelectorAll("#weekday-filter button").forEach(b => b.classList.remove("active"));
+        allBtn.classList.add("active");
+        const list = document.getElementById("session-list");
+        list.innerHTML = "";
+        renderSessionsFilteredByWeekday(sessions, null);
+    });
+    filterDiv.appendChild(allBtn);
+}
+
+
+function renderSessionsFilteredByWeekday(sessions, selectedDay)
+{
+    const list = document.getElementById("session-list");
+    list.innerHTML = "";
+    let lastMonthYear = "";
+
+    const filtered = selectedDay == null ? sessions : sessions.filter(session =>
+    {
+        return new Date(session.trainingStart).getDay() === selectedDay;
+    });
+
+    filtered.forEach(session =>
+    {
+        const date = new Date(session.trainingStart);
+        const monthYear = date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, '0');
+
+        if (monthYear !== lastMonthYear)
+        {
+            lastMonthYear = monthYear;
+            const monthName = date.toLocaleString('de-DE', { month: 'long', year: 'numeric' });
+            const separator = document.createElement('li');
+            separator.className = 'session-separator text-center text-muted font-italic my-2';
+            separator.textContent = `— ${monthName} —`;
+            list.appendChild(separator);
+        }
+
+        addSessionToList(session, list, false);
+    });
+} // end
+
+
+
 
 document.addEventListener("DOMContentLoaded", loadSessions);
 

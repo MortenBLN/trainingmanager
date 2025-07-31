@@ -33,3 +33,26 @@ body, html{
     border-radius: 10px;
     text-align: center;
 }
+
+.session-separator {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 0.75rem; /* slightly smaller text */
+    color: #555;
+    padding: 2px 8px; /* less vertical padding */
+    border-bottom: 1px solid #ccc;
+    margin: 8px auto 4px auto; /* reduced top & bottom spacing */
+    text-align: center;
+    line-height: 1.2; /* tighter line height */
+}
+
+#weekday-filter {
+    margin-top: 2rem;
+    margin-bottom: 0.2rem !important;
+}
+
+#weekday-filter .btn.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
