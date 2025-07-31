@@ -58,7 +58,7 @@ async function loadSessions()
         upcomingSessions.sort((a, b) => new Date(a.trainingStart) - new Date(b.trainingStart));
         expiredSessions.sort((a, b) => new Date(b.trainingStart) - new Date(a.trainingStart));
 
-        generateWeekdayFilterButtons(upcomingSessions);
+        generateWeekdayFilterButtons(upcomingSessions, expiredSessions);
         renderSessionsFilteredByWeekday(upcomingSessions, null); // show all by default
 
         if (expiredSessions.length > 0)
@@ -88,7 +88,7 @@ async function loadSessions()
 
 document.addEventListener("DOMContentLoaded", loadSessions);
 
-function generateWeekdayFilterButtons(sessions)
+function generateWeekdayFilterButtons(sessions, expiredSessions)
 {
     const filterDiv = document.getElementById("weekday-filter");
     if (!filterDiv) return;
@@ -146,6 +146,21 @@ function generateWeekdayFilterButtons(sessions)
         const list = document.getElementById("session-list");
         list.innerHTML = "";
         renderSessionsFilteredByWeekday(sessions, null);
+
+        // Also render expired Sessions
+        if (expiredSessions.length > 0)
+        {
+            const list = document.getElementById("session-list");
+            const separator = document.createElement('li');
+            separator.className = 'session-separator text-center text-muted font-italic my-2';
+            separator.textContent = '— Vergangene Sessions —';
+            list.appendChild(separator);
+
+            expiredSessions.forEach(session =>
+            {
+                addSessionToList(session, list, true);
+            });
+        }
     });
     filterDiv.appendChild(allBtn);
 }
