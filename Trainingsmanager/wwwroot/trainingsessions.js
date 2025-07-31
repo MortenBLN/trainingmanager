@@ -111,7 +111,7 @@ function generateWeekdayFilterButtons(sessions)
     {
         const btn = document.createElement("button");
         btn.className = "btn btn-outline-primary btn-sm text-center";
-        btn.style.width = "80px";  // fixed width for all buttons
+        btn.style.width = "90px";  // fixed width for all buttons
         btn.style.height = "36px"; // fixed height to keep consistent size
         btn.style.borderRadius = "0"; 
         btn.style.margin = "0 6px 6px 0"// fixed height to keep consistent size
@@ -135,7 +135,7 @@ function generateWeekdayFilterButtons(sessions)
     const allBtn = document.createElement("button");
     allBtn.className = "btn btn-outline-secondary btn-sm text-center px-3";
     allBtn.textContent = "Alle";
-    allBtn.style.width = "80px";  // fixed width for all buttons
+    allBtn.style.width = "90px";  // fixed width for all buttons
     allBtn.style.height = "36px";
     allBtn.style.margin = "0 6px 6px 0"// fixed height to keep consistent size
     allBtn.style.borderRadius = "0"; 
