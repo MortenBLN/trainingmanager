@@ -80,6 +80,12 @@ async function loadSessions()
         {
             window.location.href = "create-session.html";
         });
+
+        // Click allBtn
+        const allBtn = document.getElementById("allBtn");
+        allBtn.click();
+
+
     } catch (err)
     {
         console.error("Failed to load sessions", err);
@@ -107,32 +113,10 @@ function generateWeekdayFilterButtons(sessions, expiredSessions)
 
     const sortedDays = [...weekdaySet].sort((a, b) => a - b);
 
-    sortedDays.forEach(day =>
-    {
-        const btn = document.createElement("button");
-        btn.className = "btn btn-outline-primary btn-sm text-center";
-        btn.style.width = "90px";  // fixed width for all buttons
-        btn.style.height = "36px"; // fixed height to keep consistent size
-        btn.style.borderRadius = "0"; 
-        btn.style.margin = "0 6px 6px 0"// fixed height to keep consistent size
-        btn.textContent = weekdayNames[day];
-        btn.dataset.day = day;
-
-        btn.addEventListener("click", () =>
-        {
-            document.querySelectorAll("#weekday-filter button").forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-
-            const list = document.getElementById("session-list");
-            list.innerHTML = "";
-            renderSessionsFilteredByWeekday(sessions, parseInt(day));
-        });
-
-        filterDiv.appendChild(btn);
-    });
-
+    
     // 'Alle' button
     const allBtn = document.createElement("button");
+    allBtn.id = "allBtn";
     allBtn.className = "btn btn-outline-secondary btn-sm text-center px-3";
     allBtn.textContent = "Alle";
     allBtn.style.width = "90px";  // fixed width for all buttons
@@ -162,9 +146,34 @@ function generateWeekdayFilterButtons(sessions, expiredSessions)
             });
         }
     });
-    filterDiv.appendChild(allBtn);
-}
 
+    filterDiv.appendChild(allBtn);
+
+    sortedDays.forEach(day =>
+    {
+        const btn = document.createElement("button");
+        btn.className = "btn btn-outline-primary btn-sm text-center";
+        btn.style.width = "90px";  // fixed width for all buttons
+        btn.style.height = "36px"; // fixed height to keep consistent size
+        btn.style.borderRadius = "0";
+        btn.style.margin = "0 6px 6px 0"// fixed height to keep consistent size
+        btn.textContent = weekdayNames[day];
+        btn.dataset.day = day;
+
+        btn.addEventListener("click", () =>
+        {
+            document.querySelectorAll("#weekday-filter button").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            const list = document.getElementById("session-list");
+            list.innerHTML = "";
+            renderSessionsFilteredByWeekday(sessions, parseInt(day));
+        });
+
+        filterDiv.appendChild(btn);
+    });
+
+}
 
 function renderSessionsFilteredByWeekday(sessions, selectedDay)
 {
