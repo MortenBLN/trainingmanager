@@ -104,9 +104,11 @@
 
             form.appendChild(btn);
 
+            const existingOverviewBtn = document.getElementById("overview-button");
+            if (existingOverviewBtn) existingOverviewBtn.remove();
             // Create and insert overview button
             const btnOverview = document.createElement("button");
-            btnOverview.id = "code-created-button";
+            btnOverview.id = "overview-button";
             btnOverview.textContent = "Zur Übersicht";
             btnOverview.className = "btn btn-success mt-3";
             btnOverview.type = "button"; // important: doesn't submit the form
