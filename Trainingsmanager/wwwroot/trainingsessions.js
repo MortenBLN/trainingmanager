@@ -58,7 +58,7 @@ async function loadSessions()
         upcomingSessions.sort((a, b) => new Date(a.trainingStart) - new Date(b.trainingStart));
         expiredSessions.sort((a, b) => new Date(b.trainingStart) - new Date(a.trainingStart));
 
-        generateWeekdayFilterButtons(upcomingSessions, expiredSessions);
+        await generateWeekdayFilterAndCancelSubButtons(upcomingSessions, expiredSessions);
         renderSessionsFilteredByWeekday(upcomingSessions, null); // show all by default
 
         if (expiredSessions.length > 0)
@@ -84,8 +84,6 @@ async function loadSessions()
         // Click allBtn
         const allBtn = document.getElementById("allBtn");
         allBtn.click();
-
-
     } catch (err)
     {
         console.error("Failed to load sessions", err);
@@ -94,8 +92,27 @@ async function loadSessions()
 
 document.addEventListener("DOMContentLoaded", loadSessions);
 
-function generateWeekdayFilterButtons(sessions, expiredSessions)
+async function generateWeekdayFilterAndCancelSubButtons(sessions, expiredSessions)
 {
+    const cancelSubsDiv = document.getElementById("cancel-registrations-btn");
+    if (!cancelSubsDiv) return;
+    cancelSubsDiv.innerHTML = "";
+
+    const cancelSubBtn = document.createElement("button");
+    cancelSubBtn.id = "allBtn";
+    cancelSubBtn.className = "btn btn-outline-secondary btn-sm text-center px-3";
+    cancelSubBtn.textContent = "Zeitraum Abmeldung";
+    cancelSubBtn.style.width = "180px";  // fixed width for all buttons
+    cancelSubBtn.style.height = "36px";
+    cancelSubBtn.style.margin = "0 6px 6px 0"// fixed height to keep consistent size
+    cancelSubBtn.style.borderRadius = "0";
+    cancelSubBtn.addEventListener("click", () =>
+    {
+        cancelSubscriptionsModal(sessions)
+    });
+
+    cancelSubsDiv.appendChild(cancelSubBtn);
+
     const filterDiv = document.getElementById("weekday-filter");
     if (!filterDiv) return;
     filterDiv.innerHTML = "";
@@ -446,6 +463,183 @@ function showDeleteChoiceDialog(sessionId, groupName, token)
     {
         modal.remove();
     };
+}
+
+function cancelSubscriptionsModal(sessions)
+{
+    const modal = document.createElement('div');
+    modal.className = 'custom-dialog';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+    modal.style.display = 'flex';
+    modal.style.justifyContent = 'center';
+    modal.style.alignItems = 'center';
+    modal.style.zIndex = '9999';
+
+    // ✅ Extract unique usernames from all Subscriptions across all sessions
+    const usernames = new Set();
+    sessions.forEach(session =>
+    {
+        if (session.subscriptions.length > 0)
+        {
+            session.subscriptions.forEach(sub =>
+            {
+                if (sub.userName)
+                {
+                    usernames.add(sub.userName);
+                }
+            });
+        }
+    });
+
+    // Create dropdown options HTML
+    let userOptionsHtml = `<option value="">-- Benutzer auswählen --</option>`;
+    usernames.forEach(username =>
+    {
+        userOptionsHtml += `<option value="${username}">${username}</option>`;
+    });
+
+    // Create modal content
+    modal.innerHTML = `
+        <div class="custom-dialog-box" style="background: white; padding: 20px; border-radius: 8px; width: 300px;">
+            <h4>Spieler abmelden</h4>
+             <label for="userSelect">Spieler:</label>
+
+             <select id="userSelect" class="form-control mb-3">
+                ${userOptionsHtml}
+            </select>
+            <label for="fromDate">Von:</label>
+            <input type="date" id="fromDate" class="form-control mb-2"/>
+
+            <label for="untilDate">Bis:</label>
+            <input type="date" id="untilDate" class="form-control mb-2"/>
+
+            <div style="text-align: center;">
+                <button id="apply-removal" class="btn btn-primary btn-sm">Abmelden</button>
+                <button id="cancel-removal" class="btn btn-secondary btn-sm ml-2">Abbrechen</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    document.getElementById('apply-removal').onclick = () =>
+    {
+        const fromDateStr = document.getElementById('fromDate').value;
+        const untilDateStr = document.getElementById('untilDate').value;
+        const selectedUser = document.getElementById('userSelect').value;
+        const errorMsg = document.getElementById('errorMsg');
+
+        // Validate all fields are filled
+        if (!fromDateStr || !untilDateStr || !selectedUser)
+        {
+            errorMsg.textContent = 'Bitte alle Felder ausfüllen.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        // Optionally: validate that fromDate <= untilDate
+        if (new Date(fromDateStr) > new Date(untilDateStr))
+        {
+            errorMsg.textContent = "'Von'-Datum darf nicht nach dem 'Bis'-Datum liegen.";
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        const fromDate = new Date(fromDateStr);
+        const untilDate = new Date(untilDateStr);
+        untilDate.setHours(23, 59, 59, 999); // Include full end day
+
+        // Filter each session that is inside the selected timeframe and the user is subscribed
+        const filteredSessions = sessions.filter(session =>
+        {
+            const start = new Date(session.trainingStart);
+            const end = new Date(session.trainingEnd);
+
+            const isInDateRange =
+                start >= fromDate && end <= untilDate;
+
+            const userSubscribed = session.subscriptions?.some(sub => sub.userName === selectedUser);
+
+            return isInDateRange && userSubscribed;
+        });
+
+        // Get all the subscriptionIds of the users subscription
+        const subscriptionIds = [];
+        filteredSessions.forEach(session =>
+        {
+            session.subscriptions.forEach(sub =>
+            {
+                if (sub.userName === selectedUser)
+                {
+                    subscriptionIds.push(sub.id);
+                }
+            });
+        });
+
+        // Remove Subscription of user in specified timeframe
+        subscriptionIds.forEach(subscriptionId =>
+        {
+            deleteSubscription(subscriptionId, selectedUser);
+        });
+
+        modal.remove();
+    };
+
+    document.getElementById('cancel-removal').onclick = () =>
+    {
+        modal.remove();
+    };
+}
+
+async function deleteSubscription(subscriptionId, username)
+{
+    try
+    {
+        const res = await fetch(`/api/deleteSubscription`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ subscriptionId: subscriptionId })
+        });
+
+        if (!res.ok)
+        {
+            const data = await res.json();
+            const msg = data.errors?.generalErrors?.[0] || data.message || "Failed to remove subscription.";
+            throw new Error(msg);
+        }
+
+        showToast(`${username} wurde für den angegebenen Zeitraum abgemeldet.`);
+    } catch (err)
+    {
+        console.error("Delete failed:", err);
+        messageP.textContent = err.message;
+        messageP.style.color = "red";
+        showToast(err.message, "error");
+    }
+}
+
+function showToast(message, type = "success")
+{
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.remove("toast-success", "toast-error");
+    toast.classList.add("show");
+
+    if (type === "error")
+    {
+        toast.classList.add("toast-error");
+        setTimeout(() => toast.classList.remove("show"), 4500);
+    }
+    else
+    {
+        toast.classList.add("toast-success");
+        setTimeout(() => toast.classList.remove("show"), 2500);
+    }
 }
 
 function showDeleteSingleSessionChoiceDialog(sessionId, token, teamname)
