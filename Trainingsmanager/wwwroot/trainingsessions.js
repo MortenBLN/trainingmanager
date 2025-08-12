@@ -497,7 +497,7 @@ function cancelSubscriptionsModal(sessions)
     });
 
     // Create dropdown options HTML
-    let userOptionsHtml = `<option value="">-- Benutzer auswählen --</option>`;
+    let userOptionsHtml = `<option value="">-- Spieler auswählen --</option>`;
     usernames.forEach(username =>
     {
         userOptionsHtml += `<option value="${username}">${username}</option>`;
