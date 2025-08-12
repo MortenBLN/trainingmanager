@@ -41,7 +41,6 @@ async function loadDropdownOptions()
     });   
 }
 
-
 function updateStatistics()
 {
     const selectedStat = document.getElementById("statsDropdown").value;
@@ -132,7 +131,7 @@ function renderPlayerAttendanceChart(monthSpan)
     {
         session.subscriptions.forEach(sub =>
         {
-            const name = sub.userName; // Adjusted to your DTO's property
+            const name = sub.userName;
 
             if (!name) return;
 
@@ -195,7 +194,10 @@ function renderPlayerAttendanceChart(monthSpan)
             responsive: true,
             indexAxis: labels.length > 10 ? 'y' : 'x', // horizontal chart if too many players
             scales: {
-                y: { beginAtZero: true },
+                y: {
+                    beginAtZero: true,
+                    stepSize: 1,
+                },
                 x: { title: { display: true, text: 'Anzahl Teilnahmen' } }
             }
         }
