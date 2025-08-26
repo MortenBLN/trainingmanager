@@ -196,9 +196,17 @@ function renderPlayerAttendanceChart(monthSpan)
             scales: {
                 y: {
                     beginAtZero: true,
-                    stepSize: 1,
+                    ticks: {
+                        stepSize: 1,
+                        autoSkip: false   // ✅ always show all labels
+                    }
                 },
-                x: { title: { display: true, text: 'Anzahl Teilnahmen' } }
+                x: {
+                    title: { display: true, text: 'Anzahl Teilnahmen' },
+                    ticks: {
+                        autoSkip: false   // ✅ make sure all labels show
+                    }
+                }
             }
         }
     });
