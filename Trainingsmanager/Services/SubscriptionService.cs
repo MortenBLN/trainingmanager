@@ -55,6 +55,16 @@ namespace Trainingsmanager.Services
                 return;
             }
 
+            // As we have more members than our normal max amount of people, we need to ONLY upgrade a subscription, when we actually have space
+            // --> Check if amount of NON WARTESCHLANGEN subscriptions is still greater or equal to max number of people before continuing
+            session = await _sessionRepository.GetSessionByIdAsync(session.Id, ct);
+            var allNonWarteschlangenSubscriptions = session.Subscriptions.Where(s => s.SubscriptionType != SubscriptionType.Warteschlange).ToList();
+
+            if (allNonWarteschlangenSubscriptions.Count >= session.ApplicationsLimit)
+            {
+                return;
+            }
+
             // The removed type was NOT 'Warteschlange' 
             // --> Check if there is a Warteschlange Subscription that needs to be upgraded
 

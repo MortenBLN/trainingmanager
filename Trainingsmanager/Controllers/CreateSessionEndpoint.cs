@@ -26,7 +26,7 @@ namespace Trainingsmanager.Controllers
             {
                 response = await _service.CreateSessionAsync(req, ct);
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 if (ex.Message.StartsWith("Das Limit muss beim Erstellen mit vorgebuchten Mitgliedern mindestens"))
                 {

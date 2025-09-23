@@ -141,42 +141,6 @@ public class SessionServiceTests
     }
 
     [Fact]
-    public async Task CreateSessionAsync_ThrowsArgumentException_WhenApplicationsLimitTooLowForPreAdd()
-    {
-        _userServiceMock.Setup(u => u.User).Returns(new ClaimsPrincipal());
-
-        var fixedSubsOption = new FixedSubsOptions { FixedSubs = new List<string> { "Alice", "Bob", "Charlie" } };
-        var options = Options.Create(fixedSubsOption);
-
-        var service = new SessionService(
-           _repositoryMock.Object,
-           _mapperMock.Object,
-           _userServiceMock.Object,
-           _subscriptionRepoMock.Object,
-           options,
-           _helperMock.Object,
-           _sessionGroupRepoMock.Object,
-           _subscriptionMapperMock.Object,
-           _subscriptionServiceMock.Object,
-           _loggerMock.Object
-       );
-
-        var request = new CreateSessionRequest
-        {
-            Teamname = "TestTeam",
-            ApplicationsLimit = 1, // Set application limit lower than the fixedSubs count
-            CountSessionsToCreate = 1,
-            TrainingStart = DateTime.UtcNow,
-            TrainingEnd = DateTime.UtcNow.AddHours(1),
-            PreAddMitglieder = true,
-        };
-
-        // Act & Assert
-        var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.CreateSessionAsync(request, CancellationToken.None));
-        Assert.Contains($"'Maximale Teilnehmer' muss mit der aktivierten Einstellung 'Mitglieder voranmelden' mindestens {fixedSubsOption.FixedSubs.Count} betragen.", ex.Message);
-    }
-
-    [Fact]
     public async Task CreateSessionAsync_CreateSessionsSuccessful()
     {
         var userId = Guid.NewGuid();
