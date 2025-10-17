@@ -111,7 +111,6 @@ function renderParticipationChart(monthSpan)
     });
 }
 
-
 function renderPlayerAttendanceChart(monthSpan)
 {
     const now = new Date();
@@ -212,7 +211,6 @@ function renderPlayerAttendanceChart(monthSpan)
     });
 }
 
-
 function getChartCanvas()
 {
     let canvas = document.getElementById("statsChart");
@@ -225,4 +223,3 @@ function getChartCanvas()
     }
     return canvas;
 }
-

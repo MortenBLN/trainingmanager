@@ -300,10 +300,10 @@
         document.getElementById("venue").innerHTML = html;
     }
 
-    function showToast(message, type = "success")
+    function showToast(message, type = "success", displayTimeToast = 2500)
     {
         const toast = document.getElementById("toast");
-        toast.textContent = message;
+        toast.innerHTML = message;
         toast.classList.remove("toast-success", "toast-error");
         toast.classList.add("show");
 
@@ -315,7 +315,7 @@
         else
         {
             toast.classList.add("toast-success");
-            setTimeout(() => toast.classList.remove("show"), 2500);
+            setTimeout(() => toast.classList.remove("show"), displayTimeToast);
         }
     }
 
@@ -336,7 +336,7 @@
                 throw new Error(msg);
             }
 
-            showToast(`${username} wurde abgemeldet.`);
+            showToast(`${username} wurde abgemeldet.<br>Falls die Abmeldung kurzfristig ist, gib bitte in der Whatsappgruppe bescheid.`, "success", 5500);
             await fetchSession();
         } catch (err)
         {

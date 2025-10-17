@@ -117,6 +117,16 @@ namespace Trainingsmanager.Services
                 }
             }
 
+            var timeIn3Days = DateTime.UtcNow.AddHours(72);
+
+            if (session.TrainingStart > timeIn3Days)
+            {
+                if (!hasAdminRole)
+                {
+                    throw new Exception("Eine Anmeldung ist erst 3 Tage vor Beginn der Session möglich.");
+                }
+            }
+
             // Only Admins are allowed add Subscriptions for MitgliederOnlySession
             if (session.MitgliederOnlySession)
             {
