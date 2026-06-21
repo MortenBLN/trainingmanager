@@ -117,13 +117,13 @@ namespace Trainingsmanager.Services
                 }
             }
 
-            if (session.TrainingStart.DayOfWeek == DayOfWeek.Monday)
-            {
-                if (!hasAdminRole)
-                {
-                    throw new Exception("Eine Anmeldung für Montage ist nur für Mitglieder möglich.\nBitte wende dich an einen Admin.");
-                }
-            }
+            //if (session.TrainingStart.DayOfWeek == DayOfWeek.Monday)
+            //{
+            //    if (!hasAdminRole)
+            //    {
+            //        throw new Exception("Eine Anmeldung für Montage ist nur für Mitglieder möglich.\nBitte wende dich an einen Admin.");
+            //    }
+            //}
 
             var timeIn3Days = DateTime.UtcNow.AddHours(72);
 
