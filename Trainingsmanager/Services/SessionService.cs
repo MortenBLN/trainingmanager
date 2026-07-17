@@ -22,6 +22,7 @@ namespace Trainingsmanager.Services
         private readonly ILogger<ISessionService> _logger;
 
         private readonly List<string> _fixedPreAddMitglieder;
+        private readonly List<string> _fixedPreAddMitgliederLimited;
 
         public SessionService (ISessionRepository repository, ISessionMapper mapper, IUserService userService, ISubscriptionRepository subscriptionRepository, IOptions<FixedSubsOptions> options, ISessionHelper helper, ISessionGroupRepository sessionGroupRepository, ISubscriptionMapper subscriptionMapper, ISubscriptionService subscriptionService, ILogger<ISessionService> logger)
         {
@@ -35,6 +36,7 @@ namespace Trainingsmanager.Services
             _subscriptionService = subscriptionService;
 
             _fixedPreAddMitglieder = options.Value.FixedSubs;
+            _fixedPreAddMitgliederLimited = options.Value.FixedSubsLimited;
             _logger = logger;
         }
 
@@ -162,7 +164,18 @@ namespace Trainingsmanager.Services
             // Add the Gründungsmitglieder to each Session
             if (request.PreAddMitglieder)
             {
-                foreach (var name in _fixedPreAddMitglieder)
+                List<string> mitgliederToAdd = new List<string>();
+
+                if (request.TrainingStart.DayOfWeek == DayOfWeek.Monday)
+                {
+                    mitgliederToAdd = _fixedPreAddMitglieder;
+                }
+                else
+                {
+                    mitgliederToAdd = _fixedPreAddMitgliederLimited;
+                }
+
+                foreach (var name in mitgliederToAdd)
                 {
                     var mitgliederSubRequest = new SubscribeUserToSessionRequest
                     {
