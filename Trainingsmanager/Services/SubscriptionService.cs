@@ -126,13 +126,13 @@ namespace Trainingsmanager.Services
             //}
 
            
-            var timeIn3Days = DateTime.UtcNow.AddHours(72);
+            var timeIn3Days = DateTime.UtcNow.AddHours(96);
 
             if (session.TrainingStart > timeIn3Days)
             {
                 if (!hasAdminRole)
                 {
-                   throw new Exception("Eine Anmeldung ist erst 3 Tage vor Beginn der Session möglich.");
+                   throw new Exception("Eine Anmeldung ist erst 4 Tage vor Beginn der Session möglich.");
                 }
             }
 
